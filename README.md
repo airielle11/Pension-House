@@ -11,7 +11,7 @@ Install dependencies =>  pip install -r requirements.txt
 Run your migrations => python manage.py makemigrations then python manage.py migrate
 Run the backend project => python manage.py runserver
 
-## Frontend - Reaact
+## Frontend - React
 cd frontend
 Run npm install 
 Run the frontend project => npm start / npm run dev
