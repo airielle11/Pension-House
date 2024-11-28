@@ -5,8 +5,7 @@ import Loadable from '../components/Loadable.jsx';
 import MinimalLayout from '../layout/MinimalLayout'; 
 
 // render - login
-const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx')));
-// const AuthRegister = Loadable(lazy(() => import('../pages/authentication/register.jsx'))); 
+const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx'))); 
 
 // ==============================|| AUTH ROUTING ||============================== //
 
@@ -17,11 +16,7 @@ const LoginRoutes = {
     {
       path: '/login',
       element: <AuthLogin />
-    }
-    // {
-    //   path: '/register',
-    //   element: <AuthRegister />
-    // }
+    } 
   ]
 };
 

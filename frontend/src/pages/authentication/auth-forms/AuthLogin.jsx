@@ -5,7 +5,6 @@ import { Link as RouterLink } from 'react-router-dom';
 // material-ui
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
@@ -22,12 +21,11 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 
 // project import
-import AnimateButton from '../../../components/@extended/AnimateButton.jsx'; 
+import AnimateButton from '../../../components/@extended/AnimateButton.jsx';
 
 // assets
 import EyeOutlined from '@ant-design/icons/EyeOutlined';
 import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
-import FirebaseSocial from './FirebaseSocial';
 
 // ============================|| JWT - LOGIN ||============================ //
 
@@ -47,36 +45,41 @@ export default function AuthLogin({ isDemo = false }) {
     <>
       <Formik
         initialValues={{
-          email: '',
+          loginId: '',
           password: '',
-          submit: null
+          submit: null,
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-          password: Yup.string().max(255).required('Password is required')
+          loginId: Yup.string().required('Login ID is required'),
+          password: Yup.string().max(255).required('Password is required'),
         })}
+        onSubmit={(values, { setSubmitting }) => {
+          // Handle the login logic here
+          console.log('Login submitted:', values);
+          setSubmitting(false);
+        }}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
+                  <InputLabel htmlFor="loginId-login">Login ID</InputLabel>
                   <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email}
-                    name="email"
+                    id="loginId-login"
+                    type="text"
+                    value={values.loginId}
+                    name="loginId"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Enter email address"
+                    placeholder="Enter login ID"
                     fullWidth
-                    error={Boolean(touched.email && errors.email)}
+                    error={Boolean(touched.loginId && errors.loginId)}
                   />
                 </Stack>
-                {touched.email && errors.email && (
-                  <FormHelperText error id="standard-weight-helper-text-email-login">
-                    {errors.email}
+                {touched.loginId && errors.loginId && (
+                  <FormHelperText error id="standard-weight-helper-text-loginId-login">
+                    {errors.loginId}
                   </FormHelperText>
                 )}
               </Grid>
@@ -86,7 +89,7 @@ export default function AuthLogin({ isDemo = false }) {
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.password && errors.password)}
-                    id="-password-login"
+                    id="password-login"
                     type={showPassword ? 'text' : 'password'}
                     value={values.password}
                     name="password"
@@ -127,9 +130,9 @@ export default function AuthLogin({ isDemo = false }) {
                         size="small"
                       />
                     }
-                    label={<Typography variant="h6">Keep me sign in</Typography>}
+                    label={<Typography variant="h6">Keep me signed in</Typography>}
                   />
-                  <Link variant="h6" component={RouterLink} color="text.primary">
+                  <Link variant="h6" component={RouterLink} to="/forgot-password" color="text.primary">
                     Forgot Password?
                   </Link>
                 </Stack>
@@ -145,7 +148,7 @@ export default function AuthLogin({ isDemo = false }) {
                     Login
                   </Button>
                 </AnimateButton>
-              </Grid> 
+              </Grid>
             </Grid>
           </form>
         )}
