@@ -17,7 +17,7 @@ const LogoSection = ({ sx, to }) => {
     <ButtonBase disableRipple component={Link} to={!to ? config.defaultPath : to} sx={sx}>
       <Stack direction="row" spacing={1} alignItems="center">
         <Logo /> 
-        <Typography variant="h6" color="text.primary" sx={{ ml: 1, fontSize: '1rem', fontWeight: 'bold' }}>
+        <Typography variant="h6" color="#5584CE" sx={{ ml: 1, fontSize: '1rem', fontWeight: 'bold' }}>
           PeniStock
         </Typography>
       </Stack>
