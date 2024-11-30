@@ -1,13 +1,12 @@
 // project import
-import dashboard from './dashboard.jsx';
+import menu from './menu.jsx';
 import pages from './page.jsx';
-import utilities from './utilities.jsx';
-import support from './support.jsx';
+import utilities from './utilities.jsx'; 
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [dashboard, pages, utilities, support]
+  items: [menu, utilities, pages]
 };
 
 export default menuItems;

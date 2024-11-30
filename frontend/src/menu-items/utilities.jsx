@@ -1,3 +1,4 @@
+
 // assets
 import {
   AppstoreAddOutlined,
@@ -26,6 +27,13 @@ const utilities = {
   type: 'group',
   children: [
     {
+      id: 'util-table',
+      title: 'Tables',
+      type: 'item',
+      url: '/tables',
+      icon: icons.AppstoreAddOutlined
+    },
+    {
       id: 'util-typography',
       title: 'Typography',
       type: 'item',
@@ -45,7 +53,7 @@ const utilities = {
       type: 'item',
       url: '/shadow',
       icon: icons.BarcodeOutlined
-    }
+    } 
   ]
 };
 

@@ -1,10 +1,10 @@
-import logo from '../../assets/images/logo.png'; 
+import logo from '../../assets/images/penistock_logo.png'; 
 
 const Logo = () => { 
 
   return ( 
     <>
-       <img src={logo} alt="PawSeeRx Logo" width="35" />
+       <img src={logo} alt="PeniStock Logo" width="45" />
     </>
   );
 };
