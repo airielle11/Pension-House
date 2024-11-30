@@ -10,15 +10,13 @@ git clone https://github.com/airielle11/Pension-House.git
 
 ## Backend - Django 
 
-Create a virtual environment with virtualenv => pip install venv env
+Create a virtual environment with virtualenv => python -m venv env
 
 Activate your virtual environment from your virtual environment root => .\env\Scripts\activate
 
 cd backend
 
 Install dependencies =>  pip install -r requirements.txt 
-
-Run your migrations => python manage.py makemigrations then python manage.py migrate
 
 Run the backend project => python manage.py runserver
 
