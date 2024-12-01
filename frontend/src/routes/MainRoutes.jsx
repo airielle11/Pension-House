@@ -8,7 +8,7 @@ const Color = Loadable(lazy(() => import('../pages/component-overview/color.jsx'
 const Typography = Loadable(lazy(() => import('../pages/component-overview/typography.jsx')));
 const Shadow = Loadable(lazy(() => import('../pages/component-overview/shadows.jsx')));
 const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.jsx')));
-const Tables = Loadable(lazy(() => import('../pages/extra-pages/Tables.jsx'))) 
+//const Tables = Loadable(lazy(() => import('../pages/extra-pages/Tables.jsx'))) 
 
 
 // render - sample page
@@ -41,10 +41,10 @@ const MainRoutes = {
       path: 'sample-page',
       element: <SamplePage />
     },  
-    {
-      path: 'tables',
-      element: <Tables />
-    }, 
+    // {
+    //   path: 'tables',
+    //   element: <Tables />
+    // }, 
     {
       path: 'shadow',
       element: <Shadow />
