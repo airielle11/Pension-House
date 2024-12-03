@@ -2,8 +2,7 @@
 import Typography from '@mui/material/Typography';
 
 // project import
-import MainCard from '../../components/MainCard.jsx';
-//import MainCard from 'components/MainCard';
+import MainCard from '../../components/MainCard.jsx'; 
 
 // ==============================|| SAMPLE PAGE ||============================== //
 

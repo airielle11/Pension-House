@@ -3,22 +3,26 @@ import { lazy } from 'react';
 // project import
 import Loadable from '../components/Loadable.jsx';
 import Dashboard from '../layout/Dashboard';
+// import Requisition from '../pages/extra-pages/sample-page.jsx';
+import AddRoomAndType from '../pages/add-rooms/add-rooms.jsx';
+import Requisitions from '../pages/requisition/Requisitions.jsx';
 
 const Color = Loadable(lazy(() => import('../pages/component-overview/color.jsx')));
 const Typography = Loadable(lazy(() => import('../pages/component-overview/typography.jsx')));
 const Shadow = Loadable(lazy(() => import('../pages/component-overview/shadows.jsx')));
 const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.jsx')));
+
 //const Tables = Loadable(lazy(() => import('../pages/extra-pages/Tables.jsx'))) 
 
 
 // render - sample page
-const SamplePage = Loadable(lazy(() => import('../pages/extra-pages/sample-page.jsx')));
+// const SamplePage = Loadable(lazy(() => import('../pages/extra-pages/sample-page.jsx')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
-  path: '/',
-  element: <Dashboard />,
+  path: '/',  
+  element: <Dashboard/>,
   children: [
     {
       path: '/',
@@ -37,14 +41,18 @@ const MainRoutes = {
         }
       ]
     },
-    {
-      path: 'sample-page',
-      element: <SamplePage />
-    },  
     // {
-    //   path: 'tables',
-    //   element: <Tables />
-    // }, 
+    //   path: 'sample-page',
+    //   element: <Requisition Form/>
+    // },  
+    {
+      path: 'Requisitions',
+      element: <Requisitions/>
+    }, 
+    {
+      path: 'add-rooms',
+      element: <AddRoomAndType />
+    },
     {
       path: 'shadow',
       element: <Shadow />

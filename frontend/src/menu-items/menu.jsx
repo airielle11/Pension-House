@@ -38,13 +38,28 @@ const menu = {
       icon: icons.DashboardOutlined,
       breadcrumbs: false
     },
+    // {
+    //   id: 'sample-page',
+    //   title: 'Generate Requisition Form',
+    //   type: 'item',
+    //   url: '/sample-page',
+    //   icon: icons.ChromeOutlined
+    // },
     {
-      id: 'sample-page',
-      title: 'Sample Page',
+      id: 'add-rooms',
+      title: 'Add Rooms',
       type: 'item',
-      url: '/sample-page',
+      url: '/add-rooms',
       icon: icons.ChromeOutlined
-    } 
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: '/requisitions', // for browser rani sa babaw
+      icon: icons.ChromeOutlined
+    }
+  
   ]
 };
 
