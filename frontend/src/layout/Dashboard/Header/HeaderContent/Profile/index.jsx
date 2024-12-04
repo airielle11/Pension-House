@@ -131,13 +131,13 @@ export default function Profile() {
                           </Stack>
                         </Stack>
                       </Grid>
-                      <Grid item>
+                      {/* <Grid item>
                         <Tooltip title="Logout">
                           <IconButton size="large" sx={{ color: 'text.primary' }}>
                             <LogoutOutlined />
                           </IconButton>
                         </Tooltip>
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                   </CardContent>
 

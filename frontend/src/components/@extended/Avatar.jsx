@@ -5,8 +5,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import MuiAvatar from '@mui/material/Avatar';
 
 // project import
-import getColors from '../../utils/getColors.js';
-//import getColors from 'utils/getColors';
+import getColors from '../../utils/getColors.js'; 
 
 function getColorStyle({ theme, color, type }) {
   const colors = getColors(theme, color);

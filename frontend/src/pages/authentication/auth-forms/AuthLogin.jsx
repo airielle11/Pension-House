@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import Button from '@mui/material/Button'; 
 import FormHelperText from '@mui/material/FormHelperText';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
@@ -14,10 +14,11 @@ import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 
-// third party
+// Uses Formik and Yup third party for input validation, which simplifies handling form state and errors.
+// Yup is a JS library to build object schemas and define how the data should look like and what kinds of values are expected of them
 import * as Yup from 'yup';
+// Formik is a small group of React components and hooks for building forms in React
 import { Formik } from 'formik';
 
 // project import
@@ -30,8 +31,8 @@ import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
 // ============================|| JWT - LOGIN ||============================ //
 
 export default function AuthLogin({ isDemo = false }) {
-  const [checked, setChecked] = React.useState(false);
-
+  // Initialize navigation hook
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -45,42 +46,60 @@ export default function AuthLogin({ isDemo = false }) {
     <>
       <Formik
         initialValues={{
-          loginId: '',
+          email: '',
           password: '',
           submit: null,
         }}
         validationSchema={Yup.object().shape({
-          loginId: Yup.string().required('Login ID is required'),
+          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required'),
         })}
-        onSubmit={(values, { setSubmitting }) => {
-          // Handle the login logic here
-          console.log('Login submitted:', values);
+        onSubmit={async (values, { setSubmitting, setErrors }) => {
+          try {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/login/`, {
+              email: values.email,
+              password: values.password,
+            }); 
+        
+            // // Handle success, like storing the token or redirecting
+            // console.log('Login successful:', response.data);
+            // // For example, you could store the token in localStorage
+            // localStorage.setItem('token', response.data.token);
+            // Redirect page to the dashboard page
+            navigate('/dashboard/default'); 
+          } catch (error) {
+            // Handle error (incorrect credentials or server error)
+            if (error.response) {
+              setErrors({ submit: error.response.data.error || 'Login failed' });
+            } else {
+              setErrors({ submit: 'An error occurred. Please try again later.' });
+            }
+          }
           setSubmitting(false);
         }}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="loginId-login">Login ID</InputLabel>
+                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
                   <OutlinedInput
-                    id="loginId-login"
-                    type="text"
-                    value={values.loginId}
-                    name="loginId"
+                    id="email-login"
+                    type="email"
+                    value={values.email} 
+                    name="email" 
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Enter login ID"
+                    placeholder="Enter email address" 
                     fullWidth
-                    error={Boolean(touched.loginId && errors.loginId)}
+                    error={Boolean(touched.email && errors.email)} 
                   />
                 </Stack>
-                {touched.loginId && errors.loginId && (
-                  <FormHelperText error id="standard-weight-helper-text-loginId-login">
-                    {errors.loginId}
-                  </FormHelperText>
+                {touched.email && errors.email && (
+                  <FormHelperText error id="standard-weight-helper-text-email-login">
+                  {errors.email}
+                  </FormHelperText> 
                 )}
               </Grid>
               <Grid item xs={12}>
@@ -118,24 +137,10 @@ export default function AuthLogin({ isDemo = false }) {
                 )}
               </Grid>
 
-              <Grid item xs={12} sx={{ mt: -1 }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={checked}
-                        onChange={(event) => setChecked(event.target.checked)}
-                        name="checked"
-                        color="primary"
-                        size="small"
-                      />
-                    }
-                    label={<Typography variant="h6">Keep me signed in</Typography>}
-                  />
-                  <Link variant="h6" component={RouterLink} to="/forgot-password" color="text.primary">
+              <Grid item xs={12} sx={{ mt: -1}}>
+              <Link variant="h6" component={RouterLink} to="/forgot-password" color="text.primary">
                     Forgot Password?
                   </Link>
-                </Stack>
               </Grid>
               {errors.submit && (
                 <Grid item xs={12}>
@@ -144,8 +149,8 @@ export default function AuthLogin({ isDemo = false }) {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" color="primary">
-                    Login
+                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" sx={{backgroundImage: 'linear-gradient(#14ADD6, #384295)'}} >
+                    Sign In
                   </Button>
                 </AnimateButton>
               </Grid>

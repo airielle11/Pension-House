@@ -9,11 +9,11 @@ import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom"
 
 // ==============================|| APP - THEME, ROUTER, LOCAL ||============================== //
 
-function Logout() {
-  // Clear the refresh and access token
-  localStorage.clear();
-  return <Navigate to="/login" />
-}
+// function Logout() {
+//   // Clear the refresh and access token
+//   localStorage.clear();
+//   return <Navigate to="/login" />
+// }
 
 export default function App() {
   return ( 

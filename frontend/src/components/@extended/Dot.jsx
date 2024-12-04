@@ -4,8 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 
 // project import
-import getColors from '../../utils/getColors.js';
-//import getColors from 'utils/getColors';
+import getColors from '../../utils/getColors.js'; 
 
 export default function Dot({ color, size, variant, sx }) {
   const theme = useTheme();

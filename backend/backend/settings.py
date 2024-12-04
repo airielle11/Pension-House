@@ -22,16 +22,8 @@ load_dotenv()
 SUPABASE_URL = os.getenv('SUPABASE_URL')
 SUPABASE_API = os.getenv('SUPABASE_API')
 
-# Initialize environment variables
-# env = environ.Env()
-# environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-# Supabase credentials
-# SUPABASE_URL = env('SUPABASE_URL')
-# SUPABASE_API = env('SUPABASE_API')
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent 
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -79,6 +71,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -86,7 +79,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "corsheaders.middleware.CorsMiddleware",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -113,12 +105,16 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': SUPABASE_URL.split("/")[-1],
+#         'USER': 'postgres',  # Supabase default username
+#         'PASSWORD': SUPABASE_API,  # API key as password
+#         'HOST': SUPABASE_URL.split("//")[-1].split("/")[0],  # Extract the host
+#         'PORT': '5432',  # Default PostgreSQL port
+#     }
+# }
 
 
 # Password validation

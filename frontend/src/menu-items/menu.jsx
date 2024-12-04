@@ -44,7 +44,7 @@ const menu = {
       type: 'item',
       url: '/sample-page',
       icon: icons.ChromeOutlined
-    } 
+    }
   ]
 };
 
