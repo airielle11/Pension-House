@@ -45,21 +45,24 @@ export default function AuthLogin({ isDemo = false }) {
   return (
     <>
       <Formik
-        initialValues={{
-          email: '',
+        initialValues={{ 
           password: '',
           submit: null,
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
           password: Yup.string().max(255).required('Password is required'),
         })}
         onSubmit={async (values, { setSubmitting, setErrors }) => {
           try {
-            const response = await axios.post(`${import.meta.env.VITE_API_URL}/login/`, {
-              email: values.email,
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/reset_password/`, {
               password: values.password,
-            });  
+            }); 
+        
+            // // Handle success, l ike storing the token or redirecting
+            // console.log('Login successful:', response.data);
+            // // For example, you could store the token in localStorage
+            // localStorage.setItem('token', response.data.token);
+            // Redirect page to the dashboard page
             navigate('/dashboard/default'); 
           } catch (error) {
             // Handle error (incorrect credentials or server error)
@@ -75,30 +78,10 @@ export default function AuthLogin({ isDemo = false }) {
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
             <Grid container spacing={2}>
+               
               <Grid item xs={12}>
                 <Stack spacing={1}>
-                  <InputLabel htmlFor="email-login">Email Address</InputLabel>
-                  <OutlinedInput
-                    id="email-login"
-                    type="email"
-                    value={values.email} 
-                    name="email" 
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter email address" 
-                    fullWidth
-                    error={Boolean(touched.email && errors.email)} 
-                  />
-                </Stack>
-                {touched.email && errors.email && (
-                  <FormHelperText error id="standard-weight-helper-text-email-login">
-                  {errors.email}
-                  </FormHelperText> 
-                )}
-              </Grid>
-              <Grid item xs={12}>
-                <Stack spacing={1}>
-                  <InputLabel htmlFor="password-login">Password</InputLabel>
+                  <InputLabel htmlFor="password-login">New Password</InputLabel>
                   <OutlinedInput
                     fullWidth
                     error={Boolean(touched.password && errors.password)}
@@ -130,12 +113,7 @@ export default function AuthLogin({ isDemo = false }) {
                   </FormHelperText>
                 )}
               </Grid>
-
-              <Grid item xs={12} sx={{ mt: -1, display: 'flex', justifyContent: 'flex-end'}}>
-                <Link variant="h6" component={RouterLink} to="/forgot_password" color="text.primary">
-                  Forgot Password?
-                </Link>
-              </Grid>
+ 
               {errors.submit && (
                 <Grid item xs={12}>
                   <FormHelperText error>{errors.submit}</FormHelperText>
@@ -144,7 +122,7 @@ export default function AuthLogin({ isDemo = false }) {
               <Grid item xs={12}>
                 <AnimateButton>
                   <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" sx={{backgroundImage: 'linear-gradient(#14ADD6, #384295)'}} >
-                    Sign In
+                    Submit
                   </Button>
                 </AnimateButton>
               </Grid>
@@ -157,3 +135,79 @@ export default function AuthLogin({ isDemo = false }) {
 }
 
 AuthLogin.propTypes = { isDemo: PropTypes.bool };
+
+
+// import React, { useEffect, useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import axios from 'axios';
+
+// export default function ResetPassword() {
+//   const [email, setEmail] = useState('');
+//   const [token, setToken] = useState('');
+//   const [password, setPassword] = useState('');
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState('');
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     // Parse the URL hash to extract email and access_token
+//     const urlParams = new URLSearchParams(window.location.hash.slice(1)); // Remove the `#` at the start
+//     const accessToken = urlParams.get('otp');
+//     const emailFromToken = urlParams.get('email'); // Adjust based on how Supabase provides the email
+
+//     if (accessToken) {
+//       setToken(accessToken);
+//     }
+
+//     if (emailFromToken) {
+//       setEmail(emailFromToken);
+//     }
+//   }, []);
+
+//   const handleResetPassword = async (e) => {
+//     e.preventDefault();
+
+//     if (!password) {
+//       setError('Password is required');
+//       return;
+//     }
+
+//     try {
+//       const response = await axios.post(`${import.meta.env.VITE_API_URL}/reset_password/`, {
+//         email,
+//         otp: token,
+//         new_password: password,
+//       });
+
+//       if (response.status === 200) {
+//         setSuccess('Password reset successful!');
+//         setTimeout(() => {
+//           navigate('/login'); // Redirect to login page
+//         }, 3000);
+//       }
+//     } catch (err) {
+//       setError(err.response?.data?.error || 'An error occurred. Please try again.');
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <h2>Reset Password</h2>
+//       {error && <p style={{ color: 'red' }}>{error}</p>}
+//       {success && <p style={{ color: 'green' }}>{success}</p>}
+//       <form onSubmit={handleResetPassword}>
+//         <div>
+//           <label htmlFor="password">New Password</label>
+//           <input
+//             type="password"
+//             id="password"
+//             value={password}
+//             onChange={(e) => setPassword(e.target.value)}
+//           />
+//         </div>
+//         <button type="submit">Reset Password</button>
+//       </form>
+//     </div>
+//   );
+// }
+

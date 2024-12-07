@@ -4,7 +4,7 @@ import { lazy } from 'react';
 import Loadable from '../components/Loadable.jsx';
 import Dashboard from '../layout/Dashboard';
 import Error404 from '../pages/404.jsx';
-import { Navigate } from 'react-router';
+import { Navigate } from 'react-router'; 
 
 const Color = Loadable(lazy(() => import('../pages/component-overview/color.jsx')));
 const Typography = Loadable(lazy(() => import('../pages/component-overview/typography.jsx')));
@@ -15,6 +15,8 @@ const UserProfile = Loadable(lazy(() => import('../pages/UserProfile/UserProfile
 
 // render - sample page
 const SamplePage = Loadable(lazy(() => import('../pages/extra-pages/sample-page.jsx')));
+const PurchaseOrderList = Loadable(lazy(() => import('../pages/purchasing/PurchaseOrder.jsx')));
+
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -49,9 +51,9 @@ const MainRoutes = {
       element: <Tables />
     }, 
     {
-      path: 'Profile',
+      path: 'profile',
       element: <UserProfile />
-    },
+    }, 
     {
       path: 'shadow',
       element: <Shadow />
@@ -61,9 +63,8 @@ const MainRoutes = {
       element: <Typography />
     },
     {
-      // Redirect unknown routes to dashboard
-      path: '*',
-      element: <Navigate to="/" /> 
+      path: 'purchase_order',
+      element: <PurchaseOrderList />
     }
 
   ]

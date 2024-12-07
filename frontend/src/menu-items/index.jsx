@@ -6,7 +6,7 @@ import utilities from './utilities.jsx';
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [menu, utilities, pages]
+  items: [menu, pages]
 };
 
 export default menuItems;

@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 
 // project import
 import AuthWrapper from './AuthWrapper';
-import AuthLogin from './auth-forms/AuthLogin';
+import AuthResetPassword from './auth-forms/AuthResetPassword';
 import logo from '../../assets/images/penistock_logo.png';
 
 
@@ -28,7 +28,7 @@ export default function Login() {
           </Stack>
         </Grid>
         <Grid item xs={12}>
-          <AuthLogin />
+          <AuthResetPassword />
         </Grid>
       </Grid>
     </AuthWrapper>

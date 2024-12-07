@@ -28,10 +28,9 @@ export default function ProfileTab() {
 
   const handleLogout = () => {
     // Clear session storage/local storage
-    sessionStorage.clear(); // or localStorage.clear() if used
-
-    // Redirect to login page
-    navigate('/login'); // Replace '/login' with the actual login route
+    sessionStorage.clear();  
+ 
+    navigate('/login');  
   };
 
   return (
@@ -42,10 +41,10 @@ export default function ProfileTab() {
         <ListItemIcon>
           <EditOutlined />
         </ListItemIcon>
-        <ListItemText primary="Edit Profile" />
+        <ListItemText primary="View Profile" />
       </ListItemButton>
 
-      <ListItemButton
+      {/* <ListItemButton
         selected={selectedIndex === 1}
         onClick={() => handleListItemClick(1, '/apps/profiles/account/basic')}
       >
@@ -53,9 +52,9 @@ export default function ProfileTab() {
           <UserOutlined />
         </ListItemIcon>
         <ListItemText primary="View Profile" />
-      </ListItemButton>
+      </ListItemButton> */}
   
-      <ListItemButton selected={selectedIndex === 2} onClick={handleLogout}>
+      <ListItemButton selected={selectedIndex === 1} onClick={handleLogout}>
         <ListItemIcon>
           <LogoutOutlined />
         </ListItemIcon>

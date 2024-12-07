@@ -44,56 +44,38 @@ def login_user(email, password):
     except Exception as e: 
         raise ValueError(f"Login failed: {str(e)}") 
 
-
-
-def get_user_auth_info():
-  try:
-    # Attempt to get the current user
-    user_response = supabase.auth.get_user()
-
-    if user_response and user_response.user:
-      # Extract and print only key user details
-      user = user_response.user
-      print("User ID:", user.id)
-      print("User Email:", user.email)
-      print("Created At:", user.created_at)
-      print("User Metadata:", user.user_metadata if user.user_metadata else "No metadata available")
-    elif user_response and user_response.error:
-      # Print error details if available
-      print("Error:", user_response.error.message)
-    else:
-      print("No user is currently logged in or the session has expired.")
-  except Exception as e:
-    print("An error occurred:", str(e))
-
 def request_reset_email(email):
-  # Trigger password reset with a custom redirect URL
-  try:
-      response = supabase.auth.reset_password_for_email(email)
-      print("Password reset email sent successfully:")
-  except Exception as e:
-      print("Error sending password reset email:", e)
+    try:
+        response = supabase.auth.reset_password_for_email(email)
+        return {"success": True, "message": "Password reset email sent successfully", "user_email": email}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
 
 def reset_password(email, otp, new_password):
-  try:
-    # Attempt to verify the OTP and reset the password
-    response = supabase.auth.verify_otp(
-      {
-        "email": email,
-        "token": otp,
-        "type": "recovery"
-      }
-    )
-    supabase.auth.update_user({
-        "password": new_password
-    })
-    # print("Password reset successful:", response.user.email)
-  except AuthApiError as e:
-    # Handle AuthApiError
-    print(f"{e}")
-  except Exception as e:
-    # Handle other unexpected exceptions
-    print(f"An unexpected error occurred: {e}")
+    try:
+        # Verify OTP
+        response = supabase.auth.verify_otp(
+            {
+                "email": email,
+                "token": otp,
+                "type": "recovery"
+            }
+        )
+        
+        # Check if the OTP was successfully verified
+        if response.user:  # `response.user` contains user details if verification succeeds
+            # Update the user's password
+            supabase.auth.update_user({
+                "password": new_password
+            })
+            return {"success": True, "message": "Password reset successful", "user_email": email}
+        else:
+            return {"success": False, "error": "Invalid OTP or user not found"}
+    except AuthApiError as aae:
+        return {"success": False, "error": str(aae)}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
 
 def reset_passwordv2(new_password, confirmed_password):
   try:
@@ -122,3 +104,24 @@ def reset_passwordv2(new_password, confirmed_password):
   except Exception as e:
     # Handle any other unexpected errors
     print(f"An unexpected error occurred: {e}") 
+    
+    
+def get_user_auth_info():
+  try:
+    # Attempt to get the current user
+    user_response = supabase.auth.get_user()
+
+    if user_response and user_response.user:
+      # Extract and print only key user details
+      user = user_response.user
+      print("User ID:", user.id)
+      print("User Email:", user.email)
+      print("Created At:", user.created_at)
+      print("User Metadata:", user.user_metadata if user.user_metadata else "No metadata available")
+    elif user_response and user_response.error:
+      # Print error details if available
+      print("Error:", user_response.error.message)
+    else:
+      print("No user is currently logged in or the session has expired.")
+  except Exception as e:
+    print("An error occurred:", str(e))

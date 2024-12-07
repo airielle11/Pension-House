@@ -34,16 +34,17 @@ const menu = {
       id: 'dashboard',
       title: 'Dashboard',
       type: 'item',
-      url: '/dashboard/default',
+      url: 'dashboard/default',
       icon: icons.DashboardOutlined,
       breadcrumbs: false
     },
     {
-      id: 'sample-page',
-      title: 'Sample Page',
+      id: 'purchase_order',
+      title: 'Purchase Order',
       type: 'item',
-      url: '/sample-page',
-      icon: icons.ChromeOutlined
+      url: 'purchase_order',
+      icon: icons.ChromeOutlined,
+      breadcrumbs: false
     }
   ]
 };
