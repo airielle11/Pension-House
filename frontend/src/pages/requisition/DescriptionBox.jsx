@@ -21,7 +21,7 @@ const DescriptionBox = ({ requisitionType, description, handleDescriptionChange 
         {descriptionLabel}
       </Typography>
       <TextField
-        placeholder={`Enter Item description`}
+        placeholder={`Enter Job Description`}
         fullWidth
         multiline
         rows={2}

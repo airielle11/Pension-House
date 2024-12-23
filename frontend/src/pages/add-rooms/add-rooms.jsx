@@ -1,46 +1,45 @@
 import React, { useState } from "react";
-import { TextField, Button, Grid, Typography, MenuItem, FormControl, Select } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  MenuItem,
+  FormControl,
+  Select,
+} from "@mui/material";
 import MainCard from "../../components/MainCard.jsx";
 
-// ==============================|| Add Room and Room Type ||============================== //
-
 export default function AddRoomAndType() {
-  const [roomName, setRoomName] = useState(""); // Tracks room name input
-  const [roomType, setRoomType] = useState(""); // Tracks room type selection
-  const [newRoomType, setNewRoomType] = useState(""); // Tracks new room type input
+  const [roomName, setRoomName] = useState("");
+  const [roomType, setRoomType] = useState("");
+  const [newRoomType, setNewRoomType] = useState("");
 
-  // Handle new room name change
   const handleRoomNameChange = (event) => {
     setRoomName(event.target.value);
   };
 
-  // Handle room type change (existing room types)
   const handleRoomTypeChange = (event) => {
     setRoomType(event.target.value);
   };
 
-  // Handle new room type change (to add a new type)
   const handleNewRoomTypeChange = (event) => {
     setNewRoomType(event.target.value);
   };
 
-  // Handle form submission for adding a new room
   const handleAddRoom = () => {
     alert(`Room Added: ${roomName} - Type: ${roomType}`);
-    // Here you can add the logic to send the data to the backend or save it in your state
   };
 
-  // Handle form submission for adding a new room type
   const handleAddRoomType = () => {
     alert(`New Room Type Added: ${newRoomType}`);
-    // Here you can add the logic to send the new room type to your database or state
   };
 
   return (
     <MainCard title="Add New Room and Room Type">
-      <Grid container spacing={3}>
+      <Grid container spacing={2} alignItems="center">
         {/* Room Name Input */}
-        <Grid item xs={9} md={5}>
+        <Grid item xs={12} sm={4}>
           <Typography variant="body2" gutterBottom>
             Room Name
           </Typography>
@@ -52,9 +51,8 @@ export default function AddRoomAndType() {
             variant="outlined"
           />
         </Grid>
-
-        {/* Room Type Selection */}
-        <Grid item xs={9} md={5}>
+        {/* Room Type Dropdown */}
+        <Grid item xs={12} sm={4}>
           <Typography variant="body2" gutterBottom>
             Select Room Type
           </Typography>
@@ -74,63 +72,57 @@ export default function AddRoomAndType() {
               <MenuItem value="Meeting Room">Meeting Room</MenuItem>
               <MenuItem value="Office">Office</MenuItem>
               <MenuItem value="Storage">Storage</MenuItem>
-              {/* Add more predefined room types */}
             </Select>
           </FormControl>
         </Grid>
-
-        {/* Add New Room Button */}
-        <Grid item xs={9}>
+        {/* Add Room Button */}
+        <Grid item xs={12} sm={3}>
+          <br />
+          <br />
           <Button
             variant="contained"
             onClick={handleAddRoom}
-            style={{
+            fullWidth
+            sx={{
               background: "linear-gradient(to right, #4facfe, #00f2fe)",
               color: "#fff",
-              marginTop: "16px",
-              width: "40%",
+              height: "50px", // Set the height to be the same for both buttons
               textTransform: "none",
-              display: "block",
-              marginLeft: "auto",
-              marginRight: "auto",
             }}
           >
             Add Room
           </Button>
         </Grid>
-
-        {/* New Room Type Input */}
-        <Grid item xs={9} md={5}>
-          <Typography variant="body2" gutterBottom>
-            New Room Type
-          </Typography>
-          <TextField
-            value={newRoomType}
-            onChange={handleNewRoomTypeChange}
-            fullWidth
-            label="Enter New Room Type"
-            variant="outlined"
-          />
-        </Grid>
-
-        {/* Add New Room Type Button */}
-        <Grid item xs={9}>
-          <Button
-            variant="contained"
-            onClick={handleAddRoomType}
-            style={{
-              background: "linear-gradient(to right, #4facfe, #00f2fe)",
-              color: "#fff",
-              marginTop: "16px",
-              width: "40%",
-              textTransform: "none",
-              display: "block",
-              marginLeft: "auto",
-              marginRight: "auto",
-            }}
-          >
-            Add Room Type
-          </Button>
+        {/* New Room Type Input and Button */}
+        <Grid item container xs={12} sm={8} spacing={2}>
+          <Grid item xs={6} sm={8}>
+            <Typography variant="body2" gutterBottom>
+              New Room Type
+            </Typography>
+            <TextField
+              value={newRoomType}
+              onChange={handleNewRoomTypeChange}
+              fullWidth
+              label="Enter New Room Type"
+              variant="outlined"
+            />
+          </Grid>
+          <Grid item xs={6} sm={4}>
+            <br />
+            <Button
+              variant="contained"
+              onClick={handleAddRoomType}
+              fullWidth
+              sx={{
+                background: "linear-gradient(to right, #4facfe, #00f2fe)",
+                color: "#fff",
+                height: "50px", // Set the height to be the same for both buttons
+                textTransform: "none",
+              }}
+            >
+              Add Room Type
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </MainCard>

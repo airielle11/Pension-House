@@ -5,10 +5,6 @@ import { FormControl, Select, MenuItem, Typography, Box } from "@mui/material";
 const Dropdown = ({ requisitionType, handleTypeChange }) => {
   return (
     <Box sx={containerStyle}>
-      {/* Label for the dropdown */}
-      <Typography variant="body2" gutterBottom sx={typographyStyle}>
-        Select Requisition Type
-      </Typography>
 
       {/* Dropdown for selecting Requisition Type */}
       <FormControl variant="outlined" fullWidth sx={formControlStyle}>
@@ -21,7 +17,7 @@ const Dropdown = ({ requisitionType, handleTypeChange }) => {
         >
           {/* Menu items for selecting requisition type */}
           <MenuItem value="" disabled>
-            Job / Item
+            Job Requisition/ Item Requisition
           </MenuItem>
           <MenuItem value="Item Requisition">Item Requisition</MenuItem>
           <MenuItem value="Job Requisition">Job Requisition</MenuItem>
@@ -36,7 +32,7 @@ const containerStyle = {
   width: "100%",
   maxWidth: { xs: "100%", sm: "80%", md: "60%" },
   margin: "0 auto", // Centering the component
-  padding: { xs: 2, sm: 3 },
+  padding: { xs: 2, sm: 0 },
 };
 
 // Styles for Typography (the label)

@@ -9,8 +9,8 @@ const SubmitButton = ({ handleSubmit }) => {
       onClick={handleSubmit}
       sx={buttonStyle} // Apply the button style using sx prop
     >
-      Generate Request
-    </Button>
+      Generate Initial Request
+    </Button> 
   );
 };
 

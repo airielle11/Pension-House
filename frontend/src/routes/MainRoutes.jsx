@@ -6,13 +6,21 @@ import Dashboard from '../layout/Dashboard';
 // import Requisition from '../pages/extra-pages/sample-page.jsx';
 import AddRoomAndType from '../pages/add-rooms/add-rooms.jsx';
 import Requisitions from '../pages/requisition/Requisitions.jsx';
+import BasicTable from '../pages/extra-pages/tables.jsx';
+import DeskDashboard from '../pages/deskmanager/deskdashboard.jsx';
+import HeadHouseDashboard from '../pages/headhousekeeper/headhousedashboard.jsx';
+import RegularHousekeepeer from '../pages/regularhousekeeper/rhdashboard.jsx';
+import PropertyCustodian from '../pages/propertycustodian/pcdashboard.jsx';
+import MaintenanceDashboard from '../pages/maintenancemanager/mmdashboard.jsx';
+import SupervisorDashboard from '../pages/supervisor/superdashboard.jsx';
+
 
 const Color = Loadable(lazy(() => import('../pages/component-overview/color.jsx')));
-const Typography = Loadable(lazy(() => import('../pages/component-overview/typography.jsx')));
-const Shadow = Loadable(lazy(() => import('../pages/component-overview/shadows.jsx')));
+// const Typography = Loadable(lazy(() => import('../pages/component-overview/typography.jsx')));
+// const Shadow = Loadable(lazy(() => import('../pages/component-overview/shadows.jsx')));
 const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.jsx')));
 
-//const Tables = Loadable(lazy(() => import('../pages/extra-pages/Tables.jsx'))) 
+// const Tables = Loadable(lazy(() => import('../pages/extra-pages/tables.jsx'))) 
 
 
 // render - sample page
@@ -41,10 +49,11 @@ const MainRoutes = {
         }
       ]
     },
-    // {
-    //   path: 'sample-page',
-    //   element: <Requisition Form/>
-    // },  
+    {
+      path: 'tables',
+      element: <BasicTable/>
+    }
+    ,  
     {
       path: 'Requisitions',
       element: <Requisitions/>
@@ -54,13 +63,33 @@ const MainRoutes = {
       element: <AddRoomAndType />
     },
     {
-      path: 'shadow',
-      element: <Shadow />
+      path: 'deskdashboard',
+      element: <DeskDashboard />
     },
     {
-      path: 'typography',
-      element: <Typography />
+      path: 'headhousedashboard',
+      element: <HeadHouseDashboard />
+    },
+    {
+      path: 'propertycustodian',
+      element: <PropertyCustodian/>
+    },
+    {
+      path: 'supervisor',
+      element: <SupervisorDashboard />
+    },
+    {
+      path: 'regularhousekeeper',
+      element: <RegularHousekeepeer />
+    },
+    {
+      path: 'maintenancemanager',
+      element: <MaintenanceDashboard />
     }
+    // {
+    //   path: 'typography',
+    //   element: <Typography />
+    // }
 
   ]
 };

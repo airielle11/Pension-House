@@ -11,7 +11,7 @@ import { DashboardOutlined,
    
 
 // icons
-const icons = {
+const icons = { 
   DashboardOutlined,
   ChromeOutlined,
   QuestionOutlined,
@@ -32,11 +32,60 @@ const menu = {
   children: [
     {
       id: 'dashboard',
-      title: 'Dashboard',
+      title: 'Dashboard(Admin)',
       type: 'item',
       url: '/dashboard/default',
       icon: icons.DashboardOutlined,
       breadcrumbs: false
+    },
+    {
+      id: 'deskdashboard',
+      title: 'Dashboard (Desk)',
+      type: 'item',
+      url: '/deskdashboard',
+      icon: icons.DashboardOutlined
+    },
+    {
+      id: 'headhousedashboard',
+      title: 'Dashboard(Head Housekeeper)',
+      type: 'item',
+      url: '/headhousedashboard',
+      icon: icons.DashboardOutlined,
+    },
+    {
+      id: 'regularhousekeeper',
+      title: 'Dashboard(Regular Housekeeper)',
+      type: 'item',
+      url: '/regularhousekeeper',
+      icon: icons.DashboardOutlined
+    },
+    {
+      id: 'propertymanagement',
+      title: 'Dashboard(Property Management)',
+      type: 'item',
+      url: '/propertycustodian', // for browser rani sa babaw
+      icon: icons.DashboardOutlined
+    },
+    {
+      id: 'maintenancemanager',
+      title: 'Dashboard(Maintenance Management)',
+      type: 'item',
+      url: '/maintenancemanager', // for browser rani sa babaw
+      icon: icons.DashboardOutlined
+    },
+    {
+      id: 'supervisor',
+      title: 'Dashboard(Supervisor)',
+      type: 'item',
+      url: '/supervisor', // for browser rani sa babaw
+      icon: icons.DashboardOutlined
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: '/requisitions', // for browser rani sa babaw
+      icon: icons.ChromeOutlined
     },
     // {
     //   id: 'sample-page',
@@ -51,14 +100,8 @@ const menu = {
       type: 'item',
       url: '/add-rooms',
       icon: icons.ChromeOutlined
-    },
-    {
-      id: 'requisitions',
-      title: 'Requisitions',
-      type: 'item',
-      url: '/requisitions', // for browser rani sa babaw
-      icon: icons.ChromeOutlined
     }
+    
   
   ]
 };
