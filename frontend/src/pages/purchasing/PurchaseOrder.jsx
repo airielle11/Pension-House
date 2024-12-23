@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import MainCard from '../../components/MainCard';
 import PurchaseOrderForm from './purchasing_forms/PurchaseOrderForm';
-import PurchaseOrderTable from './components/PurchaseOrderTable';
-import Search from './components/PurchaseOrderSearch';
+import PurchaseOrderTable from './purchasing_components/PurchaseOrderTable';
+import Search from '../../components/Search';
 
 const rows = [
   { poNumber: '202202061228B8#PO', poDate: '06-Feb-2022', poStatus: 'Completed', vendor: 'To the merry ecclesiastics' },
   { poNumber: '20211111497DDB#PO', poDate: '15-Jun-2021', poStatus: 'Completed', vendor: 'To the merry ecclesiastics' },
   { poNumber: '2021111489ABB#PO', poDate: '15-Jul-2021', poStatus: 'Completed', vendor: 'To the merry ecclesiastics' },
+    
   // Add more rows as needed
 ];
 

@@ -59,18 +59,31 @@ export default function AuthLogin({ isDemo = false }) {
             const response = await axios.post(`${import.meta.env.VITE_API_URL}/login/`, {
               email: values.email,
               password: values.password,
-            });  
-            navigate('/dashboard/default'); 
+            });
+        
+            const { token, role } = response.data;
+        
+            // Store the token in localStorage
+            localStorage.setItem('token', token);
+        
+            // Role-based redirection
+            if (role === 'admin') {
+              navigate('/admin/dashboard'); // Admin Dashboard
+            } else if (role === 'Manager') {
+              navigate('/manager/dashboard'); // Manager Dashboard
+            } else {
+              navigate('/dashboard/default'); // Default User Dashboard
+            }
           } catch (error) {
-            // Handle error (incorrect credentials or server error)
             if (error.response) {
               setErrors({ submit: error.response.data.error || 'Login failed' });
             } else {
-              setErrors({ submit: 'An error occurred. Please try again later.' });
+              setErrors({ submit: 'An unexpected error occurred. Please try again.' });
             }
           }
           setSubmitting(false);
         }}
+        
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>

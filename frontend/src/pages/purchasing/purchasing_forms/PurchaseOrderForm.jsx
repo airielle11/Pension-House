@@ -1,7 +1,19 @@
 import React, { useState } from "react";
-import { Modal, Box, Button, Typography, TextField, MenuItem } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  Modal,
+  Box,
+  Button,
+  Typography,
+  TextField,
+  MenuItem,
+} from "@mui/material";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
+import { Stack } from "@mui/system";
+import styles from "../PurchaseOrder.module.css";
+
+import { Tooltip } from "@mui/material";
+import { faPlus } from "@fortawesome/free-solid-svg-icons"; 
+import { faFileExcel, faFilePdf } from "@fortawesome/free-regular-svg-icons"; 
 
 export default function PurchaseOrderForm() {
   const [open, setOpen] = useState(false);
@@ -12,17 +24,53 @@ export default function PurchaseOrderForm() {
 
   return (
     <div>
-      {/* Button to Open Modal */}
-      <Button
-        variant="contained"
-        sx={{
-          borderRadius: "8px"
-        }}
-        startIcon={<FontAwesomeIcon icon={faPlus} style={{ color: "#ffffff" }} />}
-        onClick={handleOpen} // Opens the modal
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        sx={{ width: "100%" }}
       >
-        Create Purchase Order
-      </Button>
+        <Button
+          variant="contained"
+          sx={{
+            borderRadius: "8px",
+          }}
+          startIcon={<FontAwesomeIcon icon={faPlus} />}
+          onClick={handleOpen}
+        >
+          Create Purchase Order
+        </Button>
+
+        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+          <Tooltip title="Excel">
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#00A65A",  
+                color: "white",
+                "&:hover": { backgroundColor: "#007a45" }, 
+                minWidth: "auto",
+                minHeight: "30px",
+                padding: "4px 12px",
+              }}
+              startIcon={<FontAwesomeIcon icon={faFileExcel} />}
+            />
+          </Tooltip>
+          <Tooltip title="PDF">
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#DD4B39",  
+                color: "white",
+                "&:hover": { backgroundColor: "#a33a2a" },  
+                minWidth: "auto",
+                minHeight: "30px",
+                padding: "4px 12px",
+              }}
+              startIcon={<FontAwesomeIcon icon={faFilePdf} />}
+            />
+          </Tooltip>
+        </Stack>
+      </Stack>
 
       {/* Modal */}
       <Modal
@@ -51,64 +99,55 @@ export default function PurchaseOrderForm() {
 
           <form>
             <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-              {/* Example Input Fields */}
-              <TextField 
+              <TextField
+                className={styles.TextField}
                 label="PO Number"
                 variant="outlined"
-                defaultValue="20241127CE7E8#PO"
                 InputProps={{ readOnly: true }}
               />
-              <TextField 
+              <TextField
+                className={styles.TextField}
                 label="Terms of Payment (TOP)"
                 variant="outlined"
-                defaultValue="D10"
               />
-              <TextField 
-                label="Branch ID"
-                variant="outlined"
-                defaultValue="HQ"
-              />
-              <TextField 
+              <TextField
+                className={styles.TextField}
                 label="PO Date"
                 variant="outlined"
                 type="date"
-                defaultValue="2024-11-27"
                 InputLabelProps={{ shrink: true }}
               />
-              <TextField 
+              <TextField
+                className={styles.TextField}
                 label="Delivery Date"
                 variant="outlined"
                 type="date"
-                defaultValue="2024-12-02"
                 InputLabelProps={{ shrink: true }}
               />
-              <TextField 
-                fullWidth
-                label="Vendor ID"
-                select
-                defaultValue="Aux joyeux ecclésiastiques"
-              >
-                <MenuItem value="Aux joyeux ecclésiastiques">Aux joyeux ecclésiastiques</MenuItem>
-                {/* Add other options here */}
+              <TextField className={styles.TextField} label="Vendor ID" select>
+                <MenuItem value="Aux joyeux ecclésiastiques">
+                  Aux joyeux ecclésiastiques
+                </MenuItem>
               </TextField>
-              <TextField 
-                fullWidth
-                label="PO Status"
-                select
-                defaultValue="Processing"
-              >
+              <TextField className={styles.TextField} label="PO Status" select>
                 <MenuItem value="Processing">Processing</MenuItem>
-                <MenuItem value="For Delivery">For Delivery</MenuItem> 
+                <MenuItem value="For Delivery">For Delivery</MenuItem>
               </TextField>
+              <TextField fullWidth label="Description" variant="outlined" />
             </div>
 
             {/* Modal Footer */}
-            <Box mt={3} display="flex" justifyContent="space-between">
+            <Box mt={3}>
               <Button variant="contained" color="primary">
                 Create
               </Button>
-              <Button variant="outlined" onClick={handleClose}>
-                Back to List
+              <Button
+                sx={{ marginLeft: "10px" }}
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
+                Cancel
               </Button>
             </Box>
           </form>

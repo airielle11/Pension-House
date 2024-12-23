@@ -17,5 +17,6 @@ urlpatterns = [
     path("api/token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
     
      # Login app
-     path("", include("login.urls")) 
+     path("", include("login.urls")), 
+     path("", include("accounts.urls"))
 ]

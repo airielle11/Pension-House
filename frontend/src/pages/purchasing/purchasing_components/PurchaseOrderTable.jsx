@@ -11,7 +11,7 @@ const columns = [
   { id: 'actions', label: 'Actions', minWidth: 150 },
 ];
 
-export default function PurchaseOrderTable({ filteredRows, page, rowsPerPage, handleChangePage, handleChangeRowsPerPage }) {
+function PurchaseOrderTable({ filteredRows, page, rowsPerPage, handleChangePage, handleChangeRowsPerPage }) {
   return (
     <TableContainer component={Paper} className="mt-3">
       <Table stickyHeader>
@@ -95,3 +95,5 @@ export default function PurchaseOrderTable({ filteredRows, page, rowsPerPage, ha
     </TableContainer>
   );
 }
+
+export default PurchaseOrderTable;

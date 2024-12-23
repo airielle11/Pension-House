@@ -1,12 +1,10 @@
 // project import
-import menu from './menu.jsx';
-import pages from './page.jsx';
-import utilities from './utilities.jsx'; 
+import menu from './menu.jsx'; 
 
 // ==============================|| MENU ITEMS ||============================== //
 
 const menuItems = {
-  items: [menu, pages]
+  items: [menu]
 };
 
 export default menuItems;

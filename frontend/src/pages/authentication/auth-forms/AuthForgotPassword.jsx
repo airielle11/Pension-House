@@ -32,13 +32,13 @@ export default function AuthLogin() {
                 })}
                 onSubmit={async (values, { setSubmitting, setErrors }) => {
                     try {
-                        const response = await axios.post(`${import.meta.env.VITE_API_URL}/reset_password_with_email/`, {
+                        const response = await axios.post(`${import.meta.env.VITE_API_URL}/request_reset_password/`, {
                             email: values.email, 
                         });
 
                         Swal.fire({
                             title: 'Email Sent',
-                            html: 'Password reset email sent successfully. <br>Check your inbox to get the code.',
+                            html: 'Password reset email sent successfully. <br>Check your inbox and click the link.',
                             icon: 'success'
                         
                         }) 

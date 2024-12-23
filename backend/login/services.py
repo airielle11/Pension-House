@@ -1,19 +1,6 @@
-from gotrue.errors import AuthApiError
-from supabase import create_client, Client
-from dotenv import load_dotenv
-import os
-
-# This file contains reusable authentication functions to be used in the views.py file
-
-# Load the .env file
-load_dotenv()
-
-# Retrieve Supabase configuration
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_API = os.getenv("SUPABASE_API")
-
-# Initialize the Supabase client
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_API)
+from gotrue.errors import AuthApiError  
+# Abosulute file import
+from supabase_client import supabase
 
 # Authentication functions
 def register_user(email, password):
@@ -29,99 +16,166 @@ def register_user(email, password):
         else: 
             return {"success": False, "error": "Unknown error occurred"} 
     except Exception as e: 
-        return {"success": False, "error": str(e)}   
-    
+        return {"success": False, "error": str(e)} 
+      
 def login_user(email, password):
     try:
         # Attempt to log in using email and password
+        print("Signing in....")
         response = supabase.auth.sign_in_with_password({"email": email, "password": password})
 
-        # Check if login is successful by inspecting the user object
-        if response.user:
-            return response.session.access_token, response.user  
-        else: 
-            raise ValueError("Login failed. Invalid credentials.") 
-    except Exception as e: 
-        raise ValueError(f"Login failed: {str(e)}") 
+        # Check if the user is active
+        if response.user.user_metadata.get("is_active", True):
+            print("Checking database layer...")
+            params = {"idd": response.user.id}
+            rpc_response = supabase.rpc("sign_in", params).execute()
 
-def request_reset_email(email):
+            # Ensure data exists in the response
+            if rpc_response.data:
+                # Extract user details and role
+                user_details = rpc_response.data[0]  # Assuming data is returned as a list
+                role = user_details.get("v_pos_manage", "User")  # Default role is 'User'
+
+                # Return a structured response with token and role
+                return {
+                    "token": response.session.access_token,
+                    "user": {
+                        "full_name": user_details.get("v_full_name"),
+                        "email": user_details.get("v_email"),
+                        "role": role,
+                        "image_name": user_details.get("v_image_name"),
+                        "url": user_details.get("v_url"),
+                    },
+                }
+            else:
+                raise ValueError("No data returned from the database.")
+
+        elif response.user.user_metadata.get("is_active", False):
+            print("User is not active.")
+            supabase.auth.sign_out()
+            raise ValueError("Account is inactive.")
+
+        else:
+            raise ValueError("Login failed. No user returned.")
+
+    except Exception as e:
+        # Return exception message
+        raise ValueError(f"Login failed: {str(e)}")
+
+    
+def sign_in(email, password):
+    # Log in a user with email and password.
+    try:
+        # Attempt to log in using email and password
+        print("Signing in....")
+        response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+
+        # Extract auth_id from the user object
+        auth_id = response.user.id   
+
+        # Check if login is successful by inspecting the user object
+        if response.user.user_metadata.get("is_active", True):
+            try:
+                print("Checking database layer...")
+                params = {"idd": auth_id}
+                rpc_response = supabase.rpc("sign_in", params).execute()
+
+                # Ensure response.data is not empty and is a list
+                if rpc_response.data:
+                    user_details = []
+                    for result in rpc_response.data:
+                        user_details.append({
+                            "full_name": result.get("v_full_name"),
+                            "email": result.get("v_email"),
+                            "image_name": result.get("v_image_name"),
+                            "position_management": result.get("v_pos_manage"),
+                            "url": result.get("v_url")
+                        })
+                    return {
+                        "success": True,
+                        "message": "Login successful",
+                        "user_details": user_details,
+                        "token": response.session.access_token,
+                        "auth_id": auth_id  # Return the auth ID
+                    }
+                else:
+                    return {
+                        "success": False,
+                        "error": "No data returned from the database.",
+                        "auth_id": auth_id  # Return auth_id for troubleshooting
+                    }
+                    
+            # Catch and return any database errors
+            except Exception as e:
+                return {
+                    "success": False,
+                    "auth_id": f"Auth ID: {response.user.id}",
+                    "error": f"{str(e)}"
+                }
+
+        elif response.user.user_metadata.get("is_active", False):
+            supabase.auth.sign_out()
+            return {
+                "success": False,
+                "error": "Account is inactive.",
+                "auth_id": auth_id  # Return the auth ID for debugging
+            }
+
+        else:
+            return {
+                "success": False,
+                "error": "Login failed. No user returned.",
+                "auth_id": auth_id
+            }
+
+    except Exception as e:
+        # Catch and return any exceptions (e.g., invalid credentials)
+        return {
+            "success": False,
+            "error": f"Authentication failed: {str(e)}",
+            "auth_id": None  # No auth ID available due to failed authentication
+        }
+
+# def sign_in(email, password):
+#     try:
+#         # Attempt to log in using email and password
+#         response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+
+#         # Check if login is successful by inspecting the user object
+#         if response.user:
+#             return response.session.access_token, response.user  
+#         else: 
+#             raise ValueError("Login failed. Invalid credentials.") 
+#     except Exception as e: 
+#         raise ValueError(f"Login failed: {str(e)}") 
+
+def request_reset_password(email):
     try:
         response = supabase.auth.reset_password_for_email(email)
         return {"success": True, "message": "Password reset email sent successfully", "user_email": email}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-def reset_password(email, otp, new_password):
-    try:
-        # Verify OTP
-        response = supabase.auth.verify_otp(
-            {
-                "email": email,
-                "token": otp,
-                "type": "recovery"
-            }
-        )
-        
-        # Check if the OTP was successfully verified
-        if response.user:  # `response.user` contains user details if verification succeeds
-            # Update the user's password
-            supabase.auth.update_user({
-                "password": new_password
-            })
-            return {"success": True, "message": "Password reset successful", "user_email": email}
-        else:
-            return {"success": False, "error": "Invalid OTP or user not found"}
-    except AuthApiError as aae:
-        return {"success": False, "error": str(aae)}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-
 def reset_passwordv2(new_password, confirmed_password):
-  try:
-    # Check if the new password and confirmed password match
-    if new_password == confirmed_password:
-      # Update user password in Supabase
-      response = supabase.auth.update_user({
-        "password": new_password
-      })
-      # Check if the response is successful
-      if response.get('user'):
-        print("Password reset successful.")
-      else:
-        print("Failed to reset password.")
-    else:
-      raise ValueError("Passwords do not match.")
+    try:
+        # Check if the new password and confirmed password match
+        if new_password == confirmed_password:
+            # Update user password in Supabase
+            response = supabase.auth.update_user({"password": new_password})
+            
+            # Check if the response is successful
+            if response.get('user'):
+                return {"success": True, "message": "Password reset is successful!"}
+            else:
+                return {"success": False, "message": "Failed to reset password. Please try again."}
+        else:
+            return {"success": False, "message": "Passwords do not match!"}
 
-  except ValueError as e:
-    # Handle case where passwords do not match
-    print(f"Error: {e}")
+    except AuthApiError as aae:
+        # Handle Supabase-specific authentication errors
+        return {"success": False, "error": f"Authentication error: {aae}"}
 
-  except AuthApiError as e:
-    # Handle Supabase-specific authentication errors
-    print(f"{e}")
-
-  except Exception as e:
-    # Handle any other unexpected errors
-    print(f"An unexpected error occurred: {e}") 
-    
-    
-def get_user_auth_info():
-  try:
-    # Attempt to get the current user
-    user_response = supabase.auth.get_user()
-
-    if user_response and user_response.user:
-      # Extract and print only key user details
-      user = user_response.user
-      print("User ID:", user.id)
-      print("User Email:", user.email)
-      print("Created At:", user.created_at)
-      print("User Metadata:", user.user_metadata if user.user_metadata else "No metadata available")
-    elif user_response and user_response.error:
-      # Print error details if available
-      print("Error:", user_response.error.message)
-    else:
-      print("No user is currently logged in or the session has expired.")
-  except Exception as e:
-    print("An error occurred:", str(e))
+    except Exception as e:
+        # Handle any other unexpected errors
+        return {"success": False, "error": f"An unexpected error occurred: {e}"}
+  

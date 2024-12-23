@@ -7,7 +7,11 @@ import { DashboardOutlined,
   BarcodeOutlined,
   BgColorsOutlined,
   FontSizeOutlined,
-  LoadingOutlined } from '@ant-design/icons';
+  LoadingOutlined, 
+  HomeOutlined,
+  TransactionOutlined,
+  TeamOutlined,
+  ProductOutlined} from '@ant-design/icons';
    
 
 // icons
@@ -20,7 +24,10 @@ const icons = {
   BarcodeOutlined,
   AntDesignOutlined,
   LoadingOutlined,
-  AppstoreAddOutlined
+  AppstoreAddOutlined,
+  HomeOutlined,
+  TransactionOutlined,
+  TeamOutlined, ProductOutlined
 }; 
  
 // ==============================|| MENU ITEMS ||============================== //
@@ -35,7 +42,7 @@ const menu = {
       title: 'Dashboard',
       type: 'item',
       url: 'dashboard/default',
-      icon: icons.DashboardOutlined,
+      icon: icons.ProductOutlined,
       breadcrumbs: false
     },
     {
@@ -43,7 +50,15 @@ const menu = {
       title: 'Purchase Order',
       type: 'item',
       url: 'purchase_order',
-      icon: icons.ChromeOutlined,
+      icon: icons.TransactionOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'employees',
+      title: 'Employees',
+      type: 'item',
+      url: 'admin/employees',
+      icon: icons.TeamOutlined,
       breadcrumbs: false
     }
   ]

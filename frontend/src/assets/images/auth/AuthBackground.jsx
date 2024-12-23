@@ -1,7 +1,7 @@
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import bg from './auth-bg.png';
+import bg from './authentication-bg.png';
 
 // ==============================|| AUTH BLUR BACK SVG ||============================== //
 
@@ -11,7 +11,6 @@ export default function AuthBackground() {
     <Box
       sx={{
         position: 'absolute',
-        filter: 'blur(3px)',
         zIndex: -1,
         bottom: 0,
         top: 0,  
