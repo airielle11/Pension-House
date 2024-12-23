@@ -10,6 +10,7 @@ import styles from '../Styles.module.css';
 
 export default function AddEmployeeForm() {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     lname: "",
@@ -43,6 +44,8 @@ export default function AddEmployeeForm() {
   };
 
   const handleSubmit = async () => {
+    // Disable submit button once clicked to prevent multiple submission
+    setLoading(true);
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/add_employee/`, formData);
 
@@ -86,6 +89,8 @@ export default function AddEmployeeForm() {
           container: styles.swalContainer,
         },
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,12 +101,23 @@ export default function AddEmployeeForm() {
     const PDFDocument = (
       <Document>
         <Page style={{ padding: 20 }}>
-          <Text style={{ fontSize: 20, marginBottom: 10 }}>New Employee Details</Text>
+          {/* Centered Header */}
+          <Text style={{ fontSize: 24, textAlign: "center", marginBottom: 20 }}>
+            New Employee Details
+          </Text>
+    
+          {/* Adding an Image */}
+          <Image
+            src="https://via.placeholder.com/150" // Replace with your image URL
+            style={{ width: 100, height: 100, margin: "0 auto", marginBottom: 20 }}
+          />
+    
+          {/* Employee Details */}
           <Text>Email: {email}</Text>
           <Text>Temporary Password: {tempPassword}</Text>
         </Page>
       </Document>
-    );
+    );    
 
     // Generate the PDF blob and trigger download
     const blob = await pdf(PDFDocument).toBlob();
@@ -156,8 +172,13 @@ export default function AddEmployeeForm() {
             </div>
 
             <Box mt={3}>
-              <Button variant="contained" color="primary" onClick={handleSubmit}>
-                Create
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={loading} // Disable while loading
+              >
+                {loading ? "Creating..." : "Create"}
               </Button>
               <Button sx={{ marginLeft: "10px" }} variant="contained" color="secondary" onClick={handleClose}>
                 Cancel

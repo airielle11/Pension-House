@@ -39,10 +39,12 @@ function EmployeesTable({ filteredRows, page, rowsPerPage, handleChangePage, han
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
+      customClass: {
+        container: styles.swalContainer
+      },
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          console.log("1 EMP ID IS: ", empId)
           const response = await axios.get(`${import.meta.env.VITE_API_URL}/delete_employee/`, {
             params: { p_emp_id: empId },
           }); 
