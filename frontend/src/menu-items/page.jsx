@@ -18,7 +18,7 @@ const pages = {
       id: 'login1',
       title: 'Login',
       type: 'item',
-      url: '/login',
+      url: 'login',
       icon: icons.LoginOutlined,
       target: true
     } 
@@ -26,3 +26,4 @@ const pages = {
 };
 
 export default pages;
+

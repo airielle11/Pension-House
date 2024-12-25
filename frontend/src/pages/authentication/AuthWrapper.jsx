@@ -4,9 +4,7 @@ import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 
-// project import 
-import Logo from '../../components/logo';
-import AuthFooter from '../../components/cards/AuthFooter'; 
+// project import  
 import AuthCard from './AuthCard.jsx';
 
 // assets

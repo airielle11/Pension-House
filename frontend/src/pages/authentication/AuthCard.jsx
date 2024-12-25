@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 
 // project import
-import MainCard from '../../components/MainCard.jsx';
-//import MainCard from 'components/MainCard';
+import MainCard from '../../components/MainCard.jsx'; 
 
 // ==============================|| AUTHENTICATION - CARD WRAPPER ||============================== //
 

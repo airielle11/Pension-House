@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import navigation hook
 
 // material-ui
 import List from '@mui/material/List';
@@ -16,27 +17,44 @@ import UserOutlined from '@ant-design/icons/UserOutlined';
 
 export default function ProfileTab() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const navigate = useNavigate(); // Initialize navigation
 
-  const handleListItemClick = (index) => {
+  const handleListItemClick = (index, path) => {
     setSelectedIndex(index);
+    if (path) {
+      navigate(path); // Navigate to the specified path
+    }
+  };
+
+  const handleLogout = () => {
+    // Clear session storage/local storage
+    sessionStorage.clear();  
+ 
+    navigate('/login');  
   };
 
   return (
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
-      <ListItemButton selected={selectedIndex === 0} onClick={(event) => handleListItemClick(event, 0, '/apps/profiles/user/personal')}>
+      <ListItemButton
+        selected={selectedIndex === 0}
+        onClick={() => navigate('profile')}>
         <ListItemIcon>
           <EditOutlined />
         </ListItemIcon>
-        <ListItemText primary="Edit Profile" />
+        <ListItemText primary="View Profile" />
       </ListItemButton>
-      <ListItemButton selected={selectedIndex === 1} onClick={(event) => handleListItemClick(event, 1, '/apps/profiles/account/basic')}>
+
+      {/* <ListItemButton
+        selected={selectedIndex === 1}
+        onClick={() => handleListItemClick(1, '/apps/profiles/account/basic')}
+      >
         <ListItemIcon>
           <UserOutlined />
         </ListItemIcon>
         <ListItemText primary="View Profile" />
-      </ListItemButton>
+      </ListItemButton> */}
   
-      <ListItemButton selected={selectedIndex === 2}>
+      <ListItemButton selected={selectedIndex === 1} onClick={handleLogout}>
         <ListItemIcon>
           <LogoutOutlined />
         </ListItemIcon>
@@ -46,4 +64,6 @@ export default function ProfileTab() {
   );
 }
 
-ProfileTab.propTypes = { handleLogout: PropTypes.func };
+ProfileTab.propTypes = {
+  handleLogout: PropTypes.func,
+};

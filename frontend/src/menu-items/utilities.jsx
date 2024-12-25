@@ -55,6 +55,33 @@ const utilities = {
     //   url: '/shadow',
     //   icon: icons.BarcodeOutlined
     // } 
+      icon: icons.AppstoreAddOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'util-typography',
+      title: 'Typography',
+      type: 'item',
+      url: '/typography',
+      icon: icons.FontSizeOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'util-color',
+      title: 'Color',
+      type: 'item',
+      url: '/color',
+      icon: icons.BgColorsOutlined,
+      breadcrumbs: false
+    },
+    {
+      id: 'util-shadow',
+      title: 'Shadow',
+      type: 'item',
+      url: '/shadow',
+      icon: icons.BarcodeOutlined,
+      breadcrumbs: false
+    } 
   ]
 };
 

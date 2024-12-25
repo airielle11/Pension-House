@@ -28,7 +28,7 @@ import Transitions from '../../../../../components/@extended/Transitions';
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
-import avatar1 from '../../../../../assets/images/users/avatar-1.png'; 
+import avatar1 from '../../../../../assets/images/users/default-user-profile.png'; 
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -89,7 +89,7 @@ export default function Profile() {
         onClick={handleToggle}
       >
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" src={avatar1} size="sm" />
+          <Avatar alt="User Profile Picture" src="" size="sm" />
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
             John Doe
           </Typography>
@@ -122,7 +122,7 @@ export default function Profile() {
                     <Grid container justifyContent="space-between" alignItems="center">
                       <Grid item>
                         <Stack direction="row" spacing={1.25} alignItems="center">
-                          <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                          <Avatar alt="profile user" src="" sx={{ width: 32, height: 32 }} />
                           <Stack>
                             <Typography variant="h6">John Doe</Typography>
                             <Typography variant="body2" color="text.secondary">
@@ -130,14 +130,7 @@ export default function Profile() {
                             </Typography>
                           </Stack>
                         </Stack>
-                      </Grid>
-                      <Grid item>
-                        <Tooltip title="Logout">
-                          <IconButton size="large" sx={{ color: 'text.primary' }}>
-                            <LogoutOutlined />
-                          </IconButton>
-                        </Tooltip>
-                      </Grid>
+                      </Grid> 
                     </Grid>
                   </CardContent>
 

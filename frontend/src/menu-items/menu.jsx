@@ -7,8 +7,14 @@ import { DashboardOutlined,
   BarcodeOutlined,
   BgColorsOutlined,
   FontSizeOutlined,
-  LoadingOutlined } from '@ant-design/icons';
-   
+  LoadingOutlined,
+  ShoppingCartOutlined,
+  FileTextOutlined,
+  DatabaseOutlined, 
+  HomeOutlined,
+  TransactionOutlined,
+  TeamOutlined,
+  ProductOutlined} from '@ant-design/icons';
 
 // icons
 const icons = { 
@@ -20,7 +26,13 @@ const icons = {
   BarcodeOutlined,
   AntDesignOutlined,
   LoadingOutlined,
-  AppstoreAddOutlined
+  AppstoreAddOutlined,
+  HomeOutlined,
+  TransactionOutlined,
+  TeamOutlined, ProductOutlined,
+  ShoppingCartOutlined,
+  FileTextOutlined,
+  DatabaseOutlined
 }; 
  
 // ==============================|| MENU ITEMS ||============================== //
@@ -34,10 +46,20 @@ const menu = {
       id: 'dashboard',
       title: 'Dashboard(Admin)',
       type: 'item',
-      url: '/dashboard/default',
-      icon: icons.DashboardOutlined,
+      url: 'dashboard/default',
+      icon: icons.ProductOutlined,
       breadcrumbs: false
     },
+    
+    {
+      id: 'purchase_order',
+      title: 'Purchase Order',
+      type: 'item',
+      url: 'purchase_order',
+      icon: icons.TransactionOutlined,
+      breadcrumbs: false
+    },
+    /*
     {
       id: 'deskdashboard',
       title: 'Dashboard (Desk)',
@@ -100,9 +122,56 @@ const menu = {
       type: 'item',
       url: '/add-rooms',
       icon: icons.ChromeOutlined
+
     }
     
-  
+
+    },*/
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: '/arpages/download-acknowledgement-receipt', // Updated to match the AR page route
+      //url: '/requisitions',
+      icon: icons.FileTextOutlined
+    },
+
+    /*
+    {
+      id: 'purchase-orders',
+      title: 'Purchase Orders',
+      type: 'item',
+      url: '/sample-pagetwo',
+      icon: icons.ShoppingCartOutlined
+    },*/
+
+    {
+      id: 'stocks-inventory',
+      title: 'Stocks and Inventory',
+      type: 'item',
+      url: '/stocksinventorypage',
+      icon: icons.DatabaseOutlined
+    }
+    
+    /*,
+
+    {
+      id: 'stocks-list',  // Add new menu item for the StocksListTable
+      title: 'Stocks List',
+      type: 'item',
+      url: '/stocks-list',  // Define the route for the StocksListTable page
+      icon: icons.DatabaseOutlined // You can choose a different icon if preferred
+    }*/
+
+,
+     {
+      id: 'employees',
+      title: 'Employees',
+      type: 'item',
+      url: 'admin/employees',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false
+    }
   ]
 };
 
