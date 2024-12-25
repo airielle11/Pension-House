@@ -9,7 +9,6 @@ import MuiBreadcrumbs from '@mui/material/Breadcrumbs';
 
 // project import
 import MainCard from '../../components/MainCard.jsx';
-//import MainCard from 'components/MainCard';
 
 export default function Breadcrumbs({ navigation, title, ...others }) {
   const location = useLocation();
@@ -42,11 +41,6 @@ export default function Breadcrumbs({ navigation, title, ...others }) {
     });
   });
 
-  // only used for component demo breadcrumbs
-  if (location.pathname === '/breadcrumbs') {
-    location.pathname = '/dashboard/analytics';
-  }
-
   let mainContent;
   let itemContent;
   let breadcrumbContent = <Typography />;
@@ -76,12 +70,22 @@ export default function Breadcrumbs({ navigation, title, ...others }) {
         <MainCard border={false} sx={{ mb: 3, bgcolor: 'transparent' }} {...others} content={false}>
           <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start" spacing={1}>
             <Grid item>
-              <MuiBreadcrumbs aria-label="breadcrumb">
-                <Typography component={Link} to="/" color="textSecondary" variant="h6" sx={{ textDecoration: 'none' }}>
-                  Home
+              <MuiBreadcrumbs aria-label="breadcrumb" separator=" / ">
+                {/* Home Link with Separator */}
+                <Typography component={Link} to="/stocksinventorypage" color="textSecondary" variant="h6" sx={{ textDecoration: 'none' }}>
+                  Stocks
                 </Typography>
-                {mainContent}
-                {itemContent}
+
+                {/* Defective Items Link with no separator after it */}
+                <Typography 
+                  component={Link} 
+                  to="/defective-items"  // Update the link to the correct route for Defective Items
+                  color="textSecondary" 
+                  variant="h6" 
+                  sx={{ textDecoration: 'none' }}
+                >
+                  Defective Items
+                </Typography>
               </MuiBreadcrumbs>
             </Grid>
             {title && (
