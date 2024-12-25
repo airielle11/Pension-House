@@ -3,6 +3,18 @@ import { lazy } from 'react';
 // project import
 import Loadable from '../components/Loadable.jsx';
 import Dashboard from '../layout/Dashboard';
+
+// import Requisition from '../pages/extra-pages/sample-page.jsx';
+import AddRoomAndType from '../pages/add-rooms/add-rooms.jsx';
+import Requisitions from '../pages/requisition/Requisitions.jsx';
+import BasicTable from '../pages/extra-pages/tables.jsx';
+import DeskDashboard from '../pages/deskmanager/deskdashboard.jsx';
+import HeadHouseDashboard from '../pages/headhousekeeper/headhousedashboard.jsx';
+import RegularHousekeepeer from '../pages/regularhousekeeper/rhdashboard.jsx';
+import PropertyCustodian from '../pages/propertycustodian/pcdashboard.jsx';
+import MaintenanceDashboard from '../pages/maintenancemanager/mmdashboard.jsx';
+import SupervisorDashboard from '../pages/supervisor/superdashboard.jsx';
+
 import MinimalLayout from '../layout/MinimalLayout'; 
 
 import Error404 from '../pages/404.jsx';
@@ -15,10 +27,19 @@ const ProductRequisitionTable = Loadable(
 );
 
 
+
 const Color = Loadable(lazy(() => import('../pages/component-overview/color.jsx')));
-const Typography = Loadable(lazy(() => import('../pages/component-overview/typography.jsx')));
-const Shadow = Loadable(lazy(() => import('../pages/component-overview/shadows.jsx')));
+// const Typography = Loadable(lazy(() => import('../pages/component-overview/typography.jsx')));
+// const Shadow = Loadable(lazy(() => import('../pages/component-overview/shadows.jsx')));
 const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.jsx')));
+
+
+// const Tables = Loadable(lazy(() => import('../pages/extra-pages/tables.jsx'))) 
+
+
+// render - sample page
+// const SamplePage = Loadable(lazy(() => import('../pages/extra-pages/sample-page.jsx')));
+
 const Tables = Loadable(lazy(() => import('../pages/extra-pages/Tables.jsx'))) 
 const UserProfile = Loadable(lazy(() => import('../pages/users/UserProfile.jsx')))
 
@@ -51,6 +72,10 @@ const DownloadAcknowledgementReceipt = Loadable(
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
+
+  path: '/',  
+  element: <Dashboard/>,
+
   path: '/',
   element: <Dashboard />,
   errorElement: <Error404 />,
@@ -73,6 +98,7 @@ const MainRoutes = {
       ]
     },
     {
+
       path: 'sample-page',
       element: <SamplePage />
     },  
@@ -89,10 +115,44 @@ const MainRoutes = {
       element: <DownloadAcknowledgementReceipt />
     },
     {
+
       path: 'tables',
-      element: <Tables />
+      element: <BasicTable/>
+    }
+    ,  
+    {
+      path: 'Requisitions',
+      element: <Requisitions/>
     }, 
     {
+
+      path: 'add-rooms',
+      element: <AddRoomAndType />
+    },
+    {
+      path: 'deskdashboard',
+      element: <DeskDashboard />
+    },
+    {
+      path: 'headhousedashboard',
+      element: <HeadHouseDashboard />
+    },
+    {
+      path: 'propertycustodian',
+      element: <PropertyCustodian/>
+    },
+    {
+      path: 'supervisor',
+      element: <SupervisorDashboard />
+    },
+    {
+      path: 'regularhousekeeper',
+      element: <RegularHousekeepeer />
+    },
+    {
+      path: 'maintenancemanager',
+      element: <MaintenanceDashboard />
+
       path: 'profile',
       element: <UserProfile />
     }, 
@@ -141,6 +201,10 @@ const MainRoutes = {
         }
       ]
     }
+    // {
+    //   path: 'typography',
+    //   element: <Typography />
+    // }
 
     
     /*,

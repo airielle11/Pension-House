@@ -31,6 +31,30 @@ const utilities = {
       title: 'Tables',
       type: 'item',
       url: '/tables',
+      icon: icons.AppstoreAddOutlined
+    }
+    // ,
+    // {
+    //   id: 'util-typography',
+    //   title: 'Typography',
+    //   type: 'item',
+    //   url: '/typography',
+    //   icon: icons.FontSizeOutlined
+    // },
+    // {
+    //   id: 'util-color',
+    //   title: 'Color',
+    //   type: 'item',
+    //   url: '/color',
+    //   icon: icons.BgColorsOutlined
+    // },
+    // {
+    //   id: 'util-shadow',
+    //   title: 'Shadow',
+    //   type: 'item',
+    //   url: '/shadow',
+    //   icon: icons.BarcodeOutlined
+    // } 
       icon: icons.AppstoreAddOutlined,
       breadcrumbs: false
     },
