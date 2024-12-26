@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import include, path
 from api.views import CreateUserView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from api import views
+
 
 
 urlpatterns = [
@@ -17,5 +19,13 @@ urlpatterns = [
     path("api/token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
     
      # Login app
-     path("", include("login.urls"))
+     path("", include("login.urls")),
+
+     #inventory
+     path("", include("inventory.urls")),
+
+
+ 
+    
+
 ]
