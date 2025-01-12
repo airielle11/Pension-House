@@ -1,8 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .services import get_user_auth_info, view_active_employees, add_employee_account, delete_employee_account, update_employee_account
-from django.http import HttpResponse
+from .services import get_user_auth_info, view_active_employees, view_deleted_employees, add_employee_account, delete_employee_account, update_employee_account, recover_employee_account
 
 # This decorator marks a view as being exempt from the protection ensured by the middleware
 @csrf_exempt
@@ -32,12 +31,24 @@ def view_active_employees_view(request):
                 return JsonResponse({"employees": result["employees"]}, status=200)
             else:
                 return JsonResponse({"error": result.get("message", "No active employees found.")}, status=404)
-        except Exception as e:
-            # Handle unexpected server errors
+        except Exception as e: 
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method!"}, status=405)
 
-    # Handle invalid HTTP methods
-    return JsonResponse({"error": "Invalid HTTP method"}, status=405)
+def view_deleted_employees_view(request):
+    if request.method == "GET":
+        try: 
+            result = view_deleted_employees()
+
+            if result["success"]:
+                return JsonResponse({"inactive_employees": result["inactive_employees"]}, status=200)
+            else:
+                return JsonResponse({"error": result.get("message", "No deleted employees found.")}, status=400)
+        except Exception as e: 
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method!"}, status=405)
 
 @csrf_exempt 
 def add_employee_account_view(request): 
@@ -74,32 +85,22 @@ def add_employee_account_view(request):
 
             # Handle the result and respond to the client
             if result["success"]:
-                return JsonResponse({ 
-                    "message": result["data"], 
-                    "temp_password": result["temp_password"]
-                }, status=200)
+                return JsonResponse({"message": result["data"], "temp_password": result["temp_password"]}, status=200)
             else:
                 return JsonResponse({"error": result.get("message", "Unable to add employee!")}, status=400)
  
-        except Exception as e:
-            # Handle any unexpected errors
+        except Exception as e: 
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
-
     else:
-        # Return a 405 Method Not Allowed response for non-POST requests
         return JsonResponse({"error": "Invalid request method!"}, status=405)
     
 def delete_employee_account_view(request):
-    if request.method == "GET":  # Use DELETE method as it's semantically correct for deletion
-        try:
-            # Parse JSON body to get the employee ID
-            # data = json.loads(request.body)
-            # p_emp_id = data.get('p_emp_id')
+    if request.method == "GET":   
+        try: 
             p_emp_id = request.GET.get('p_emp_id')
-
-            # Validate if employee ID is provided
+ 
             if not p_emp_id:
-                return JsonResponse({"error": "Employee ID is required"}, status=400)
+                return JsonResponse({"error": "Employee ID is required."}, status=400)
 
             # Call the delete_account service function
             result = delete_employee_account(p_emp_id)
@@ -107,65 +108,71 @@ def delete_employee_account_view(request):
             if result["success"]:
                 return JsonResponse({"message": result["data"]}, status=200)
             else:
-                return JsonResponse({"error": result.get("message", "Unable to add employee!")}, status=400)
+                return JsonResponse({"error": result.get("message", "Unable to delete employee!")}, status=400)
      
-        except Exception as e:
-            # Handle other errors
+        except Exception as e: 
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
-    else:
-        # Respond with 405 for invalid HTTP methods
-        return JsonResponse({"error": "Invalid request method. Only DELETE is allowed."}, status=405)
-    
+    else: 
+        return JsonResponse({"error": "Invalid request method!"}, status=405)
+
+@csrf_exempt
 def update_employee_account_view(request):
     if request.method == "POST":
         try:
             data = json.loads(request.body)
-            p_new_lname = data.get('p_new_lname')
-            p_new_fname = data.get('p_new_fname')
-            p_new_mname = data.get('p_new_mname')
-            p_st_no = data.get('p_st_no')
-            p_st_name = data.get('p_st_name')
-            p_unit_no = data.get('p_unit_no')
-            p_city = data.get('p_city')
-            p_state = data.get('p_state')
-            p_zip = data.get('p_zip')
-            p_country = data.get('p_country')
-            p_phone = data.get('p_phone')
-            
-            result = update_employee_account(p_new_lname, p_new_fname, p_new_mname, p_st_no, p_st_name, p_unit_no, p_city, p_state, p_zip, p_country, p_phone)
-            
+
+            required_fields = [
+                "p_emp_id", "p_new_lname", "p_new_fname", "p_new_mname",
+                "p_st_no", "p_st_name", "p_unit_no", "p_city",
+                "p_state", "p_zip", "p_country", "p_phone",
+            ]
+
+            # Validate required fields
+            for field in required_fields:
+                if field not in data:
+                    return JsonResponse({"error": f"Missing field: {field}"}, status=400)
+
+            result = update_employee_account(
+                p_emp_id=data["p_emp_id"],
+                p_new_lname=data["p_new_lname"],
+                p_new_fname=data["p_new_fname"],
+                p_new_mname=data["p_new_mname"],
+                p_st_no=data["p_st_no"],
+                p_st_name=data["p_st_name"],
+                p_unit_no=data["p_unit_no"],
+                p_city=data["p_city"],
+                p_state=data["p_state"],
+                p_zip=data["p_zip"],
+                p_country=data["p_country"],
+                p_phone=data["p_phone"],
+            )
+
             if result["success"]:
-                    return JsonResponse({"message": result["data"]}, status=200)
+                return JsonResponse({"message": result["data"]}, status=200)
             else:
                 return JsonResponse({"error": result.get("message", "Unable to edit employee!")}, status=400)
         except Exception as e:
-            # Handle other errors
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     else:
-        # Respond with 405 for invalid HTTP methods
-        return JsonResponse({"error": "Invalid request method. Only DELETE is allowed."}, status=405)
+        return JsonResponse({"error": "Invalid request method."}, status=405)
+
+def recover_employee_account_view(request):
+    if request.method == "GET":
+        try: 
+            # p_emp_id = request.GET.get('p_emp_id')
+            data = json.loads(request.body)
+            p_emp_id = data.get('p_emp_id')
             
-
-
-# def delete_employee_account_view(request):
-#     if request.method == "GET":
-#         try:
-#             # Get the employee ID from query parameters
-#             p_emp_id = request.GET.get('p_emp_id')
-#             print("EMP ID IS:", p_emp_id)  # Corrected console.log to print
+            if not p_emp_id:
+                return JsonResponse({"error": "Employee ID is required!"}, status=400)
             
-#             if not p_emp_id:
-#                 return JsonResponse({"error": "Employee ID is required"}, status=400)
-
-#             # Call the service function
-#             result = delete_employee_account(p_emp_id)
-
-#             if result["success"]:
-#                 return JsonResponse({"message": result["data"]}, status=200)
-#             else:
-#                 return JsonResponse({"error": result.get("message", "Unable to delete employee!")}, status=400)
-
-#         except Exception as e:
-#             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
-#     else:
-#         return JsonResponse({"error": "Invalid request method!"}, status=405)
+            result = recover_employee_account(p_emp_id)
+            
+            if result["success"]:
+                return JsonResponse({"message": result["data"]}, status=200)
+            else:
+                return JsonResponse({"error": result.get("message", "Unable to recover account!")}, status=400)
+        except Exception as e:
+            return JsonResponse({"error": f"An unexpected error occured: {str(e)}"}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method!"}, status=405)

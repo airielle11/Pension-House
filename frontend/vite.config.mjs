@@ -33,6 +33,6 @@ export default defineConfig({
     // this ensures that the browser opens upon preview start
     open: true,
     // this sets a default port to 8000
-    port: 8000
+    port: 8000  
   }
 });

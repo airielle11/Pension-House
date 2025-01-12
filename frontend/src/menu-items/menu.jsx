@@ -1,13 +1,15 @@
 // assets
-import { DashboardOutlined, 
-  ChromeOutlined, 
-  QuestionOutlined, 
+import {
+  DashboardOutlined,
+  ChromeOutlined,
+  QuestionOutlined,
   AppstoreAddOutlined,
   AntDesignOutlined,
   BarcodeOutlined,
   BgColorsOutlined,
   FontSizeOutlined,
   LoadingOutlined,
+<<<<<<< Updated upstream
   ShoppingCartOutlined,
   FileTextOutlined,
   DatabaseOutlined, 
@@ -15,6 +17,13 @@ import { DashboardOutlined,
   TransactionOutlined,
   TeamOutlined,
   ProductOutlined} from '@ant-design/icons';
+=======
+  HomeOutlined,
+  TransactionOutlined,
+  TeamOutlined,
+  ProductOutlined,
+} from '@ant-design/icons';
+>>>>>>> Stashed changes
 
 // icons
 const icons = { 
@@ -29,6 +38,7 @@ const icons = {
   AppstoreAddOutlined,
   HomeOutlined,
   TransactionOutlined,
+<<<<<<< Updated upstream
   TeamOutlined, ProductOutlined,
   ShoppingCartOutlined,
   FileTextOutlined,
@@ -36,25 +46,47 @@ const icons = {
 }; 
  
 // ==============================|| MENU ITEMS ||============================== //
+=======
+  TeamOutlined,
+  ProductOutlined,
+};
+>>>>>>> Stashed changes
 
-const menu = {
-  id: 'group-menu',
-  title: 'Menu',
-  type: 'group',
-  children: [
+// Role-based menu configuration
+const roleBasedMenu = {
+  "General Manager": [
+    // {
+    //   id: 'dashboard',
+    //   title: 'Dashboard',
+    //   type: 'item',
+    //   url: 'admin/dashboard',
+    //   icon: icons.DashboardOutlined,
+    //   breadcrumbs: false,
+    // },
+    {
+      id: 'purchase_orders',
+      title: 'Purchase Orders',
+      type: 'item',
+      url: 'top/purchase_orders',
+      icon: icons.TransactionOutlined,
+      breadcrumbs: false,
+    },
+  ],
+  "Head Administrator": [
     {
       id: 'dashboard',
       title: 'Dashboard(Admin)',
       type: 'item',
-      url: 'dashboard/default',
-      icon: icons.ProductOutlined,
-      breadcrumbs: false
+      url: 'admin/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
     },
     
     {
-      id: 'purchase_order',
-      title: 'Purchase Order',
+      id: 'purchase_orders',
+      title: 'Purchase Orders',
       type: 'item',
+<<<<<<< Updated upstream
       url: 'purchase_order',
       icon: icons.TransactionOutlined,
       breadcrumbs: false
@@ -169,10 +201,53 @@ const menu = {
       title: 'Employees',
       type: 'item',
       url: 'admin/employees',
+=======
+      url: 'admin/purchase_orders',
+>>>>>>> Stashed changes
       icon: icons.TeamOutlined,
-      breadcrumbs: false
-    }
-  ]
+      breadcrumbs: false,
+    } 
+  ],
+  "Property Custodian": [
+    // {
+    //   id: 'dashboard',
+    //   title: 'Dashboard',
+    //   type: 'item',
+    //   url: 'admin/dashboard',
+    //   icon: icons.DashboardOutlined,
+    //   breadcrumbs: false,
+    // },
+    {
+      id: 'purchase_orders',
+      title: 'Purchase Orders',
+      type: 'item',
+      url: 'property_custodian/purchase_orders',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'mark_po',
+      title: 'Delivery',
+      type: 'item',
+      url: 'property_custodian/delivery/mark_po',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
+    },
+  ],
+};
+
+// Get user's role  
+const userRole = localStorage.getItem('role') || 'Unknown'; // Default to 'Guest' if role is not set
+console.log("User Rolee: ", userRole);
+// Filter menu items based on the user's role
+const menuItems = roleBasedMenu[userRole] || []; // Fallback to an empty array if the role doesn't match
+
+// Final menu object
+const menu = {
+  id: 'group-menu',
+  title: 'Menu',
+  type: 'group',
+  children: menuItems, // Dynamically assign menu items based on role
 };
 
 export default menu;

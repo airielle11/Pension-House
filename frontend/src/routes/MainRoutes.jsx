@@ -3,6 +3,7 @@ import { lazy } from 'react';
 // project import
 import Loadable from '../components/Loadable.jsx';
 import Dashboard from '../layout/Dashboard';
+<<<<<<< Updated upstream
 
 // import Requisition from '../pages/extra-pages/sample-page.jsx';
 import AddRoomAndType from '../pages/add-rooms/add-rooms.jsx';
@@ -17,10 +18,11 @@ import SupervisorDashboard from '../pages/supervisor/superdashboard.jsx';
 
 import MinimalLayout from '../layout/MinimalLayout'; 
 
+=======
+>>>>>>> Stashed changes
 import Error404 from '../pages/404.jsx';
-import { Navigate } from 'react-router'; 
-import { element } from 'prop-types';
 
+<<<<<<< Updated upstream
 
 const ProductRequisitionTable = Loadable(
   lazy(() => import('../pages/extra-pages/ProductRequisitionTable.jsx'))
@@ -50,6 +52,18 @@ const PurchaseOrderList = Loadable(lazy(() => import('../pages/purchasing/Purcha
 const Employees = Loadable(lazy(() => import('../pages/users/ManageEmployees.jsx')));
 
 const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx'))); 
+=======
+// Lazily load the components
+const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.jsx')));
+// const InventoryDashboard = Loadable(lazy(() => import('../pages/inventory/InventoryDashboard.jsx')));
+// const TopDashboard = Loadable(lazy(() => import('../pages/top/TopDashboard.jsx')));
+// const DeskDashboard = Loadable(lazy(() => import('../pages/desk/DeskDashboard.jsx')));
+// const HousekeepingDashboard = Loadable(lazy(() => import('../pages/housekeeping/HousekeepingDashboard.jsx')));
+// const MaintenanceDashboard = Loadable(lazy(() => import('../pages/maintenance/MaintenanceDashboard.jsx')));
+const AdminDashboard = Loadable(lazy(() => import('../pages/admin/AdminDashboard/index.jsx')));
+const PurchaseOrder = Loadable(lazy(() => import('../pages/purchasing/PurchaseOrder.jsx')));
+const MarkPO = Loadable(lazy(() => import('../pages/delivery/MarkPOComplete.jsx')));
+>>>>>>> Stashed changes
 
 const SamplePage2 = Loadable(lazy(() => import('../pages/extra-pages/sample-pagetwo.jsx')));
 const ViewAcknowledgementReceipt = Loadable(lazy(() => import('../pages/extra-pages/ViewAcknowledgementReceipt.jsx')));
@@ -69,26 +83,22 @@ const DownloadAcknowledgementReceipt = Loadable(
 
 
 
-// ==============================|| MAIN ROUTING ||============================== //
-
+// Main Routes Configuration
 const MainRoutes = {
 
   path: '/',  
   element: <Dashboard/>,
 
   path: '/',
-  element: <Dashboard />,
-  errorElement: <Error404 />,
+  element: <Dashboard />, // Main layout component
+  errorElement: <Error404 />, // Error fallback
   children: [
+    // Redirect root to login
     {
-      path: '/', // Redirect root '/' to login
+      path: '/',
       element: <Navigate to="/login" />
-    },   
-    // {
-    //   path: 'color',
-    //   element: <Color />
-    // },
-    { 
+    },
+    {
       path: 'dashboard',
       children: [
         {
@@ -98,6 +108,7 @@ const MainRoutes = {
       ]
     },
     {
+<<<<<<< Updated upstream
 
       path: 'sample-page',
       element: <SamplePage />
@@ -156,11 +167,71 @@ const MainRoutes = {
       path: 'profile',
       element: <UserProfile />
     }, 
-    // {
-    //   path: 'add_employee'
-    //   element: < />
-    // }
+=======
+      path: 'property_custodian',
+      children: [
+        // {
+        //   path: 'dashboard',
+        //   element: <InventoryDashboard />
+        // },
+        {
+          path: 'purchase_orders',
+          element: <PurchaseOrder />
+        },
+        {
+          path: 'delivery',
+          children: [
+            {
+              path: 'mark_po',
+              element: <MarkPO />
+            },
+          ]
+        },
+      ]
+    },
     {
+      path: 'top',
+      children: [
+        // {
+        //   path: 'dashboard',
+        //   element: <TopDashboard />
+        // },
+        {
+          path: 'purchase_orders',
+          element: <PurchaseOrder />
+        },
+      ]
+    },
+>>>>>>> Stashed changes
+    // {
+    //   path: 'desk',
+    //   children: [
+    //     {
+    //       path: 'dashboard',
+    //       element: <DeskDashboard />
+    //     }
+    //   ]
+    // },
+    // {
+    //   path: 'housekeeping',
+    //   children: [
+    //     {
+    //       path: 'dashboard',
+    //       element: <HousekeepingDashboard />
+    //     }
+    //   ]
+    // },
+    // {
+    //   path: 'maintenance',
+    //   children: [
+    //     {
+    //       path: 'dashboard',
+    //       element: <MaintenanceDashboard />
+    //     }
+    //   ]
+    // },
+    {
+<<<<<<< Updated upstream
       path: 'shadow',
       element: <Shadow />
     },
@@ -193,14 +264,21 @@ const MainRoutes = {
       element: <PurchaseOrderList />
     },
     { 
+=======
+>>>>>>> Stashed changes
       path: 'admin',
       children: [
         {
-          path: 'employees',
-          element: <Employees />
-        }
+          path: 'dashboard',
+          element: <AdminDashboard />
+        },
+        {
+          path: 'purchase_orders',
+          element: <PurchaseOrder />
+        },
       ]
     }
+<<<<<<< Updated upstream
     // {
     //   path: 'typography',
     //   element: <Typography />
@@ -219,6 +297,8 @@ const MainRoutes = {
       element: <StocksListTable />  // Render StocksListTable component here
     }*/
 
+=======
+>>>>>>> Stashed changes
   ]
 };
 

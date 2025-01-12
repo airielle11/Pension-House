@@ -11,8 +11,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 // project import
-import MainCard from '../../components/MainCard.jsx';
-import AnalyticEcommerce from '../../components/cards/statistics/AnalyticEcommerce.jsx';
+import MainCard from '../../../components/MainCard.jsx';
+import AnalyticEcommerce from '../../../components/cards/statistics/AnalyticEcommerce.jsx';
 import MonthlyBarChart from './MonthlyBarChart.jsx';
 import ReportAreaChart from './ReportAreaChart.jsx';
 import UniqueVisitorCard from './UniqueVisitorCard.jsx';

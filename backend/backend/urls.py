@@ -18,5 +18,8 @@ urlpatterns = [
     
      # Login app
      path("", include("login.urls")), 
-     path("", include("accounts.urls"))
+     path("", include("accounts.urls")),
+     
+     # puchasing and delivery app
+     path("", include("purchasing_delivery.urls"))
 ]

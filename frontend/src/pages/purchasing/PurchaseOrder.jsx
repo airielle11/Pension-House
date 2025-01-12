@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import MainCard from '../../components/MainCard';
 import PurchaseOrderForm from './purchasing_forms/PurchaseOrderForm';
 import PurchaseOrderTable from './purchasing_components/PurchaseOrderTable';
-import Search from '../../components/Search';
+import Search from '../../components/Search'; 
 
 const rows = [
   { poNumber: '202202061228B8#PO', poDate: '06-Feb-2022', poStatus: 'Completed', vendor: 'To the merry ecclesiastics' },
