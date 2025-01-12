@@ -14,6 +14,7 @@ import { DashboardOutlined,
   HomeOutlined,
   TransactionOutlined,
   TeamOutlined,
+  PieChartOutlined,
   ProductOutlined} from '@ant-design/icons';
 
 // icons
@@ -32,7 +33,8 @@ const icons = {
   TeamOutlined, ProductOutlined,
   ShoppingCartOutlined,
   FileTextOutlined,
-  DatabaseOutlined
+  DatabaseOutlined,
+  PieChartOutlined
 }; 
  
 // ==============================|| MENU ITEMS ||============================== //
@@ -116,6 +118,10 @@ const menu = {
     //   url: '/sample-page',
     //   icon: icons.ChromeOutlined
     // },
+
+    
+
+    },*/
     {
       id: 'add-rooms',
       title: 'Add Rooms',
@@ -123,18 +129,23 @@ const menu = {
       url: '/add-rooms',
       icon: icons.ChromeOutlined
 
-    }
-    
-
-    },*/
+    },
     {
       id: 'requisitions',
       title: 'Requisitions',
       type: 'item',
-      url: '/arpages/download-acknowledgement-receipt', // Updated to match the AR page route
+      url: '/requisitions', // Updated to match the AR page route
       //url: '/requisitions',
       icon: icons.FileTextOutlined
     },
+    {
+      id: 'report',
+      title: 'Reports',
+      type: 'item',
+      url: '/report',
+      icon: icons.PieChartOutlined // Updated icon for reports
+    }
+    ,
 
     /*
     {

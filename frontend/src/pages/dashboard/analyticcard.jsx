@@ -52,36 +52,7 @@ export default function DashboardDefault() {
   const [hideAnalytics, setHideAnalytics] = useState(false);
 
   // Sample data for table
-  const requests = [
-    {
-      id: 1,
-      roomNo: 101,
-      roomType: 'Family',
-      floorNo: 'John Doe',
-      requestedBy: 'Otor John Stephen',
-      date: '21/11/2022',
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      roomNo: 203,
-      roomType: 'Family',
-      floorNo: 'Melisa Mores',
-      requestedBy: 'Otor John Stephen',
-      date: '21/11/2022',
-      status: 'Pending',
-    },
-    {
-      id: 3,
-      roomNo: 302,
-      roomType: 'Twin',
-      floorNo: '360,000.00',
-      requestedBy: 'Otor John Stephen',
-      date: '21/11/2022',
-      status: 'Accepted',
-    },
-  ];
-
+  
   const handleGenerateInitial = () => {
     setOpenModal(true); // Open confirmation modal
   };
@@ -167,10 +138,10 @@ export default function DashboardDefault() {
                       >
                         <Card sx={{ width: '100%', p: 2 }}>
                           <CardContent>
-                            <Typography variant="h6">Generate Initial Request</Typography>
+                            <Typography variant="h6">Generate Requisition</Typography>
                             <Typography variant="h5"></Typography>
                             <Typography variant="subtitle2" sx={{ color: 'gray', mt: 1 }}>
-                              Click to Generate IR
+                              Click to Generate RF
                             </Typography>
                           </CardContent>
                         </Card>

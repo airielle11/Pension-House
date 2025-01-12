@@ -7,14 +7,14 @@ import Dashboard from '../layout/Dashboard';
 // import Requisition from '../pages/extra-pages/sample-page.jsx';
 import AddRoomAndType from '../pages/add-rooms/add-rooms.jsx';
 import Requisitions from '../pages/requisition/Requisitions.jsx';
-import BasicTable from '../pages/extra-pages/tables.jsx';
+// import BasicTable from '../pages/extra-pages/tables.jsx';
 import DeskDashboard from '../pages/deskmanager/deskdashboard.jsx';
 import HeadHouseDashboard from '../pages/headhousekeeper/headhousedashboard.jsx';
 import RegularHousekeepeer from '../pages/regularhousekeeper/rhdashboard.jsx';
 import PropertyCustodian from '../pages/propertycustodian/pcdashboard.jsx';
 import MaintenanceDashboard from '../pages/maintenancemanager/mmdashboard.jsx';
 import SupervisorDashboard from '../pages/supervisor/superdashboard.jsx';
-
+import ReportComponent from '../pages/reports/Report.jsx';
 import MinimalLayout from '../layout/MinimalLayout'; 
 
 import Error404 from '../pages/404.jsx';
@@ -40,7 +40,7 @@ const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.js
 // render - sample page
 // const SamplePage = Loadable(lazy(() => import('../pages/extra-pages/sample-page.jsx')));
 
-const Tables = Loadable(lazy(() => import('../pages/extra-pages/Tables.jsx'))) 
+// const Tables = Loadable(lazy(() => import('../pages/extra-pages/Tables.jsx'))) 
 const UserProfile = Loadable(lazy(() => import('../pages/users/UserProfile.jsx')))
 
 
@@ -73,8 +73,8 @@ const DownloadAcknowledgementReceipt = Loadable(
 
 const MainRoutes = {
 
-  path: '/',  
-  element: <Dashboard/>,
+  // path: '/',  
+  // element: <Dashboard/>,
 
   path: '/',
   element: <Dashboard />,
@@ -114,12 +114,12 @@ const MainRoutes = {
       path: 'arpages/download-acknowledgement-receipt', // Route for DownloadAcknowledgementReceipt
       element: <DownloadAcknowledgementReceipt />
     },
-    {
+    // {
 
-      path: 'tables',
-      element: <BasicTable/>
-    }
-    ,  
+    //   path: 'tables',
+    //   element: <BasicTable/>
+    // }
+    // ,  
     {
       path: 'Requisitions',
       element: <Requisitions/>
@@ -152,7 +152,8 @@ const MainRoutes = {
     {
       path: 'maintenancemanager',
       element: <MaintenanceDashboard />
-
+    },
+    {
       path: 'profile',
       element: <UserProfile />
     }, 
@@ -160,14 +161,14 @@ const MainRoutes = {
     //   path: 'add_employee'
     //   element: < />
     // }
-    {
-      path: 'shadow',
-      element: <Shadow />
-    },
-    {
-      path: 'typography',
-      element: <Typography />
-    },
+    // {
+    //   path: 'shadow',
+    //   element: <Shadow />
+    // },
+    // { 
+    //   path: 'typography',
+    //   element: <Typography />
+    // },
 
     {
       path: '/add-new-item', // Route for Add New Item page
@@ -187,6 +188,10 @@ const MainRoutes = {
     {
       path: 'add-defective-item', // Route for Add Defective Item page
       element: <AddDefectiveItem />
+    },
+    {
+      path: 'report', // Route for Add Defective Item page
+      element: <ReportComponent/>
     },
     {
       path: 'purchase_order',

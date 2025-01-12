@@ -1,4 +1,4 @@
-from gotrue.errors import AuthApiError  
+# from gotrue.errors import AuthApiError  
 # Abosulute file import
 from supabase_client import supabase
 
@@ -171,9 +171,9 @@ def reset_passwordv2(new_password, confirmed_password):
         else:
             return {"success": False, "message": "Passwords do not match!"}
 
-    except AuthApiError as aae:
-        # Handle Supabase-specific authentication errors
-        return {"success": False, "error": f"Authentication error: {aae}"}
+    # except AuthApiError as aae:
+    #     # Handle Supabase-specific authentication errors
+    #     return {"success": False, "error": f"Authentication error: {aae}"}
 
     except Exception as e:
         # Handle any other unexpected errors

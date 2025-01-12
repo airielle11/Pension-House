@@ -23,7 +23,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 import UploadAcknowledgement from '../dashboard/upload-acknowledgement'; // import the UploadAcknowledgement component
-import DownloadReceipt from '../dashboard/download-receipt'; // import the DownloadReceipt component
+import DownloadReceipt from '../dashboard/download_acknowledgement'; // import the DownloadReceipt component
 
 function ProductRequisitionTable({ productRequisitions, hideGoBackButton = false }) {
   const [anchorEl, setAnchorEl] = useState(null);

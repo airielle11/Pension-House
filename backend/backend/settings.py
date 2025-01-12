@@ -69,6 +69,9 @@ INSTALLED_APPS = [
     "requisition",
     "login",
     "accounts",
+    "rooms",
+    "report",
+    
 ]
 
 MIDDLEWARE = [
