@@ -18,49 +18,49 @@ def register_user(email, password):
     except Exception as e: 
         return {"success": False, "error": str(e)} 
       
-def login_user(email, password):
-    try:
-        # Attempt to log in using email and password
-        print("Signing in....")
-        response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+# def login_user(email, password):
+#     try:
+#         # Attempt to log in using email and password
+#         print("Signing in....")
+#         response = supabase.auth.sign_in_with_password({"email": email, "password": password})
 
-        # Check if the user is active
-        if response.user.user_metadata.get("is_active", True):
-            print("Checking database layer...")
-            params = {"idd": response.user.id}
-            rpc_response = supabase.rpc("sign_in", params).execute()
+#         # Check if the user is active
+#         if response.user.user_metadata.get("is_active", True):
+#             print("Checking database layer...")
+#             params = {"idd": response.user.id}
+#             rpc_response = supabase.rpc("sign_in", params).execute()
 
-            # Ensure data exists in the response
-            if rpc_response.data:
-                # Extract user details and role
-                user_details = rpc_response.data[0]  # Assuming data is returned as a list
-                role = user_details.get("v_pos_manage", "User")  # Default role is 'User'
+#             # Ensure data exists in the response
+#             if rpc_response.data:
+#                 # Extract user details and role
+#                 user_details = rpc_response.data[0]  # Assuming data is returned as a list
+#                 role = user_details.get("v_pos_manage", "User")  # Default role is 'User'
 
-                # Return a structured response with token and role
-                return {
-                    "token": response.session.access_token,
-                    "user": {
-                        "full_name": user_details.get("v_full_name"),
-                        "email": user_details.get("v_email"),
-                        "role": role,
-                        "image_name": user_details.get("v_image_name"),
-                        "url": user_details.get("v_url"),
-                    },
-                }
-            else:
-                raise ValueError("No data returned from the database.")
+#                 # Return a structured response with token and role
+#                 return {
+#                     "token": response.session.access_token,
+#                     "user": {
+#                         "full_name": user_details.get("v_full_name"),
+#                         "email": user_details.get("v_email"),
+#                         "role": role,
+#                         "image_name": user_details.get("v_image_name"),
+#                         "url": user_details.get("v_url"),
+#                     },
+#                 }
+#             else:
+#                 raise ValueError("No data returned from the database.")
 
-        elif response.user.user_metadata.get("is_active", False):
-            print("User is not active.")
-            supabase.auth.sign_out()
-            raise ValueError("Account is inactive.")
+#         elif response.user.user_metadata.get("is_active", False):
+#             print("User is not active.")
+#             supabase.auth.sign_out()
+#             raise ValueError("Account is inactive.")
 
-        else:
-            raise ValueError("Login failed. No user returned.")
+#         else:
+#             raise ValueError("Login failed. No user returned.")
 
-    except Exception as e:
-        # Return exception message
-        raise ValueError(f"Login failed: {str(e)}")
+#     except Exception as e:
+#         # Return exception message
+#         raise ValueError(f"Login failed: {str(e)}")
 
     
 def sign_in(email, password):
@@ -110,7 +110,7 @@ def sign_in(email, password):
                 return {
                     "success": False,
                     "auth_id": f"Auth ID: {response.user.id}",
-                    "error": f"{str(e)}"
+                    "error": f"s{str(e)}"
                 }
 
         elif response.user.user_metadata.get("is_active", False):
@@ -170,10 +170,6 @@ def reset_passwordv2(new_password, confirmed_password):
                 return {"success": False, "message": "Failed to reset password. Please try again."}
         else:
             return {"success": False, "message": "Passwords do not match!"}
-
-    # except AuthApiError as aae:
-    #     # Handle Supabase-specific authentication errors
-    #     return {"success": False, "error": f"Authentication error: {aae}"}
 
     except Exception as e:
         # Handle any other unexpected errors

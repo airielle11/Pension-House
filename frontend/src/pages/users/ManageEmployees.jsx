@@ -13,17 +13,21 @@ export default function ActiveEmployees() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/employees/`)
-      .then((response) => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/employees/`);
         if (response.data.employees) {
           setEmployees(response.data.employees);
         } else {
           console.error(response.data.error);
         }
-      })
-      .catch((err) => console.error('Error fetching employees:', err));
+      } catch (err) {
+        console.error('Error fetching employees:', err);
+      }
+    };
+    fetchEmployees();
   }, []);
+  
 
   const handleSearchChange = (e) => setSearchQuery(e.target.value);
 
@@ -38,7 +42,7 @@ export default function ActiveEmployees() {
     setEmployees((prevEmployees) =>
       prevEmployees.filter((employee) => employee.emp_id !== empId)
     );
-  };
+  };  
 
   const filteredEmployees = employees.filter((employee) =>
     Object.values(employee).some((value) =>

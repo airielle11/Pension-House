@@ -8,34 +8,27 @@ def get_user_auth_info():
     # Attempt to get the current user
     user_response = supabase.auth.get_user()
 
-    if user_response and user_response.user:
-      # Extract and print only key user details
+    if user_response and user_response.user: 
       user = user_response.user
       print("User ID:", user.id)
       print("User Email:", user.email)
       print("Created At:", user.created_at)
       print("User Metadata:", user.user_metadata if user.user_metadata else "No metadata available")
-    elif user_response and user_response.error:
-      # Print error details if available
+    elif user_response and user_response.error: 
       print("Error:", user_response.error.message)
     else:
       print("No user is currently logged in or the session has expired.")
   except Exception as e:
     print("An error occurred:", str(e))
     
-def view_active_employees():
-    """
-    Fetches active employees from the Supabase stored procedure and returns their details.
-    """
-    try:
-        # Call the stored procedure from Supabase
+def view_active_employees(): 
+    try: 
         response = supabase.rpc("get_active_employees").execute()
-
-        # Initialize a list to store employee details
+ 
         employees = []
 
         if response.data:
-            # Iterate through each employee record and append to the list
+            # Iterate through each active employee record and append to the list
             for employee in response.data:
                 employees.append({
                     "emp_id": employee.get("v_employee_id", "N/A"),
@@ -48,13 +41,38 @@ def view_active_employees():
                     "position_and_management": employee.get("v_pos_manage", "N/A"),
                 })
             return {"success": True, "employees": employees}
-        else:
-            # If no data is found, return a message
-            return {"success": False, "message": "No active employees found."}
+        else:  
+            return {"success": False, "message": response.get("error", "No active employees found.")}
 
-    except Exception as e:
-        # Handle and return errors in case of failure
+    except Exception as e: 
         return {"success": False, "error": f"An error occurred: {str(e)}"}
+
+def view_deleted_employees(): 
+    try: 
+        response = supabase.rpc("get_deleted_employees").execute()
+ 
+        inactive_employees = []
+
+        if response.data:
+            for inactive_employee in response.data:
+                # Iterate through each inactive employee record and append to the list
+                inactive_employees.append({
+                    "emp_id": inactive_employee.get("v_employee_id", "N/A"),
+                    "full_name": inactive_employee.get("v_full_name", "N/A"),
+                    "birth_date": inactive_employee.get("v_birth", "N/A"),
+                    "hired_date": inactive_employee.get("v_hired", "N/A"),
+                    "email": inactive_employee.get("v_email", "N/A"),
+                    "phone": inactive_employee.get("v_phone", "N/A"),
+                    "image_name": inactive_employee.get("v_image_name", "N/A"),
+                    "position_and_management": inactive_employee.get("v_pos_manage", "N/A"),
+                })
+            return {"success": True, "inactive_employees": inactive_employee}
+        else: 
+            return {"success": False, "message": response.get("error", "No deleted employees found.")}
+
+    except Exception as e: 
+        return {"success": False, "error": f"An error occurred: {str(e)}"}
+
 
 def generate_temp_password(length=8): 
     # Generate random characters for random password
@@ -71,21 +89,22 @@ def generate_temp_password(length=8):
     return f"Penistock2024{random_password}" 
 
 def add_employee_account(email, lname, mname, fname, birth_date, phone, pos_id, hired_date=None):
+    # Auto generated temporary password
     temp_password = generate_temp_password()
-    try:
-        # Attempt to sign up the user
+    
+    try: 
         print("Signing up user...")
         response = supabase.auth.sign_up({"email": email, "password": temp_password})
-
-        # Check the response object for user creation
+ 
         if response.user and response.user.id:
-            auth_id = response.user.id.replace(" ", "")  # Clean up auth_id
+            # Clean up auth_id
+            auth_id = response.user.id.replace(" ", "")  
+            
             print("User signed up successfully! Auth ID:", auth_id)
 
             # Wait for user record to be fully available in the database
             time.sleep(20)   
-
-            # Parameters for the RPC function
+ 
             function_params = {
                 "p_lname": lname,
                 "p_mname": mname,
@@ -98,18 +117,16 @@ def add_employee_account(email, lname, mname, fname, birth_date, phone, pos_id, 
                 "p_hired_date": hired_date
             }
 
-            try:
-                # Call the RPC function to insert employee data
+            try: 
                 print("Calling the function to insert employee...")
-                rpc_response = supabase.rpc("insert_employee_wrapper", function_params).execute()
-                
-                # Check for successful insertion
-                if rpc_response.data:
-                    print("Employee added successfully:", rpc_response.data)
-                    return {"success": True, "data": rpc_response.data, "temp_password": temp_password}
+                response = supabase.rpc("insert_employee_wrapper", function_params).execute()
+                 
+                if response.data:
+                    print("Employee added successfully:", response.data)
+                    return {"success": True, "data": response.data, "temp_password": temp_password}
                 else:
                     print("Employee insertion failed.")
-                    return {"success": False, "message": "Unable to insert employee data."}
+                    return {"success": False, "message": response.get("error", "Unable to insert employee.")}
 
             except Exception as e:
                 print(f"RPC Error: {str(e)}")
@@ -123,54 +140,6 @@ def add_employee_account(email, lname, mname, fname, birth_date, phone, pos_id, 
         print(f"Error during sign-up: {str(e)}")
         return {"success": False, "message": f"Error during sign-up: {str(e)}"}
 
-# def add_employee_account(email, lname, mname, fname, birth_date, phone, pos_id, hired_date=None):
-#     temp_password = generate_temp_password()
-
-#     try:
-#         # Step 1: Sign up the user
-#         print("Signing up user...")
-#         response = supabase.auth.sign_up({"email": email, "password": temp_password})
-
-#         # Wait briefly to ensure the user record is ready
-#         time.sleep(1)  
-
-#         auth_id = response.user.id if response.user else None
-        
-#         if not auth_id:
-#             print("User sign-up failed. No auth ID returned.")
-#             return {"success": False, "message": "User sign-up failed."}
-
-#         print(f"User signed up successfully! Auth ID: {auth_id}")
-
-#         # Step 2: Call the RPC function to insert employee data
-#         print("Inserting employee data into the database...")
-#         function_params = {
-#             "p_lname": lname,
-#             "p_mname": mname,
-#             "p_fname": fname,
-#             "p_birth_date": birth_date,
-#             "p_auth_id": auth_id,
-#             "p_email": email,
-#             "p_phone": phone,
-#             "p_pos_id": pos_id,
-#             "p_hired_date": hired_date
-#         }
-
-#         # Use Supabase's RPC method
-#         rpc_response = supabase.rpc("insert_employee_wrapper", function_params).execute()
-
-#         # Check response from the RPC
-#         if rpc_response.data:
-#             print("Employee added successfully:", rpc_response.data)
-#             return {"success": True, "data": rpc_response.data, "temp_password": temp_password}
-#         else:
-#             print("Failed to insert employee data.")
-#             return {"success": False, "message": "Unable to insert employee data."}
-
-#     except Exception as e:
-#         print(f"Error: {str(e)}")
-#         return {"success": False, "message": str(e)}
-    
 def delete_employee_account(employee_id):
     try:
         # Parameters for the Supabase RPC function
@@ -185,7 +154,7 @@ def delete_employee_account(employee_id):
             print("Employee deleted successfully! :", response.data)
             return {"success": True, "data": response.data}
         else:
-            return {"success": False, "message": response.get("error", "Unknown error occurred")}
+            return {"success": False, "message": response.get("error", "Unable to delete employee.")}
 
     except Exception as e: 
         return {"success": False, "message": str(e)}
@@ -220,24 +189,37 @@ def update_employee_account(
       "p_country": p_country,
       "p_phone": p_phone
     }
-
-    # Call the Supabase function
-    print("Updating employee info..")
+ 
+    print("Updating employee info with parameters:", function_params)
     response = supabase.rpc("update_employee_info_wrapper", function_params).execute()
-
     print(response.data)
+    
+    if response.data:
+        print("Employee successfully updated:", response.data)
+        return {"success": True, "data": response.data}
+    else:
+        print("Employee update failed")
+        return {"success": False, "message": response.get("error", "Unable to edit employee.")}
   except Exception as e:
     print("Exception occurred:", str(e))
+    return {"success": False, "message": f"RPC Error: {str(e)}"}
 
-# def delete_employee(employee_id):
-#   try:
-#     function_param = {
-#       "p_emp_id": employee_id
-#     }
-#     response = supabase.rpc("delete_employee_wrapper", function_param).execute()
-#     print(response.data)
+def recover_employee_account(employee_id):
+  try:
+    function_param = {
+      "p_emp_id": employee_id
+    }
+    response = supabase.rpc("recover_employee_wrapper", function_param).execute()
+    print(response.data)
+    
+    if response.data:
+        print("Employee successfully recovered:", response.data)
+        return {"success": True, "data": response.data}
+    else:
+        print("Employee recovery failed") 
+        return {"success": False, "message": response.get("error", "Unable to recover employee.")}
 
-#   except Exception as e:
-#     print("Error occurred during employee account deletion")
-#     print(e)
+  except Exception as e:
+    print("Exception occurred:", str(e))
+    return {"success": False, "message": f"RPC Error: {str(e)}"} 
  
