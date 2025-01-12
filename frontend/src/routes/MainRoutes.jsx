@@ -1,6 +1,5 @@
 import { lazy } from 'react';
-
-// project import
+import { Navigate } from 'react-router-dom'; // Ensure this is the correct import
 import Loadable from '../components/Loadable.jsx';
 import Dashboard from '../layout/Dashboard';
 <<<<<<< Updated upstream
