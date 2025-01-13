@@ -36,13 +36,13 @@ import Error404 from '../pages/404.jsx';
 // render - sample page
 // const SamplePage = Loadable(lazy(() => import('../pages/extra-pages/sample-page.jsx')));
 
-//  const UserProfile = Loadable(lazy(() => import('../pages/users/UserProfile.jsx')))
+ const UserProfile = Loadable(lazy(() => import('../pages/users/UserProfile.jsx')))
 
 
 // render - sample page
 // const SamplePage = Loadable(lazy(() => import('../pages/extra-pages/sample-page.jsx')));
 // const PurchaseOrderList = Loadable(lazy(() => import('../pages/purchasing/PurchaseOrder.jsx')));
-// const Employees = Loadable(lazy(() => import('../pages/users/ManageEmployees.jsx')));
+const Employees = Loadable(lazy(() => import('../pages/users/ManageEmployees.jsx')));
 
 // const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx'))); 
 // Lazily load the components
@@ -251,11 +251,19 @@ const MainRoutes = {
       children: [
         {
           path: 'dashboard',
-          element: <AdminDashboard />
+          element: <AdminDashboard />  
         },
         {
           path: 'purchase_orders',
-          element: <PurchaseOrder />
+          element: <PurchaseOrder /> 
+        },
+        {
+          path: 'employees',
+          element: <Employees /> 
+        },
+        {
+          path: 'profile',
+          element: <UserProfile /> 
         },
       ]
     }
