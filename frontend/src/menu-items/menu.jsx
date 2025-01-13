@@ -71,7 +71,7 @@ const menu = {
       id: 'requisitions',
       title: 'Requisitions',
       type: 'item',
-      url: '/arpages/download-acknowledgement-receipt', // Updated to match the AR page route
+      url: 'arpages/download-acknowledgement-receipt', 
       //url: '/requisitions',
       icon: icons.FileTextOutlined
     },
@@ -110,6 +110,15 @@ const menu = {
       type: 'item',
       url: 'admin/employees',
       icon: icons.TeamOutlined,
+      breadcrumbs: false
+    },
+
+    {
+      id: 'supplier_management',
+      title: 'Supplier Management',
+      type: 'item',
+      url: 'supplier-management',  // Define the URL for the Supplier Management page
+      icon: icons.AppstoreAddOutlined,  // You can choose a different icon if preferred
       breadcrumbs: false
     }
   ]

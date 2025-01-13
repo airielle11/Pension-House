@@ -41,12 +41,15 @@ const DefectiveItemsTable = Loadable(lazy(() => import('../pages/InventoryPages/
 const AddDefectiveItem = Loadable(lazy(() => import('../pages/InventoryPages/AddDefectiveItem.jsx')));
 
 
+const SupplierPage = Loadable(lazy(() => import('../pages/supplierManagement/SupplierPage.jsx')));
+
+
 // New import for AR page
 const DownloadAcknowledgementReceipt = Loadable(
   lazy(() => import('../pages/ARpages/DownloadAcknowledgementReceipt.jsx'))
 );
 
-
+const DefectiveTable = Loadable(lazy(() => import('../pages/InventoryPages/DefectiveTable.jsx'))); 
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -125,6 +128,10 @@ const MainRoutes = {
       element: <DefectiveItemsTable />, 
     },
     {
+      path: 'defective-table',  // New route for DefectiveTable
+      element: <DefectiveTable />,  // Newly added route for DefectiveTable
+    },
+    {
       path: 'add-defective-item', // Route for Add Defective Item page
       element: <AddDefectiveItem />
     },
@@ -132,6 +139,11 @@ const MainRoutes = {
       path: 'purchase_order',
       element: <PurchaseOrderList />
     },
+    {
+      path: 'supplier-management',
+      element: <SupplierPage />  // Move SupplierPage to top level
+    },
+    
     { 
       path: 'admin',
       children: [

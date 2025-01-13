@@ -18,5 +18,12 @@ urlpatterns = [
     
      # Login app
      path("", include("login.urls")), 
-     path("", include("accounts.urls"))
+     path("", include("accounts.urls")),
+
+
+     #inventory
+     path("", include("inventory.urls")),
+
+      path("", include("supplier.urls")),
+     
 ]
