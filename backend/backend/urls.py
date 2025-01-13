@@ -19,6 +19,7 @@ urlpatterns = [
      # Login app
      path("", include("login.urls")), 
      path("", include("accounts.urls")),
+<<<<<<< HEAD
 
 
      #inventory
@@ -26,4 +27,9 @@ urlpatterns = [
 
       path("", include("supplier.urls")),
      
+=======
+     
+     # puchasing and delivery app
+     path("", include("purchasing_delivery.urls"))
+>>>>>>> b43c2f8067cadaf4a0168aa7e1132d53f8418829
 ]

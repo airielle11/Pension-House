@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import Dashboard from '../pages/dashboard/index.jsx'
 
 export class Error404 extends Component {
   render() {

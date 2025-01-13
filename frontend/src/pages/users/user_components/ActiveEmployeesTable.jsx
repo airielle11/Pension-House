@@ -109,7 +109,21 @@ function EmployeesTable({ filteredRows, page, rowsPerPage, handleChangePage, han
                   .map((row, index) => (
                     <TableRow key={index} sx={{ "&:nth-of-type(odd)": { backgroundColor: "#f8f9fa" } }}>
                       {columns.map((column) => (
-                        <TableCell key={column.id}>{row[column.id]}</TableCell>
+                        // <TableCell key={column.id}>{row[column.id]}</TableCell>
+                        <TableCell key={column.id}>
+                          {column.id === "image_name" ? (
+                            <>
+                              {console.log(`${import.meta.env.VITE_IMAGE_BASE_URL}/${row[column.id]}`)}
+                              <img
+                                src={`${import.meta.env.VITE_IMAGE_BASE_URL}/${row[column.id]}`}
+                                alt="Employee Avatar"
+                                style={{ width: "50px", height: "50px", borderRadius: "50%", objectFit: "cover" }}
+                              />
+                            </>
+                          ) : (
+                            row[column.id]
+                          )}
+                        </TableCell> 
                       ))}
                       <TableCell>
                         <Tooltip title="View">

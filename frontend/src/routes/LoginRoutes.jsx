@@ -1,20 +1,19 @@
 import { lazy } from 'react';
 
-// project import
+// Project import
 import Loadable from '../components/Loadable.jsx';
-import MinimalLayout from '../layout/MinimalLayout'; 
+import MinimalLayout from '../layout/MinimalLayout';
 
-// render - login
-const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx'))); 
-const ForgotPassword = Loadable(lazy(() => import('../pages/authentication/ForgotPassword.jsx')))
-const ResetPassword = Loadable(lazy(() => import('../pages/authentication/ResetPassword.jsx')))
+// Render - login-related pages
+const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx')));
+const ForgotPassword = Loadable(lazy(() => import('../pages/authentication/ForgotPassword.jsx')));
+const ResetPassword = Loadable(lazy(() => import('../pages/authentication/ResetPassword.jsx')));
 
+// ==============================|| LOGIN ROUTES ||============================== //
 
-// ==============================|| AUTH ROUTING ||============================== //
-
-const LoginRoutes = { 
+const LoginRoutes = {
   path: '/',
-  element: <MinimalLayout />,
+  element: <MinimalLayout />, // Minimal layout for unauthenticated pages
   children: [
     {
       path: 'login',
@@ -23,13 +22,12 @@ const LoginRoutes = {
     {
       path: 'forgot_password',
       element: <ForgotPassword />,
-    }, 
+    },
     {
       path: 'reset_password',
       element: <ResetPassword />,
-    }
-  ]
+    },
+  ],
 };
 
 export default LoginRoutes;
- 
