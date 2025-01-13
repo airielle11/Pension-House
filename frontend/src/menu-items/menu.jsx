@@ -13,6 +13,9 @@ import {
   TransactionOutlined,
   TeamOutlined,
   PieChartOutlined,
+  FileTextOutlined,
+  DatabaseOutlined,
+  ShoppingCartOutlined,
   ProductOutlined} from '@ant-design/icons';
 
 // icons
@@ -73,7 +76,46 @@ const roleBasedMenu = {
       url: 'admin/purchase_orders',
       icon: icons.TeamOutlined,
       breadcrumbs: false,
-    } 
+    },
+    {
+      id: 'add-rooms',
+      title: 'Add Rooms',
+      type: 'item',
+      url: 'admin/add-rooms',
+      icon: icons.ChromeOutlined
+
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'admin/requisitions',
+      icon: icons.FileTextOutlined
+    },
+    {
+      id: 'report',
+      title: 'Reports',
+      type: 'item',
+      url: '/report',
+      icon: icons.PieChartOutlined // Updated icon for reports
+    },
+  ],
+  "Executive Housekeeper": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'housekeeping/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'housekeeping/requisitions',
+      icon: icons.FileTextOutlined
+    },
   ],
   "Property Custodian": [
     // {
@@ -101,6 +143,14 @@ const roleBasedMenu = {
       url: 'property_custodian/delivery/mark_po',
       icon: icons.TeamOutlined,
       breadcrumbs: false,
+    },    
+    {
+      id: 'inventory',
+      title: 'Inventory Management',
+      type: 'item',
+      url: 'property_custodian/inventory',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
     },
   ],
 };
@@ -110,7 +160,7 @@ const roleBasedMenu = {
 
 // Get user's role  
 const userRole = localStorage.getItem('role') || 'Unknown'; // Default to 'Guest' if role is not set
-console.logc("User Rolee: ", userRole);
+console.log("User Rolee: ", userRole);
 // Filter menu items based on the user's role
 const menuItems = roleBasedMenu[userRole] || []; // Fallback to an empty array if the role doesn't match
 

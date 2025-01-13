@@ -23,6 +23,7 @@ urlpatterns = [
     path("mark-item-as-completed/", views.mark_item_as_completed_view, name="mark_item_as_completed_view"),
     path("get-stocks/", views.get_stocks_view, name="get_stocks_view"), #walay e return
     path("get-ar-image/", views.get_ar_image_view, name="get_ar_image_view"),#object not found
+    path("identify-view-more/", views.identify_view_more_view, name="identify_view_more_view"),
     
      
 ]   

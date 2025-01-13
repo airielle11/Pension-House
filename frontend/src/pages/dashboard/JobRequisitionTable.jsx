@@ -54,11 +54,71 @@ function JobRequisitionTable() {
       setProductRequisitions(requisitions);
     } catch (err) {
       console.error('Error fetching job requisitions:', err);
-      setError('Failed to fetch requisition data.');
+      setError('Job requisition is empty.');
     } finally {
       setLoading(false);
     }
   };
+
+  const handleAcceptJob = async () => {
+    if (!selectedJob?.ID) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Job Selected',
+        text: 'Please select a job to accept.',
+      });
+      return;
+    }
+  
+    Swal.fire({
+      title: 'Confirm Action',
+      text: `Are you sure you want to accept Job Requisition ID ${selectedJob.ID}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Accept',
+      cancelButtonText: 'Cancel',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/accept-job/`,
+            {
+              job_requisition_id: selectedJob.ID, // Pass the job ID
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+  
+          if (response.data.status === 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: 'Job Accepted',
+              text: 'The job requisition has been accepted successfully.',
+            });
+            fetchJobRequisitions(); // Refresh data
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Failed to Accept Job',
+              text: response.data.message || 'An error occurred.',
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.response?.data?.message || 'An unexpected error occurred.',
+          });
+        }
+      }
+    });
+  
+    handleCloseMenu();
+  };
+  
 
   // Menu handlers
   const handleOpenMenu = (event, job) => {
@@ -403,7 +463,15 @@ function JobRequisitionTable() {
     </IconButton>
     Decline Job Requisition
   </MenuItem>
+  <MenuItem onClick={handleAcceptJob}>
+  <IconButton color="success">
+    <CheckCircleIcon />
+  </IconButton>
+  Accept Job
+</MenuItem>
+
 </Menu>
+
       {/* Dialog for viewing job description */}
       <Dialog open={isModalOpen} onClose={handleCloseModal} fullWidth>
         <DialogTitle>Job Description</DialogTitle>
@@ -445,6 +513,7 @@ function JobRequisitionTable() {
             Attach
           </Button>
         </DialogActions>
+        
       </Dialog>
     </Box>
   );

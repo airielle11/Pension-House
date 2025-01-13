@@ -23,6 +23,7 @@ from .services import accept_and_mark_item_as_unavailable
 from .services import mark_item_as_completed
 from .services import get_ar_image
 from .services import get_stocks
+from .services import identify_view_more
 from django.http import HttpResponse
 
 @csrf_exempt
@@ -77,10 +78,6 @@ def create_requisition_service_view(request):
 
             # Call the service function to create requisition
             response_data = create_requisition_service(room_id, priority_id, requisition_type)
-
-            # Check for errors in the service layer response
-            if 'error' in response_data:
-                return JsonResponse({"error": response_data['error']}, status=500)
 
             # Return the successful response
             return JsonResponse({"data": response_data}, status=201)
@@ -561,3 +558,19 @@ def get_stocks_view(request):
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     # Handle invalid HTTP methods
     return JsonResponse({"error": "Invalid HTTP method"}, status=405)
+
+@csrf_exempt
+def identify_view_more_view(request):
+    """
+    View to handle requests for identify_view_more.
+    """
+    if request.method == "GET":
+        try:
+            result = identify_view_more()  # Call the function
+            return JsonResponse({"status": "success", "data": result}, status=200)
+        except Exception as e:
+            return JsonResponse(
+                {"status": "error", "message": f"An unexpected error occurred: {str(e)}"},
+                status=500,
+            )
+    return JsonResponse({"status": "error", "message": "Invalid HTTP method. Use GET."}, status=405)

@@ -1,12 +1,19 @@
 import React, { useState } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const ReportComponent = () => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  // Function to handle report generation
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+
   const handleGenerateReport = async () => {
     if (!startDate || !endDate) {
       alert("Please select both start and end dates.");
@@ -16,24 +23,20 @@ const ReportComponent = () => {
       alert("Start date cannot be after the end date.");
       return;
     }
-  
-    // Convert dates to yyyy-mm-dd format
+
     const start_date = startDate.toISOString().split("T")[0];
     const end_date = endDate.toISOString().split("T")[0];
-  
+
     try {
-      // Construct the URL with query parameters
       const url = `http://127.0.0.1:8000/generate-report/?start_date=${start_date}&end_date=${end_date}`;
-  
-      // Make a GET request without a body
+
       const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
       });
-  
-      // Handle the response
+
       if (response.ok) {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -48,7 +51,6 @@ const ReportComponent = () => {
       alert("Error generating report: " + error.message);
     }
   };
-  
 
   return (
     <div className="report-container">
@@ -101,7 +103,7 @@ const ReportComponent = () => {
           endDate={endDate}
           dateFormat="yyyy-MM-dd"
           placeholderText="Select start date"
-          className="custom-datepicker" // Apply custom styles
+          className="custom-datepicker"
         />
       </div>
       <div style={{ marginBottom: "15px" }}>
@@ -118,12 +120,12 @@ const ReportComponent = () => {
           minDate={startDate}
           dateFormat="yyyy-MM-dd"
           placeholderText="Select end date"
-          className="custom-datepicker" // Apply custom styles
+          className="custom-datepicker"
         />
       </div>
       <button
-        onClick={handleGenerateReport} // Calls handleGenerateReport function when clicked
-        className="generate-report-button" // Apply custom styles
+        onClick={handleGenerateReport}
+        className="generate-report-button"
       >
         Generate Report
       </button>

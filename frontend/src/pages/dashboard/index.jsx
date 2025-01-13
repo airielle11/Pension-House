@@ -19,7 +19,6 @@ import JobRequisitionTable from './JobRequisitionTable'; // Import Job Requisiti
 // Reusable Analytics Card Component
 function AnalyticCard({ title, count, percentage, extra, onClick }) {
   return (
-<<<<<<< Updated upstream
     <Button
       onClick={onClick}
       sx={{
@@ -39,115 +38,8 @@ function AnalyticCard({ title, count, percentage, extra, onClick }) {
           <Typography
             variant="subtitle2"
             sx={{ color: percentage > 0 ? 'green' : 'red' }}
-=======
-    <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-      {/* row 1 */}
-      <Grid item xs={12} sx={{ mb: -2.25 }}>
-        <Typography variant="h5">Default Dashboard</Typography>
-      </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Page Views" count="4,42,236" percentage={59.3} extra="35,000" />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Users" count="78,250" percentage={70.5} extra="8,900" />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Order" count="18,800" percentage={27.4} isLoss color="warning" extra="1,943" />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Sales" count="$35,078" percentage={27.4} isLoss color="warning" extra="$20,395" />
-      </Grid>
-
-      <Grid item md={8} sx={{ display: { sm: 'none', md: 'block', lg: 'none' } }} />
-
-      {/* row 2 */}
-      <Grid item xs={12} md={7} lg={8}>
-        <UniqueVisitorCard />
-      </Grid>
-      <Grid item xs={12} md={5} lg={4}>
-        <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
-            <Typography variant="h5">Income Overview</Typography>
-          </Grid>
-          <Grid item />
-        </Grid>
-        <MainCard sx={{ mt: 2 }} content={false}>
-          <Box sx={{ p: 3, pb: 0 }}>
-            <Stack spacing={2}>
-              <Typography variant="h6" color="text.secondary">
-                This Week Statistics
-              </Typography>
-              <Typography variant="h3">$7,650</Typography>
-            </Stack>
-          </Box>
-          <MonthlyBarChart />
-        </MainCard>
-      </Grid>
-
-      {/* row 3 */}
-      <Grid item xs={12} md={7} lg={8}>
-        <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
-            <Typography variant="h5">Recent Orders</Typography>
-          </Grid>
-          <Grid item />
-        </Grid>
-        <MainCard sx={{ mt: 2 }} content={false}>
-          <OrdersTable />
-        </MainCard>
-      </Grid>
-      <Grid item xs={12} md={5} lg={4}>
-        <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
-            <Typography variant="h5">Analytics Report</Typography>
-          </Grid>
-          <Grid item />
-        </Grid>
-        <MainCard sx={{ mt: 2 }} content={false}>
-          <List sx={{ p: 0, '& .MuiListItemButton-root': { py: 2 } }}>
-            <ListItemButton divider>
-              <ListItemText primary="Company Finance Growth" />
-              <Typography variant="h5">+45.14%</Typography>
-            </ListItemButton>
-            <ListItemButton divider>
-              <ListItemText primary="Company Expenses Ratio" />
-              <Typography variant="h5">0.58%</Typography>
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemText primary="Business Risk Cases" />
-              <Typography variant="h5">Low</Typography>
-            </ListItemButton>
-          </List>
-          <ReportAreaChart />
-        </MainCard>
-      </Grid>
-
-      {/* row 4 */}
-      <Grid item xs={12} md={7} lg={8}>
-        <SaleReportCard />
-      </Grid>
-      <Grid item xs={12} md={5} lg={4}>
-        <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item>
-            <Typography variant="h5">Transaction History</Typography>
-          </Grid>
-          <Grid item />
-        </Grid>
-        <MainCard sx={{ mt: 2 }} content={false}>
-          <List
-            component="nav"
-            sx={{
-              px: 0,
-              py: 0,
-              '& .MuiListItemButton-root': {
-                py: 1.5,
-                '& .MuiAvatar-root': avatarSX,
-                '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' }
-              }
-            }}
->>>>>>> Stashed changes
           >
-            {percentage > 0 ? '↑' : '↓'} {Math.abs(percentage)}% {extra}
+            Details
           </Typography>
         </CardContent>
       </Card>
@@ -231,7 +123,7 @@ export default function DashboardDefault() {
                     <Grid item xs={12} sm={3}>
                       <AnalyticCard
                         title="Total number of staff"
-                        count="250"
+                        count="15"
                         percentage={12}
                         extra="more than last quarter"
                       />
@@ -239,7 +131,7 @@ export default function DashboardDefault() {
                     <Grid item xs={12} sm={3}>
                       <AnalyticCard
                         title="Pending Requests"
-                        count="100"
+                        count="3"
                         percentage={-0.2}
                         extra="lower than last quarter"
                       />
@@ -247,7 +139,7 @@ export default function DashboardDefault() {
                     <Grid item xs={12} sm={3}>
                       <AnalyticCard
                         title="Accepted Requests"
-                        count="10"
+                        count="1"
                         percentage={2}
                         extra="more than last quarter"
                       />

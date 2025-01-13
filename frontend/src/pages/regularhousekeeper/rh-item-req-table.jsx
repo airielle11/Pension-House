@@ -22,8 +22,8 @@ import DoNotDisturbOnOutlinedIcon from '@mui/icons-material/DoNotDisturbOnOutlin
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 import Swal from 'sweetalert2'; // Import SweetAlert2
-import AttachItemsTable from './AttachItemsTable'; // Import the AttachItemsTable component
-import DownloadAcknowledgementReceipt from './download_acknowledgement';
+import AttachItemsTable from '../dashboard/AttachItemsTable'; // Import the AttachItemsTable component
+import DownloadAcknowledgementReceipt from '../dashboard/download_acknowledgement';
 
 
 function ProductRequisitionTable() {
@@ -37,8 +37,6 @@ function ProductRequisitionTable() {
   const [error, setError] = useState(null);
   const [showAttachItems, setShowAttachItems] = useState(false); // State to show AttachItemsTable
   const [showDownloadReceipt, setShowDownloadReceipt] = useState(false);
-  const [userRole, setUserRole] = useState(6); // Replace `1` with the role for testing
-  
 
 
   // Fetch product requisitions on component mount
@@ -133,168 +131,6 @@ function ProductRequisitionTable() {
     setAnchorEl(null);
   };
 
-
-  const renderMenuItems = () => {
-    switch (userRole) {
-      case 1: // Desk
-        return (
-          <>
-            <MenuItem onClick={handleApproveRequisition}>
-              <ListItemIcon>
-                <CheckCircleOutlineIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Approve Requisition</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => fetchAttachedItems(selectedProduct?.ID)}>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Attached Items</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => handleViewAcknowledgementReceipt(selectedProduct)}>
-              <ListItemIcon>
-                <ReceiptLongIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Acknowledgement Receipt</ListItemText>
-            </MenuItem>
-          </>
-        ); 
-      case 2: // Regular and Head
-        return (
-          <>
-            <MenuItem onClick={handleAttachItemsClick}>
-              <ListItemIcon>
-                <AttachFileIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Attach Item to Requisition</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => fetchAttachedItems(selectedProduct?.ID)}>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Attached Items</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => handleViewAcknowledgementReceipt(selectedProduct)}>
-              <ListItemIcon>
-                <ReceiptLongIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Acknowledgement Receipt</ListItemText>
-            </MenuItem>
-          </>
-        );
-      case 4: // Property Maintenance
-        return (
-          <>
-            <MenuItem onClick={() => fetchAttachedItems(selectedProduct?.ID)}>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Attached Items</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleMarkAsUnavailable}>
-              <ListItemIcon>
-                <DoNotDisturbOnOutlinedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Mark as Unavailable</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleMarkAsAvailable}>
-              <ListItemIcon>
-                <CheckCircleOutlineIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Mark as Available</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => handleViewAcknowledgementReceipt(selectedProduct)}>
-              <ListItemIcon>
-                <ReceiptLongIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Acknowledgement Receipt</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleDownloadAcknowledgementReceipt}>
-              <ListItemIcon>
-                <ReceiptLongIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Download Acknowledgement Receipt</ListItemText>
-            </MenuItem>
-          </>
-        );
-      case 3: // Maintenance Management
-        // Define actions for Maintenance Management here if needed
-        return null;
-      case 5: // Top
-        return (
-          <>
-            <MenuItem onClick={() => fetchAttachedItems(selectedProduct?.ID)}>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Attached Items</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => handleViewAcknowledgementReceipt(selectedProduct)}>
-              <ListItemIcon>
-                <ReceiptLongIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Acknowledgement Receipt</ListItemText>
-            </MenuItem>
-          </>
-        );
-      case 6: // Admin
-        return (
-          <>
-            <MenuItem onClick={handleAttachItemsClick}>
-              <ListItemIcon>
-                <AttachFileIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Attach Item to Requisition</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleApproveRequisition}>
-              <ListItemIcon>
-                <CheckCircleOutlineIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Approve Requisition</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleDeclineRequisition}>
-              <ListItemIcon>
-                <DoNotDisturbOnOutlinedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Decline Requisition</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => fetchAttachedItems(selectedProduct?.ID)}>
-              <ListItemIcon>
-                <PersonIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Attached Items</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleMarkAsUnavailable}>
-              <ListItemIcon>
-                <DoNotDisturbOnOutlinedIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Mark as Unavailable</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleMarkAsAvailable}>
-              <ListItemIcon>
-                <CheckCircleOutlineIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Mark as Available</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={() => handleViewAcknowledgementReceipt(selectedProduct)}>
-              <ListItemIcon>
-                <ReceiptLongIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Acknowledgement Receipt</ListItemText>
-            </MenuItem>
-            <MenuItem onClick={handleDownloadAcknowledgementReceipt}>
-              <ListItemIcon>
-                <ReceiptLongIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Download Acknowledgement Receipt</ListItemText>
-            </MenuItem>
-          </>
-        );
-      default:
-        return null; // No actions for undefined roles
-    }
-  };
-  
 
   const handleMarkAsAvailable = async () => {
     if (!selectedProduct) {
@@ -635,9 +471,55 @@ function ProductRequisitionTable() {
                       open={Boolean(anchorEl)}
                       onClose={handleCloseMenu}
                     >
-                      {renderMenuItems()}
+                      <MenuItem onClick={handleAttachItemsClick}>
+                        <ListItemIcon>
+                          <AttachFileIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Attach Items to Requisition</ListItemText>
+                      </MenuItem>
+                      <MenuItem onClick={handleApproveRequisition}>
+                        <ListItemIcon>
+                          <CheckCircleOutlineIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Approve Requisition</ListItemText>
+                      </MenuItem>
+                      <MenuItem onClick={handleDeclineRequisition}>
+                        <ListItemIcon>
+                          <DoNotDisturbOnOutlinedIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Decline Requisition</ListItemText>
+                      </MenuItem>
+                      <MenuItem onClick={() => fetchAttachedItems(product.ID)}>
+                        <ListItemIcon>
+                          <PersonIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>View Attached Items</ListItemText>
+                      </MenuItem>
+                      <MenuItem onClick={handleMarkAsUnavailable}>
+                        <ListItemIcon>
+                          <DoNotDisturbOnOutlinedIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Mark as Unavailable</ListItemText>
+                      </MenuItem>
+                      <MenuItem onClick={handleMarkAsAvailable}>
+                        <ListItemIcon>
+                          <CheckCircleOutlineIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Mark as Available</ListItemText>
+                      </MenuItem>
+                      <MenuItem onClick={() => handleViewAcknowledgementReceipt(product)}>
+                        <ListItemIcon>
+                          <ReceiptLongIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>View Acknowledgement Receipt</ListItemText>
+                      </MenuItem>
+                      <MenuItem onClick={handleDownloadAcknowledgementReceipt}>
+                        <ListItemIcon>
+                          <ReceiptLongIcon fontSize="small" />
+                        </ListItemIcon>
+                        <ListItemText>Download Acknowledgement Receipt</ListItemText>
+                      </MenuItem>
                     </Menu>
-
                   </TableCell>
                 </TableRow>
               ))}

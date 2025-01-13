@@ -10,9 +10,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import Dropdown from './Dropdown';
-import ItemRequisitionTable from './ItemRequisitionTable'; // Import Product Requisition Table
-import JobRequisitionTable from './JobRequisitionTable'; // Import Job Requisition Table
+import Dropdown from '../dashboard/Dropdown';
+import ItemRequisitionTable from '../dashboard/ItemRequisitionTable'; // Import Product Requisition Table
+import JobRequisitionTable from '../dashboard/JobRequisitionTable'; // Import Job Requisition Table
 
 // Reusable Analytics Card Component
 function AnalyticCard({ title, count, percentage, extra, onClick }) {
@@ -48,25 +48,38 @@ function AnalyticCard({ title, count, percentage, extra, onClick }) {
 // Main Dashboard Component
 export default function DashboardDefault() {
   const [showGenerateIRF, setShowGenerateIRF] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
   const [hideAnalytics, setHideAnalytics] = useState(false);
 
   // Sample data for table
-  
-  const handleGenerateInitial = () => {
-    setOpenModal(true); // Open confirmation modal
-  };
-
-  const handleModalClose = () => {
-    setOpenModal(false); // Close the modal
-  };
-
-  const handleModalConfirm = () => {
-    setOpenModal(false); // Close modal
-    setShowGenerateIRF(true); // Show IRF generation form
-  };
-
-
+  const requests = [
+    {
+      id: 1,
+      roomNo: 101,
+      roomType: 'Family',
+      floorNo: 'John Doe',
+      requestedBy: 'Otor John Stephen',
+      date: '21/11/2022',
+      status: 'Pending',
+    },
+    {
+      id: 2,
+      roomNo: 203,
+      roomType: 'Family',
+      floorNo: 'Melisa Mores',
+      requestedBy: 'Otor John Stephen',
+      date: '21/11/2022',
+      status: 'Pending',
+    },
+    {
+      id: 3,
+      roomNo: 302,
+      roomType: 'Twin',
+      floorNo: '360,000.00',
+      requestedBy: 'Otor John Stephen',
+      date: '21/11/2022',
+      status: 'Accepted',
+    },
+  ];
 
   return (
     <Routes>
@@ -74,24 +87,6 @@ export default function DashboardDefault() {
         path="/"
         element={
           <Grid container spacing={4}>
-            {/* Dialog Modal */}
-            <Dialog open={openModal} onClose={handleModalClose}>
-              <DialogTitle>Confirm Request</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Are you sure you want to proceed with generating a request?
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={handleModalClose} color="secondary">
-                  Cancel
-                </Button>
-                <Button onClick={handleModalConfirm} variant="contained" color="primary">
-                  Yes, Proceed
-                </Button>
-              </DialogActions>
-            </Dialog>
-
             {/* Render Dropdown or Analytics */}
             {showGenerateIRF ? (
               <Dropdown setShowDashboard={setShowGenerateIRF} />
@@ -99,27 +94,32 @@ export default function DashboardDefault() {
               <>
                 {!hideAnalytics && (
                   <Grid container item xs={12} spacing={4}>
-                    <Grid item xs={10} sm={3}>
+                    <Grid item xs={12} sm={3}>
                       <AnalyticCard
-                        title="Total number of staff"
-                        count="8"
+                        title="Total Open Requests"
+                        count="250"
+                        percentage={12}
+                        extra="more than last quarter"
                       />
                     </Grid>
                     <Grid item xs={12} sm={3}>
                       <AnalyticCard
                         title="Pending Requests"
-                        count="3"
+                        count="100"
+                        percentage={-0.2}
+                        extra="lower than last quarter"
                       />
                     </Grid>
                     <Grid item xs={12} sm={3}>
                       <AnalyticCard
-                        title="Accepted Requests"
-                        count="1"
+                        title="Completed Requests"
+                        count="10"
+                        percentage={2}
+                        extra="more than last quarter"
                       />
                     </Grid>
                     <Grid item xs={13} sm={3}>
                       <Button
-                        onClick={handleGenerateInitial}
                         sx={{
                           p: 0,
                           textAlign: 'center',
@@ -130,12 +130,11 @@ export default function DashboardDefault() {
                           '&:hover': { boxShadow: 3 },
                         }}
                       >
-                        <Card sx={{ width: '100%', p: 2 }}>
+                        <Card sx={{ width: '100%', p:4 }}>
                           <CardContent>
-                            <Typography variant="h6">Generate Requisition</Typography>
-                            <Typography variant="h5"></Typography>
+                            <Typography variant="h6">Priority Requests</Typography>
                             <Typography variant="subtitle2" sx={{ color: 'gray', mt: 1 }}>
-                              Click to Generate RF
+                              View high-priority requests
                             </Typography>
                           </CardContent>
                         </Card>
@@ -145,7 +144,6 @@ export default function DashboardDefault() {
                 )}
 
                 {/* Render Table */}
-
               </>
             )}
           </Grid>

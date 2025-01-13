@@ -15,6 +15,9 @@ import MaintenanceDashboard from '../pages/maintenancemanager/mmdashboard.jsx';
 import SupervisorDashboard from '../pages/supervisor/superdashboard.jsx';
 import ReportComponent from '../pages/reports/Report.jsx';
 import MinimalLayout from '../layout/MinimalLayout'; 
+import RequisitionFormForHousekeeper from '../pages/regularhousekeeper/rh-requisitionform.jsx';// Adjust the path as needed
+
+
 
 import Error404 from '../pages/404.jsx';
 
@@ -51,7 +54,7 @@ const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.js
 // const InventoryDashboard = Loadable(lazy(() => import('../pages/inventory/InventoryDashboard.jsx')));
 // const TopDashboard = Loadable(lazy(() => import('../pages/top/TopDashboard.jsx')));
 // const DeskDashboard = Loadable(lazy(() => import('../pages/desk/DeskDashboard.jsx')));
-// const HousekeepingDashboard = Loadable(lazy(() => import('../pages/housekeeping/HousekeepingDashboard.jsx')));
+//const HousekeepingDashboard = Loadable(lazy(() => import('../pages/housekeeping/HousekeepingDashboard.jsx')));
 // const MaintenanceDashboard = Loadable(lazy(() => import('../pages/maintenance/MaintenanceDashboard.jsx')));
 const AdminDashboard = Loadable(lazy(() => import('../pages/admin/AdminDashboard/index.jsx')));
 const PurchaseOrder = Loadable(lazy(() => import('../pages/purchasing/PurchaseOrder.jsx')));
@@ -95,23 +98,23 @@ const MainRoutes = {
         }
       ]
     }, 
-    {
+    // {
 
-      path: 'sample-page',
-      element: <SamplePage />
-    },  
-    {
-      path: 'sample-pagetwo',
-      element: <SamplePage2 />
-    }, 
-    {
-      path: 'view-acknowledgement-receipt',
-      element: <ViewAcknowledgementReceipt />
-    },
-    {
-      path: 'arpages/download-acknowledgement-receipt', // Route for DownloadAcknowledgementReceipt
-      element: <DownloadAcknowledgementReceipt />
-    },
+    //   path: 'sample-page',
+    //   element: <SamplePage />
+    // },  
+    // {
+    //   path: 'sample-pagetwo',
+    //   element: <SamplePage2 />
+    // }, 
+    // {
+    //   path: 'view-acknowledgement-receipt',
+    //   element: <ViewAcknowledgementReceipt />
+    // },
+    // {
+    //   path: 'arpages/download-acknowledgement-receipt', // Route for DownloadAcknowledgementReceipt
+    //   element: <DownloadAcknowledgementReceipt />
+    // },
     // {
 
     //   path: 'tables',
@@ -155,6 +158,10 @@ const MainRoutes = {
       path: 'profile',
       element: <UserProfile />
     }, 
+    {
+      path: 'report',
+      element: <ReportComponent />
+    },
     // {
     //   path: 'add_employee'
     //   element: < />
@@ -168,10 +175,10 @@ const MainRoutes = {
     //   element: <Typography />
     // },
 
-    {
-      path: '/add-new-item', // Route for Add New Item page
-      element: <AddNewItemForm />, 
-    },
+    // {
+    //   path: '/add-new-item', // Route for Add New Item page
+    //   element: <AddNewItemForm />, 
+    // },
 
 
     {
@@ -196,15 +203,33 @@ const MainRoutes = {
         },
       ]
     },  
-    // {
-    //   path: 'desk',
-    //   children: [
-    //     {
-    //       path: 'dashboard',
-    //       element: <DeskDashboard />
-    //     }
-    //   ]
-    // },
+    {
+      path: 'desk',
+      children: [
+        {
+          path: 'dashboard',
+          element: <DeskDashboard />
+        },
+            {
+      path: 'requisitions',
+      element: <Requisitions/>
+    }, 
+  ]
+},
+
+{
+  path: 'housekeeping',
+  children: [
+    {
+      path: 'dashboard',
+      element: <RegularHousekeepeer />
+    },
+    {
+      path: 'requisitions',
+      element: <RequisitionFormForHousekeeper /> // Use the updated component
+    },
+  ]
+},
     // {
     //   path: 'housekeeping',
     //   children: [
@@ -241,14 +266,27 @@ const MainRoutes = {
       children: [
         {
           path: 'dashboard',
-          element: <AdminDashboard />
+          element: <DashboardDefault />
         },
         {
           path: 'purchase_orders',
           element: <PurchaseOrder />
         },
+        {
+          path: 'add-rooms',
+          element: <AddRoomAndType />
+        },
+        {
+          path: 'requisitions',
+          element: <Requisitions />
+        },
+        {
+        path: 'report',
+        element: <ReportComponent />
+      },
       ]
-    }
+    },
+    
   ]
 };
 

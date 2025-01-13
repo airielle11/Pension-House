@@ -385,18 +385,6 @@ def get_attached_job(job_requisition_id: int):
 
 
 
-# def accept_job(job_requisition_id: int):
-#   try:
-#     function_params = {
-#       "p_jobr_id": job_requisition_id
-#     }
-#     response = supabase.rpc("accept_job_wrapper", function_params).execute()
-
-#     print(response.data)
-#   except Exception as e:
-#     print(f"An error occurred: {e}")
-
-
 def accept_job(job_requisition_id: int):
     try:
         function_params = {
@@ -614,7 +602,13 @@ def get_stocks():
         logger.error(f"An error occurred while fetching stocks: {e}")
         raise  # Re-raise the exception for higher-level handling
 
+def identify_view_more():
+  try:
+    response = supabase.rpc("identify_dd").execute()
+    return int(response.data)
 
+  except Exception as e:
+    print(f"An error occurred: {e}")
 
 # #########################################################
 # # TEST HERE
