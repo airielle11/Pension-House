@@ -5,8 +5,12 @@ import { Stack } from "@mui/system";
 import Swal from "sweetalert2";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { Document, Page, Text, PDFDownloadLink, pdf } from "@react-pdf/renderer";
-import styles from '../Styles.module.css';
+import { pdf, Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
+import style from '../Styles.module.css';
+// import { downloadPDF } from "../../../utils/PDFUtility";
+
+import logo from '../../../assets/images/penistock_logo.png'
+
 
 export default function AddEmployeeForm() {
   const [open, setOpen] = useState(false);
@@ -44,38 +48,36 @@ export default function AddEmployeeForm() {
   };
 
   const handleSubmit = async () => {
-    // Disable submit button once clicked to prevent multiple submission
     setLoading(true);
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}/add_employee/`, formData);
-
+  
       if (response.status === 200) {
         const tempPassword = response.data.temp_password;
-        setGeneratedPassword(tempPassword);
-
-        // Automatically generate and download the PDF
-        downloadPDF(tempPassword);
-
+  
+        // Automatically generate and download the PDF with the correct data
+        downloadPDF({ ...formData }, tempPassword);
+  
         Swal.fire({
           title: "Success!",
-          text: `Temporary Password: ${tempPassword}`,
+          text: response.data.message || `Temporary Password: ${tempPassword}`,
           icon: "success",
           customClass: {
-            container: styles.swalContainer,
+            container: style.swalContainer,
           },
           confirmButtonText: "OK",
         }).then((result) => {
-          if (result.isConfirmed) {
+          if (result.isConfirmed) { 
             handleClose();
           }
-        });
+        }); 
       } else {
         Swal.fire({
           title: "Error",
           text: response.data.message || "Failed to add employee. Please try again.",
           icon: "error",
           customClass: {
-            container: styles.swalContainer,
+            container: style.swalContainer,
           },
         });
       }
@@ -86,44 +88,112 @@ export default function AddEmployeeForm() {
         text: "Failed to add employee. Please check your network connection and try again.",
         icon: "error",
         customClass: {
-          container: styles.swalContainer,
+          container: style.swalContainer,
         },
       });
     } finally {
       setLoading(false);
     }
-  };
-
-  const downloadPDF = async (tempPassword) => {
-    const { email } = formData;
-
-    // Define the PDF document
+  }; 
+  
+  // Define the styles
+  const styles = StyleSheet.create({
+    page: {
+      padding: 30,
+    },
+    header: {
+      alignItems: "center",
+      marginBottom: 20,
+    },
+    logo: {
+      width: 50,
+      height: 50,
+      marginBottom: 10,
+    },
+    title: {
+      fontSize: 16,
+      fontWeight: "bold",
+      marginBottom: 10,
+    },
+    subtitle: {
+      fontSize: 12,
+      marginBottom: 7,
+      fontWeight: "bold"
+    },
+    text: {
+      fontSize: 10,
+      marginBottom: 5,
+    },
+    table: {
+      marginTop: 20,
+      width: "100%",
+      borderWidth: 1,
+      borderColor: "#000",
+    },
+    tableHeader: {
+      flexDirection: "row",
+      backgroundColor: "#f0f0f0",
+      borderBottomWidth: 1,
+      borderColor: "#000",
+    },
+    tableRow: {
+      flexDirection: "row",
+    },
+    tableCellHeader: {
+      fontSize: 10,
+      fontWeight: "bold",
+      flex: 1,
+      textAlign: "center",
+      padding: 5,
+      borderRightWidth: 1,
+      borderColor: "#000",
+    },
+    tableCell: {
+      fontSize: 10,
+      flex: 1,
+      textAlign: "center",
+      padding: 5,
+      borderRightWidth: 1,
+      borderColor: "#000",
+    },
+    lastCell: {
+      borderRightWidth: 0,
+    },
+  });
+  
+  // Function to generate and download the PDF
+  const downloadPDF = async (formData, tempPassword) => {
+    const { email, fname, lname } = formData;
+    const currentDate = new Date().toISOString().split("T")[0];
+    const fileName = `${fname} ${lname} ${currentDate}.pdf`;
+  
     const PDFDocument = (
       <Document>
-        <Page style={{ padding: 20 }}>
-          {/* Centered Header */}
-          <Text style={{ fontSize: 24, textAlign: "center", marginBottom: 20 }}>
-            New Employee Details
-          </Text>
-    
-          {/* Adding an Image */}
-          <Image
-            src="https://via.placeholder.com/150" // Replace with your image URL
-            style={{ width: 100, height: 100, margin: "0 auto", marginBottom: 20 }}
-          />
-    
-          {/* Employee Details */}
-          <Text>Email: {email}</Text>
-          <Text>Temporary Password: {tempPassword}</Text>
+        <Page style={styles.page}>
+          <View style={[styles.header, { flexDirection: "row", alignItems: "center", marginBottom: 10 }]}>
+            <Image src={logo} style={styles.logo} />
+            <Text style={{ marginLeft: 5, marginTop: -10, fontSize: 14, fontWeight: "bold" }}>PeniStock</Text>
+          </View>
+          <Text style={styles.subtitle}>Employee Credentials</Text>
+          <Text style={styles.text}>Date: {currentDate}</Text>
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={styles.tableCellHeader}>Email</Text>
+              <Text style={[styles.tableCellHeader, styles.lastCell]}>Password</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={styles.tableCell}>{email}</Text>
+              <Text style={[styles.tableCell, styles.lastCell]}>{tempPassword}</Text>
+            </View>
+          </View>
         </Page>
       </Document>
-    );    
-
-    // Generate the PDF blob and trigger download
+    );
+  
     const blob = await pdf(PDFDocument).toBlob();
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "NewEmployeeDetails.pdf";
+    link.download = fileName;
     link.click();
   };
 
@@ -176,7 +246,7 @@ export default function AddEmployeeForm() {
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                disabled={loading} // Disable while loading
+                disabled={loading}
               >
                 {loading ? "Creating..." : "Create"}
               </Button>

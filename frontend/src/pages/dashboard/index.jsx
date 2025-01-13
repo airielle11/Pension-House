@@ -1,54 +1,48 @@
-// material-ui
-import Avatar from '@mui/material/Avatar'; 
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
-import List from '@mui/material/List';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemSecondaryAction from '@mui/material/ListItemSecondaryAction';
-import ListItemText from '@mui/material/ListItemText';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import RRTable from './rr-table'; // Importing the RRTable component
+import Dropdown from './Dropdown';
+import ItemRequisitionTable from './ItemRequisitionTable'; // Import Product Requisition Table
+import JobRequisitionTable from './JobRequisitionTable'; // Import Job Requisition Table
 
-// project import
-import MainCard from '../../components/MainCard.jsx';
-import AnalyticEcommerce from '../../components/cards/statistics/AnalyticEcommerce.jsx';
-import MonthlyBarChart from './MonthlyBarChart.jsx';
-import ReportAreaChart from './ReportAreaChart.jsx';
-import UniqueVisitorCard from './UniqueVisitorCard.jsx';
-import SaleReportCard from './SaleReportCard.jsx';
-import OrdersTable from './OrdersTable.jsx';
-
-// assets
-import GiftOutlined from '@ant-design/icons/GiftOutlined';
-import MessageOutlined from '@ant-design/icons/MessageOutlined';
-import SettingOutlined from '@ant-design/icons/SettingOutlined'; 
-
-// avatar style
-const avatarSX = {
-  width: 36,
-  height: 36,
-  fontSize: '1rem'
-};
-
-// action style
-const actionSX = {
-  mt: 0.75,
-  ml: 1,
-  top: 'auto',
-  right: 'auto',
-  alignSelf: 'flex-start',
-  transform: 'none'
-};
-
-// ==============================|| DASHBOARD - DEFAULT ||============================== //
-
-export default function DashboardDefault() {
+// Reusable Analytics Card Component
+function AnalyticCard({ title, count, percentage, extra, onClick }) {
   return (
+<<<<<<< Updated upstream
+    <Button
+      onClick={onClick}
+      sx={{
+        p: 0,
+        textAlign: 'center',
+        width: '100%',
+        backgroundColor: 'white',
+        boxShadow: 1,
+        borderRadius: 2,
+        '&:hover': { boxShadow: 3 },
+      }}
+    >
+      <Card sx={{ width: '100%', p: 2 }}>
+        <CardContent>
+          <Typography variant="h6">{title}</Typography>
+          <Typography variant="h4">{count}</Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{ color: percentage > 0 ? 'green' : 'red' }}
+=======
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       {/* row 1 */}
       <Grid item xs={12} sx={{ mb: -2.25 }}>
-        <Typography variant="h5">Dashboard</Typography>
+        <Typography variant="h5">Default Dashboard</Typography>
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
         <AnalyticEcommerce title="Total Page Views" count="4,42,236" percentage={59.3} extra="35,000" />
@@ -150,64 +144,191 @@ export default function DashboardDefault() {
                 '& .MuiListItemSecondaryAction-root': { ...actionSX, position: 'relative' }
               }
             }}
+>>>>>>> Stashed changes
           >
-            <ListItemButton divider>
-              <ListItemAvatar>
-                <Avatar sx={{ color: 'success.main', bgcolor: 'success.lighter' }}>
-                  <GiftOutlined />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={<Typography variant="subtitle1">Order #002434</Typography>} secondary="Today, 2:00 AM" />
-              <ListItemSecondaryAction>
-                <Stack alignItems="flex-end">
-                  <Typography variant="subtitle1" noWrap>
-                    + $1,430
-                  </Typography>
-                  <Typography variant="h6" color="secondary" noWrap>
-                    78%
-                  </Typography>
-                </Stack>
-              </ListItemSecondaryAction>
-            </ListItemButton>
-            <ListItemButton divider>
-              <ListItemAvatar>
-                <Avatar sx={{ color: 'primary.main', bgcolor: 'primary.lighter' }}>
-                  <MessageOutlined />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={<Typography variant="subtitle1">Order #984947</Typography>} secondary="5 August, 1:45 PM" />
-              <ListItemSecondaryAction>
-                <Stack alignItems="flex-end">
-                  <Typography variant="subtitle1" noWrap>
-                    + $302
-                  </Typography>
-                  <Typography variant="h6" color="secondary" noWrap>
-                    8%
-                  </Typography>
-                </Stack>
-              </ListItemSecondaryAction>
-            </ListItemButton>
-            <ListItemButton>
-              <ListItemAvatar>
-                <Avatar sx={{ color: 'error.main', bgcolor: 'error.lighter' }}>
-                  <SettingOutlined />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={<Typography variant="subtitle1">Order #988784</Typography>} secondary="7 hours ago" />
-              <ListItemSecondaryAction>
-                <Stack alignItems="flex-end">
-                  <Typography variant="subtitle1" noWrap>
-                    + $682
-                  </Typography>
-                  <Typography variant="h6" color="secondary" noWrap>
-                    16%
-                  </Typography>
-                </Stack>
-              </ListItemSecondaryAction>
-            </ListItemButton>
-          </List>
-        </MainCard> 
-      </Grid>
-    </Grid>
+            {percentage > 0 ? '↑' : '↓'} {Math.abs(percentage)}% {extra}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Button>
+  );
+}
+
+// Main Dashboard Component
+export default function DashboardDefault() {
+  const [showGenerateIRF, setShowGenerateIRF] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [hideAnalytics, setHideAnalytics] = useState(false); // New state to hide analytics
+
+  // Sample data for table
+  const requests = [
+    {
+      id: 1,
+      roomNo: 101,
+      roomType: 'Family',
+      floorNo: 'John Doe',
+      requestedBy: 'Otor John Stephen',
+      date: '21/11/2022',
+      status: 'Pending',
+    },
+    {
+      id: 2,
+      roomNo: 203,
+      roomType: 'Family',
+      floorNo: 'Melisa Mores',
+      requestedBy: 'Otor John Stephen',
+      date: '21/11/2022',
+      status: 'Pending',
+    },
+    {
+      id: 3,
+      roomNo: 302,
+      roomType: 'Twin',
+      floorNo: '360,000.00',
+      requestedBy: 'Otor John Stephen',
+      date: '21/11/2022',
+      status: 'Accepted',
+    },
+  ];
+
+  const handleGenerateInitial = () => {
+    setOpenModal(true); // Open confirmation modal
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false); // Close the modal
+  };
+
+  const handleModalConfirm = () => {
+    setOpenModal(false); // Close modal
+    setShowGenerateIRF(true); // Show IRF generation form
+  };
+
+  // Handle hiding analytics
+  const handleHideAnalytics = (shouldHide) => {
+    setHideAnalytics(shouldHide);
+  };
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Grid container spacing={4}>
+            <Dialog open={openModal} onClose={handleModalClose}>
+              <DialogTitle>Confirm Request</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are you sure you want to proceed with generating a request?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleModalClose} color="secondary">
+                  Cancel
+                </Button>
+                <Button onClick={handleModalConfirm} variant="contained" color="primary">
+                  Yes, Proceed
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            {showGenerateIRF ? (
+              <Dropdown setShowDashboard={setShowGenerateIRF} />
+            ) : (
+              <>
+
+
+                {/* Conditionally render the analytics cards */}
+                {!hideAnalytics && (
+                  <Grid container item xs={12} spacing={4}>
+                    <Grid item xs={12} sm={3}>
+                      <AnalyticCard
+                        title="Total number of staff"
+                        count="250"
+                        percentage={12}
+                        extra="more than last quarter"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <AnalyticCard
+                        title="Pending Requests"
+                        count="100"
+                        percentage={-0.2}
+                        extra="lower than last quarter"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <AnalyticCard
+                        title="Accepted Requests"
+                        count="10"
+                        percentage={2}
+                        extra="more than last quarter"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <Button
+                        onClick={handleGenerateInitial}
+                        sx={{
+                          p: 0,
+                          textAlign: 'center',
+                          width: '100%',
+                          backgroundColor: 'white',
+                          boxShadow: 1,
+                          borderRadius: 2,
+                          '&:hover': { boxShadow: 3 },
+                        }}
+                      >
+                        <Card sx={{ width: '100%', p: 2 }}>
+                          <CardContent>
+                            <Typography variant="h6">Generate Initial Request</Typography>
+                            <Typography variant="h5"><br /></Typography>
+                            <Typography variant="subtitle2" sx={{ color: 'gray', mt: 1 }}>
+                              Click to Generate IR
+                            </Typography>
+                          </CardContent>
+                        </Card>
+                      </Button>
+                    </Grid>
+                  </Grid>
+                )}
+
+                {/* Initial Requests Section */}
+                <Grid item xs={12}>
+                  <RRTable
+                    requests={requests}
+                    setHideAnalytics={handleHideAnalytics} // Pass the function to hide analytics
+                  />
+                </Grid>
+              </>
+            )}
+          </Grid>
+        }
+      />
+
+      {/* Other Routes */}
+      <Route
+        path="/product-requisition"
+        element={
+          <Grid item xs={12}>
+            <Button variant="contained" color="primary" sx={{ mb: 2 }}>
+              <Link to="/" style={{ color: 'white' }}>Go Back</Link>
+            </Button>
+            <ItemRequisitionTable /> {/* Display the ItemRequisitionTable */}
+          </Grid>
+        }
+      />
+
+      <Route
+        path="/job-requisition"
+        element={
+          <Grid item xs={12}>
+            <Button variant="contained" color="primary" sx={{ mb: 2 }}>
+              <Link to="/" style={{ color: 'white' }}>Go Back</Link>
+            </Button>
+            <JobRequisitionTable /> {/* Display the JobRequisitionTable */}
+          </Grid>
+        }
+      />
+    </Routes>
   );
 }

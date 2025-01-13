@@ -1,46 +1,33 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-
-// material-ui
-import Button from '@mui/material/Button'; 
-import FormHelperText from '@mui/material/FormHelperText';
-import Grid from '@mui/material/Grid';
-import Link from '@mui/material/Link';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import Stack from '@mui/material/Stack';
-
-// Uses Formik and Yup third party for input validation, which simplifies handling form state and errors.
-// Yup is a JS library to build object schemas and define how the data should look like and what kinds of values are expected of them
+import { RoleContext } from '../../../contexts/RoleContext.jsx';
 import * as Yup from 'yup';
-// Formik is a small group of React components and hooks for building forms in React
 import { Formik } from 'formik';
 
-// project import
+// Material-UI
+import {
+  Button,
+  FormHelperText,
+  Grid,
+  Link,
+  InputAdornment,
+  IconButton,
+  InputLabel,
+  OutlinedInput,
+  Stack,
+} from '@mui/material';
+import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import AnimateButton from '../../../components/@extended/AnimateButton.jsx';
 
-// assets
-import EyeOutlined from '@ant-design/icons/EyeOutlined';
-import EyeInvisibleOutlined from '@ant-design/icons/EyeInvisibleOutlined';
-
-// ============================|| JWT - LOGIN ||============================ //
-
 export default function AuthLogin({ isDemo = false }) {
-  // Initialize navigation hook
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = React.useState(false);
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const { setRole } = useContext(RoleContext); // Correct use of context
+  const [showPassword, setShowPassword] = useState(false);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleMouseDownPassword = (event) => event.preventDefault();
 
   return (
     <>
@@ -60,30 +47,34 @@ export default function AuthLogin({ isDemo = false }) {
               email: values.email,
               password: values.password,
             });
-        
-            const { token, role } = response.data;
-        
-            // Store the token in localStorage
+
+            const { token, user_details } = response.data;
+
+            if (!token || !user_details?.length) {
+              throw new Error('Invalid response from server');
+            }
+
+            const role = user_details[0]?.position_management?.split(', ')[0] || 'Unknown';
+            setRole(role);
             localStorage.setItem('token', token);
-        
-            // Role-based redirection
-            if (role === 'admin') {
-              navigate('/admin/dashboard'); // Admin Dashboard
-            } else if (role === 'Manager') {
-              navigate('/manager/dashboard'); // Manager Dashboard
-            } else {
-              navigate('/dashboard/default'); // Default User Dashboard
-            }
+            localStorage.setItem('role', role);
+
+            const roleRoutes = {
+              'Property Custodian': '/property_custodian/purchase_orders',
+              'General Manager': '/top/purchase_orders',
+              'Front Office Manager': '/desk/dashboard',
+              'Executive Housekeeper': '/housekeeping/dashboard',
+              'Chief Engineer': '/maintenance/dashboard',
+              'Head Administrator': '/admin/dashboard',
+            };
+
+            navigate(roleRoutes[role] || '/dashboard/default');
           } catch (error) {
-            if (error.response) {
-              setErrors({ submit: error.response.data.error || 'Login failed' });
-            } else {
-              setErrors({ submit: 'An unexpected error occurred. Please try again.' });
-            }
+            const errorMsg = error.response?.data?.error || 'Login failed. Please try again.';
+            setErrors({ submit: errorMsg });
           }
           setSubmitting(false);
         }}
-        
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit}>
@@ -94,19 +85,17 @@ export default function AuthLogin({ isDemo = false }) {
                   <OutlinedInput
                     id="email-login"
                     type="email"
-                    value={values.email} 
-                    name="email" 
+                    value={values.email}
+                    name="email"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    placeholder="Enter email address" 
+                    placeholder="Enter email address"
                     fullWidth
-                    error={Boolean(touched.email && errors.email)} 
+                    error={Boolean(touched.email && errors.email)}
                   />
                 </Stack>
                 {touched.email && errors.email && (
-                  <FormHelperText error id="standard-weight-helper-text-email-login">
-                  {errors.email}
-                  </FormHelperText> 
+                  <FormHelperText error>{errors.email}</FormHelperText>
                 )}
               </Grid>
               <Grid item xs={12}>
@@ -127,8 +116,6 @@ export default function AuthLogin({ isDemo = false }) {
                           aria-label="toggle password visibility"
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          color="secondary"
                         >
                           {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
                         </IconButton>
@@ -138,14 +125,11 @@ export default function AuthLogin({ isDemo = false }) {
                   />
                 </Stack>
                 {touched.password && errors.password && (
-                  <FormHelperText error id="standard-weight-helper-text-password-login">
-                    {errors.password}
-                  </FormHelperText>
+                  <FormHelperText error>{errors.password}</FormHelperText>
                 )}
               </Grid>
-
-              <Grid item xs={12} sx={{ mt: -1, display: 'flex', justifyContent: 'flex-end'}}>
-                <Link variant="h6" component={RouterLink} to="/forgot_password" color="text.primary">
+              <Grid item xs={12} sx={{ mt: -1, display: 'flex', justifyContent: 'flex-end' }}>
+                <Link variant="h6" component={RouterLink} to="/forgot_password">
                   Forgot Password?
                 </Link>
               </Grid>
@@ -156,7 +140,15 @@ export default function AuthLogin({ isDemo = false }) {
               )}
               <Grid item xs={12}>
                 <AnimateButton>
-                  <Button disableElevation disabled={isSubmitting} fullWidth size="large" type="submit" variant="contained" sx={{backgroundImage: 'linear-gradient(#14ADD6, #384295)'}} >
+                  <Button
+                    disableElevation
+                    disabled={isSubmitting}
+                    fullWidth
+                    size="large"
+                    type="submit"
+                    variant="contained"
+                    sx={{ backgroundImage: 'linear-gradient(#14ADD6, #384295)' }}
+                  >
                     Sign In
                   </Button>
                 </AnimateButton>
