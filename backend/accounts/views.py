@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from .services import get_user_auth_info, view_active_employees, view_deleted_employees, add_employee_account, delete_employee_account, update_employee_account, recover_employee_account
+from .services import get_user_auth_info, view_active_employees, view_deleted_employees, add_employee_account, delete_employee_account, update_employee_account, recover_employee_account, get_positions, update_employee_name_wrapper, update_employee_address, update_employee_phone_wrapper
 
 # This decorator marks a view as being exempt from the protection ensured by the middleware
 @csrf_exempt
@@ -174,5 +174,116 @@ def recover_employee_account_view(request):
                 return JsonResponse({"error": result.get("message", "Unable to recover account!")}, status=400)
         except Exception as e:
             return JsonResponse({"error": f"An unexpected error occured: {str(e)}"}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method!"}, status=405)
+    
+@csrf_exempt
+def get_positions_view(request):
+    if request.method == "GET":
+        try:
+            # Call the service to fetch positions
+            positions = get_positions()
+
+            if positions is not None:  # Ensure positions is not None
+                if len(positions) > 0:  # Check if there are any positions
+                    return JsonResponse({
+                        "success": True,
+                        "data": positions
+                    }, status=200)
+                else:
+                    return JsonResponse({
+                        "success": True,
+                        "data": [],
+                        "message": "No positions found."
+                    }, status=200)
+            else:
+                return JsonResponse({
+                    "success": False,
+                    "message": "Unable to fetch positions. Please try again later."
+                }, status=500)
+        except Exception as e:
+            # Handle unexpected errors
+            return JsonResponse({
+                "success": False,
+                "message": f"An error occurred: {str(e)}"
+            }, status=500)
+            
+@csrf_exempt
+def update_employee_name_view(request):
+    if request.method == "POST":
+        try:
+            # Parse the JSON payload from the request
+            data = json.loads(request.body)
+
+            # Extract required fields from the payload
+            p_new_lname = data.get("p_new_lname")
+            p_new_fname = data.get("p_new_fname")
+            p_new_mname = data.get("p_new_mname")
+
+            # Validate required fields
+            if not all([p_new_lname, p_new_fname, p_new_mname]):
+                return JsonResponse({"error": "Missing required fields."}, status=400)
+
+            # Call the service function to update the employee name
+            update_employee_name_wrapper(p_new_lname, p_new_fname, p_new_mname)
+
+            # Respond to the client
+            return JsonResponse({"message": "Employee name updated successfully."}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method!"}, status=405)
+
+@csrf_exempt
+def update_employee_address_view(request):
+    if request.method == "POST":
+        try:
+            # Parse the JSON payload from the request
+            data = json.loads(request.body)
+
+            # Extract required fields from the payload
+            p_st_no = data.get("p_st_no")
+            p_st_name = data.get("p_st_name")
+            p_unit_no = data.get("p_unit_no")
+            p_city = data.get("p_city")
+            p_state = data.get("p_state")
+            p_zip = data.get("p_zip")
+            p_country = data.get("p_country")
+
+            # Validate required fields
+            if not all([p_st_no, p_st_name, p_city, p_state, p_zip, p_country]):
+                return JsonResponse({"error": "Missing required fields."}, status=400)
+
+            # Call the service function to update the employee address
+            update_employee_address(p_st_no, p_st_name, p_unit_no, p_city, p_state, p_zip, p_country)
+
+            # Respond to the client
+            return JsonResponse({"message": "Employee address updated successfully."}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+    else:
+        return JsonResponse({"error": "Invalid request method!"}, status=405)
+
+@csrf_exempt
+def update_employee_phone_view(request):
+    if request.method == "POST":
+        try:
+            # Parse the JSON payload from the request
+            data = json.loads(request.body)
+
+            # Extract required fields from the payload
+            p_phone = data.get("p_phone")
+
+            # Validate required fields
+            if not p_phone:
+                return JsonResponse({"error": "Missing required field: p_phone."}, status=400)
+
+            # Call the service function to update the employee phone number
+            update_employee_phone_wrapper(p_phone)
+
+            # Respond to the client
+            return JsonResponse({"message": "Employee phone number updated successfully."}, status=200)
+        except Exception as e:
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
     else:
         return JsonResponse({"error": "Invalid request method!"}, status=405)

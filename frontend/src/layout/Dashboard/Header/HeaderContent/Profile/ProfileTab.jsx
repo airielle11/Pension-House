@@ -37,7 +37,7 @@ export default function ProfileTab() {
     <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
       <ListItemButton
         selected={selectedIndex === 0}
-        onClick={() => navigate('profile')}>
+        onClick={() => navigate('admin/profile')}>
         <ListItemIcon>
           <EditOutlined />
         </ListItemIcon>

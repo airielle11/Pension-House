@@ -33,16 +33,9 @@ const icons = {
 };
 
 // Role-based menu configuration
+// Role-based menu configuration
 const roleBasedMenu = {
-  "General Manager": [
-    // {
-    //   id: 'dashboard',
-    //   title: 'Dashboard',
-    //   type: 'item',
-    //   url: 'admin/dashboard',
-    //   icon: icons.DashboardOutlined,
-    //   breadcrumbs: false,
-    // },
+  "Top Management(Head Position)": [
     {
       id: 'purchase_orders',
       title: 'Purchase Orders',
@@ -52,7 +45,17 @@ const roleBasedMenu = {
       breadcrumbs: false,
     },
   ],
-  "Head Administrator": [
+  "Top Management": [
+    {
+      id: 'purchase_orders',
+      title: 'Purchase Orders',
+      type: 'item',
+      url: 'top/purchase_orders',
+      icon: icons.TransactionOutlined,
+      breadcrumbs: false,
+    },
+  ],
+  "Administration(Head Position)": [
     {
       id: 'dashboard',
       title: 'Dashboard',
@@ -68,17 +71,43 @@ const roleBasedMenu = {
       url: 'admin/purchase_orders',
       icon: icons.TeamOutlined,
       breadcrumbs: false,
-    } 
+    },
+    {
+      id: 'employees',
+      title: 'Employees',
+      type: 'item',
+      url: 'admin/employees',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
+    }
   ],
-  "Property Custodian": [
-    // {
-    //   id: 'dashboard',
-    //   title: 'Dashboard',
-    //   type: 'item',
-    //   url: 'admin/dashboard',
-    //   icon: icons.DashboardOutlined,
-    //   breadcrumbs: false,
-    // },
+  "Administration": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'admin/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'purchase_orders',
+      title: 'Purchase Orders',
+      type: 'item',
+      url: 'admin/purchase_orders',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'employees',
+      title: 'Employees',
+      type: 'item',
+      url: 'admin/employees',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
+    }
+  ],
+  "Inventory Management(Head Position)": [
     {
       id: 'purchase_orders',
       title: 'Purchase Orders',
@@ -88,7 +117,25 @@ const roleBasedMenu = {
       breadcrumbs: false,
     },
     {
-      id: 'mark_po',
+      id: 'delivery',
+      title: 'Delivery',
+      type: 'item',
+      url: 'property_custodian/delivery/mark_po',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
+    },
+  ],
+  "Inventory Management": [
+    {
+      id: 'purchase_orders',
+      title: 'Purchase Orders',
+      type: 'item',
+      url: 'property_custodian/purchase_orders',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'delivery',
       title: 'Delivery',
       type: 'item',
       url: 'property_custodian/delivery/mark_po',
@@ -99,8 +146,9 @@ const roleBasedMenu = {
 };
 
 // Get user's role  
-const userRole = localStorage.getItem('role') || 'Unknown'; // Default to 'Guest' if role is not set
+const userRole = localStorage.getItem('role') || 'Unknown'; // Default to 'Unknown' if role is not set
 console.log("User Rolee: ", userRole);
+
 // Filter menu items based on the user's role
 const menuItems = roleBasedMenu[userRole] || []; // Fallback to an empty array if the role doesn't match
 
@@ -113,3 +161,5 @@ const menu = {
 };
 
 export default menu;
+
+ 
