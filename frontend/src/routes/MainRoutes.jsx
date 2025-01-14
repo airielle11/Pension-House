@@ -65,10 +65,15 @@ const MarkPO = Loadable(lazy(() => import('../pages/delivery/MarkPOComplete.jsx'
 
 
 // Corrected imports for inventory pages
-// const StocksInventoryPage = Loadable(lazy(() => import('../pages/InventoryPages/stocks-inventory-page.jsx')));
-// const AddNewItemForm = Loadable(lazy(() => import('../pages/InventoryPages/AddNewItemForm.jsx')));
-// const DefectiveItemsTable = Loadable(lazy(() => import('../pages/InventoryPages/DefectiveItemsTable.jsx')));
-// const AddDefectiveItem = Loadable(lazy(() => import('../pages/InventoryPages/AddDefectiveItem.jsx')));
+const StocksInventoryPage = Loadable(lazy(() => import('../pages/InventoryPages/stocks-inventory-page.jsx')));
+const AddNewItemForm = Loadable(lazy(() => import('../pages/InventoryPages/AddNewItemForm.jsx')));
+const DefectiveItemsTable = Loadable(lazy(() => import('../pages/InventoryPages/DefectiveItemsTable.jsx')));
+const AddDefectiveItem = Loadable(lazy(() => import('../pages/InventoryPages/AddDefectiveItem.jsx')));
+
+const SupplierPage = Loadable(lazy(() => import('../pages/supplierManagement/SupplierPage.jsx')));
+
+const DefectiveTable = Loadable(lazy(() => import('../pages/InventoryPages/DefectiveTable.jsx'))); 
+
 
 
 // New import for AR page
@@ -138,10 +143,12 @@ const MainRoutes = {
       path: 'headhousedashboard',
       element: <HeadHouseDashboard />
     },
+
+    /*
     {
       path: 'propertycustodian',
       element: <PropertyCustodian/>
-    },
+    },*/
     {
       path: 'supervisor',
       element: <SupervisorDashboard />
@@ -191,6 +198,30 @@ const MainRoutes = {
         {
           path: 'purchase_orders',
           element: <PurchaseOrder />
+        },
+        {
+          path: '/add-new-item', // Route for Add New Item page
+          element: <AddNewItemForm />, 
+        },
+        {
+          path: 'stocksinventorypage',
+          element: <StocksInventoryPage />
+        },
+        {
+          path: 'defective-items', // Route for Defective Items page
+          element: <DefectiveItemsTable />, 
+        },
+        {
+          path: 'defective-table',  // New route for DefectiveTable
+          element: <DefectiveTable />,  // Newly added route for DefectiveTable
+        },
+        {
+          path: 'add-defective-item', // Route for Add Defective Item page
+          element: <AddDefectiveItem />
+        },
+        {
+          path: 'supplier-management',
+          element: <SupplierPage />  // Move SupplierPage to top level
         },
         {
           path: 'delivery',
@@ -284,6 +315,7 @@ const MainRoutes = {
         path: 'report',
         element: <ReportComponent />
       },
+      
       ]
     },
     

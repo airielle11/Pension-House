@@ -25,9 +25,23 @@ const MarkPOAsCompletedForm = () => {
     setFile(event.target.files[0]);
   };
 
+  const validatePurchaseOrderId = (value) => {
+    const regex = /^\d+$/; // Matches only integers
+    if (!regex.test(value)) {
+      setErrorMessage("Purchase Order ID must be a valid integer.");
+      return false;
+    }
+    setErrorMessage("");
+    return true;
+  };
+
   const handleSubmit = async () => {
     if (!purchaseOrderId || !receivingMemo || !deliveryReceipt) {
       setErrorMessage("Please fill out all fields and upload both files.");
+      return;
+    }
+
+    if (!validatePurchaseOrderId(purchaseOrderId)) {
       return;
     }
 
@@ -38,7 +52,7 @@ const MarkPOAsCompletedForm = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/mark_po_as_complete/`,
+        '${import.meta.env.VITE_API_URL}/mark_po_as_complete/',
         formData,
         {
           headers: {
@@ -58,24 +72,27 @@ const MarkPOAsCompletedForm = () => {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            handleClose();
+            handleCloseModal();
           }
         });
         setSuccessModal(true);
         setErrorMessage("");
       } else {
-        setErrorMessage(response.data.message || "An error occurred.");
+        setErrorMessage(
+          response.data.message || "Purchase Order ID not found."
+        );
       }
     } catch (error) {
-      console.log("response data:", response.data);
       Swal.fire({
         title: "Error",
         text:
-          error.response.data.message || error.message || "An error occurred.",
+          error.response?.data?.message ||
+          error.message ||
+          "An error occurred.",
         icon: "error",
         customClass: {
-            container: style.swalContainer,
-          },
+          container: style.swalContainer,
+        },
       });
     }
   };
@@ -99,7 +116,16 @@ const MarkPOAsCompletedForm = () => {
             label="Purchase Order ID"
             fullWidth
             value={purchaseOrderId}
-            onChange={(e) => setPurchaseOrderId(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (validatePurchaseOrderId(value)) {
+                setPurchaseOrderId(value);
+              } else {
+                setPurchaseOrderId(""); // Clear invalid input
+              }
+            }}
+            error={!!errorMessage}
+            helperText={errorMessage}
           />
         </Grid>
         <Grid item xs={12} md={6}>

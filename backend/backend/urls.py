@@ -26,4 +26,9 @@ urlpatterns = [
      path("", include("requisition.urls")),
      path("", include("rooms.urls")),
      path("", include("report.urls")),
+     
+     #inventory
+     path("", include("inventory.urls")),
+
+     path("", include("supplier.urls")),
 ]

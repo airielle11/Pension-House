@@ -33,7 +33,6 @@ const icons = {
   TransactionOutlined,
   TeamOutlined,
   ProductOutlined,
-  TeamOutlined, ProductOutlined,
   ShoppingCartOutlined,
   FileTextOutlined,
   DatabaseOutlined,
@@ -151,6 +150,14 @@ const roleBasedMenu = {
       url: 'property_custodian/inventory',
       icon: icons.TeamOutlined,
       breadcrumbs: false,
+    },  
+    { 
+      id: 'supplier_management',
+      title: 'Supplier Management',
+      type: 'item',
+      url: 'supplier-management',  // Define the URL for the Supplier Management page
+      icon: icons.AppstoreAddOutlined,  // You can choose a different icon if preferred
+      breadcrumbs: false
     },
   ],
 };

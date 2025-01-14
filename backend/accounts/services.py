@@ -222,4 +222,3 @@ def recover_employee_account(employee_id):
   except Exception as e:
     print("Exception occurred:", str(e))
     return {"success": False, "message": f"RPC Error: {str(e)}"} 
- 

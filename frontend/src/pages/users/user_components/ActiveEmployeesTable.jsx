@@ -18,7 +18,7 @@ import axios from "axios";
 import styles from '../Styles.module.css';
 
 const columns = [
-  { id: "emp_id", label: "ID", minWidth: 100 },
+  { id: "emp_id", label: "ID", minWidth: 70 },
   { id: "full_name", label: "Name", minWidth: 250 },
   { id: "birth_date", label: "Date of Birth", minWidth: 200 },
   { id: "hired_date", label: "Hired Date", minWidth: 200 },
@@ -26,7 +26,7 @@ const columns = [
   { id: "phone", label: "Phone", minWidth: 200 },
   { id: "image_name", label: "Image", minWidth: 200 },
   { id: "position_and_management", label: "Position & Management", minWidth: 200 },
-  { id: "actions", label: "Actions", minWidth: 200 },
+  { id: "actions", label: "Actions", minWidth: 20 },
 ];
 
 function EmployeesTable({ filteredRows, page, rowsPerPage, handleChangePage, handleChangeRowsPerPage, handleDelete }) {
@@ -45,7 +45,7 @@ function EmployeesTable({ filteredRows, page, rowsPerPage, handleChangePage, han
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/delete_employee/`, {
+          const response = await axios.get('${import.meta.env.VITE_API_URL}/delete_employee/', {
             params: { p_emp_id: empId },
           }); 
 
@@ -113,7 +113,7 @@ function EmployeesTable({ filteredRows, page, rowsPerPage, handleChangePage, han
                         <TableCell key={column.id}>
                           {column.id === "image_name" ? (
                             <>
-                              {console.log(`${import.meta.env.VITE_IMAGE_BASE_URL}/${row[column.id]}`)}
+                              {console.log('${import.meta.env.VITE_IMAGE_BASE_URL}/${row[column.id]}')}
                               <img
                                 src={`${import.meta.env.VITE_IMAGE_BASE_URL}/${row[column.id]}`}
                                 alt="Employee Avatar"
@@ -125,17 +125,7 @@ function EmployeesTable({ filteredRows, page, rowsPerPage, handleChangePage, han
                           )}
                         </TableCell> 
                       ))}
-                      <TableCell>
-                        <Tooltip title="View">
-                          <Button variant="contained" color="secondary" size="small" sx={{ marginRight: 1 }}>
-                            <FontAwesomeIcon icon={faEye} />
-                          </Button>
-                        </Tooltip>
-                        <Tooltip title="Edit">
-                          <Button variant="contained" color="primary" size="small" sx={{ marginRight: 1 }}>
-                            <FontAwesomeIcon icon={faPen} />
-                          </Button>
-                        </Tooltip>
+                      <TableCell>  
                         <Tooltip title="Delete">
                           <Button variant="contained" color="error" size="small" onClick={() => onDelete(row.emp_id)}>
                             <FontAwesomeIcon icon={faTrash} />

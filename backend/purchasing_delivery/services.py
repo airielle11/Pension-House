@@ -1,4 +1,5 @@
 import io
+import logging
 import mimetypes
 
 from supabase import Client, create_client
@@ -195,6 +196,158 @@ def get_po_quotations_image(file_name: str):
         print(f"An error occurred: {e}")
         return {"success": False, "message": str(e)}
     
+def get_delivery_receipt_image(file_name: str):
+    try:
+        print("Checking bucket...")
+        response = supabase.rpc("service_role").execute()
+
+        if response.data:
+            print("Connecting to Supabase...")
+            url = "https://hdlyxlxptyiblqssufxu.supabase.co"  # Supabase URL
+            key = response.data["service_role_key"]  # Supabase API key
+            supabase_client = create_client(url, key)
+
+            print("Retrieving image...")
+            response_data = supabase_client.storage.from_("purchasing").download(f"dr/{file_name}")
+
+            if isinstance(response_data, bytes):
+                print("File retrieved successfully.")
+                return {"success": True, "file": io.BytesIO(response_data)}
+            else:
+                return {"success": False, "message": "Unexpected response type or file not found."}
+        else:
+            return {"success": False, "message": "Failed to retrieve service role key."}
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return {"success": False, "message": str(e)}
+
+# Service for fetching receiving memo image
+def get_receiving_memo_image(file_name: str):
+    try:
+        print("Checking bucket...")
+        response = supabase.rpc("service_role").execute()
+
+        if response.data:
+            print("Connecting to Supabase...")
+            url = "https://hdlyxlxptyiblqssufxu.supabase.co"
+            key = response.data["service_role_key"]
+            supabase_client = create_client(url, key)
+
+            print("Retrieving image...")
+            response_data = supabase_client.storage.from_("purchasing").download(f"rm/{file_name}")
+
+            if isinstance(response_data, bytes):
+                print("File retrieved successfully.")
+                return {"success": True, "file": io.BytesIO(response_data)}
+            else:
+                return {"success": False, "message": "Unexpected response type or file not found."}
+        else:
+            return {"success": False, "message": "Failed to retrieve service role key."}
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return {"success": False, "message": str(e)}
+     
+def add_new_item_v2(
+    p_item_name: str,
+    p_item_descr: str,
+    p_scat_id: int,
+    p_br_id: int,
+    p_splr_id: int,
+    p_net_volqty: float,
+    p_in_stock: int,
+    p_rol: int,
+    p_pk_descr: str,
+    p_cont_id: int,
+    p_ut_id: int
+):
+    try:
+        # Execute the function to retrieve the service role key
+        response = supabase.rpc("service_role").execute()
+
+        if response.data:
+            print("Connecting to Supabase...")
+            # Initialize Supabase client with service role key
+            new_url = "https://hdlyxlxptyiblqssufxu.supabase.co"  # Supabase URL
+            new_key = response.data["service_role_key"]  # Supabase API key
+            bucket: Client = create_client(new_url, new_key)
+
+            # Define the directory containing the image
+            image_dir = "temporary_storage"
+            allowed_extensions = {".jpg", ".jpeg", ".png"}  # Allowed file types
+
+            # Search for an image in the directory
+            image_files = [
+                f for f in os.listdir(image_dir)
+                if os.path.splitext(f)[1].lower() in allowed_extensions
+            ]
+
+            if not image_files:
+                print("No valid image file found in the directory. Exiting.")
+                return
+
+            # Use the first valid image file
+            original_image_name = image_files[0]
+            original_file_path = os.path.join(image_dir, original_image_name)
+
+            # Generate a unique name by concatenating p_item_name and current datetime
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            file_extension = os.path.splitext(original_image_name)[1]
+            unique_image_name = f"{p_item_name}_{timestamp}{file_extension}"
+            unique_file_path = os.path.join(image_dir, unique_image_name)
+
+            # Rename the file
+            os.rename(original_file_path, unique_file_path)
+            print(f"Renamed file to: {unique_image_name}")
+
+            # Determine the MIME type of the file
+            mime_type, _ = mimetypes.guess_type(unique_file_path)
+            if not mime_type:
+                print("Unable to determine the MIME type. Exiting.")
+                return
+            if mime_type == "image/gif":
+                print("GIF images are not supported. Exiting.")
+                return
+            print(f"Detected MIME type: {mime_type}")
+
+            try:
+                # Open the file and upload it to the bucket
+                with open(unique_file_path, "rb") as file:
+                    upload_response = bucket.storage.from_("item").upload(
+                        unique_image_name,
+                        file,
+                        {"content-type": mime_type}  # Explicitly set the MIME type
+                    )
+                if upload_response:
+                    print("Connecting to database...")
+                    try:
+                        print("Adding new item...")
+                        params = {
+                            "p_item_name": p_item_name,
+                            "p_item_descr": p_item_descr,
+                            "p_image": unique_image_name,
+                            "p_scat_id": p_scat_id,
+                            "p_br_id": p_br_id,
+                            "p_splr_id": p_splr_id,
+                            "p_net_volqty": p_net_volqty,
+                            "p_in_stock": p_in_stock,
+                            "p_rol": p_rol,
+                            "p_pk_descr": p_pk_descr,
+                            "p_cont_id": p_cont_id,
+                            "p_ut_id": p_ut_id
+                        }
+                        db = supabase.rpc("add_new_item_wrapper", params).execute()
+
+                        print(db.data)
+                    except Exception as e:
+                        print(f"Database operation failed: {e}")
+                else:
+                    print("File upload failed.")
+            except Exception as e:
+                print(f"Error during file upload: {e}")
+        else:
+            print("Failed to retrieve service role key.")
+    except Exception as e:
+        print(f"Operation failed: {e}")
 # def upload_purchase_order_quotations(purchase_order_id: int, rm_image_path: str, dr_image_path: str):
 #     try:
 #         # Execute the function to retrieve the service role key
