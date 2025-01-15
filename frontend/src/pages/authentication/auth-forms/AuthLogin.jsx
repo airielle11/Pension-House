@@ -87,7 +87,7 @@ export default function AuthLogin({ isDemo = false }) {
             };
 
             // Use the extracted positionManagement variable
-            navigate(roleRoutes[positionManagement] || "/dashboard/default");
+            navigate(roleRoutes[positionManagement] || "/login");
           } catch (error) {
             console.error(error); // Log the full error for debugging
             const errorMsg =

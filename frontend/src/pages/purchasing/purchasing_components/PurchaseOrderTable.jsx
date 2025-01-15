@@ -29,6 +29,9 @@ export default function PurchaseOrderTable() {
   const [userRole, setUserRole] = useState(""); // State to store the user's role
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [deliveryReceiptImages, setDeliveryReceiptImages] = useState({});
+  const [receivingMemoImages, setReceivingMemoImages] = useState({});
+
 
   const [poQuotationImages, setPoQuotationImages] = useState({}); // Store images
 
@@ -64,24 +67,85 @@ export default function PurchaseOrderTable() {
     return null;
   };
 
+  const fetchDeliveryReceiptImage = async (fileName) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/delivery_receipt_image/?file_name=${fileName}`
+      );
+  
+      if (response.ok) {
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        return imageUrl;
+      } else {
+        console.error("Failed to fetch delivery receipt image:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching delivery receipt image:", error);
+    }
+    return null;
+  };
+  
+  const fetchReceivingMemoImage = async (fileName) => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/receiving_memo_image/?file_name=${fileName}`
+      );
+  
+      if (response.ok) {
+        const blob = await response.blob();
+        const imageUrl = URL.createObjectURL(blob);
+        return imageUrl;
+      } else {
+        console.error("Failed to fetch receiving memo image:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching receiving memo image:", error);
+    }
+    return null;
+  };
+  
+
   useEffect(() => {
-    // Pre-fetch all images for purchase orders
     const fetchImages = async () => {
-      const images = {};
+      const poImages = {};
+      const drImages = {};
+      const rmImages = {};
+  
       for (const order of purchaseOrders) {
+        // Fetch P.O Quotation images
         if (order["P.O w/ Price Quotations"]) {
-          const imageUrl = await fetchPoQuotationsImage(
+          const poImageUrl = await fetchPoQuotationsImage(
             order["P.O w/ Price Quotations"]
           );
-          console.log(`Order ID ${order.id} - Fetched image URL: `, imageUrl); // Log here
-          if (imageUrl) images[order.id] = imageUrl;
+          if (poImageUrl) poImages[order.id] = poImageUrl;
+        }
+  
+        // Fetch Delivery Receipt images
+        if (order["Delivery Receipt"]) {
+          const drImageUrl = await fetchDeliveryReceiptImage(
+            order["Delivery Receipt"]
+          );
+          if (drImageUrl) drImages[order.id] = drImageUrl;
+        }
+  
+        // Fetch Receiving Memo images
+        if (order["Receiving Memo"]) {
+          const rmImageUrl = await fetchReceivingMemoImage(
+            order["Receiving Memo"]
+          );
+          if (rmImageUrl) rmImages[order.id] = rmImageUrl;
         }
       }
-      setPoQuotationImages(images);
+  
+      setPoQuotationImages(poImages);
+      setDeliveryReceiptImages(drImages);
+      setReceivingMemoImages(rmImages);
     };
-
+  
     fetchImages();
   }, [purchaseOrders]);
+  
 
   // Fetch user role from localStorage once when the component mounts
   useEffect(() => {
@@ -254,8 +318,45 @@ export default function PurchaseOrderTable() {
                     )}
                   </TableCell>
 
-                  <TableCell>{order["Delivery Receipt"] || "N/A"}</TableCell>
-                  <TableCell>{order["Receiving Memo"] || "N/A"}</TableCell>
+                  <TableCell>
+                    {deliveryReceiptImages[order.id] ? (
+                      <img
+                        src={deliveryReceiptImages[order.id]}
+                        alt={`Delivery Receipt ${order.id}`}
+                        style={{
+                          width: 30,
+                          height: 30,
+                          objectFit: "contain",
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          handleOpenImageModal(deliveryReceiptImages[order.id])
+                        }
+                      />
+                    ) : (
+                      "N/A"
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {receivingMemoImages[order.id] ? (
+                      <img
+                        src={receivingMemoImages[order.id]}
+                        alt={`Receiving Memo ${order.id}`}
+                        style={{
+                          width: 30,
+                          height: 30,
+                          objectFit: "contain",
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          handleOpenImageModal(receivingMemoImages[order.id])
+                        }
+                      />
+                    ) : (
+                      "N/A"
+                    )}
+                  </TableCell>
+
                   <TableCell>{order["Created at"]}</TableCell>
                   <TableCell>{order["Received by"] || "N/A"}</TableCell>
                   <TableCell>{order.status}</TableCell>
