@@ -244,22 +244,4 @@ def receiving_memo_image_view(request):
     else:
         return JsonResponse({"success": False, "message": "Invalid request method."}, status=405)
 
-
-# @csrf_exempt
-# def delivery_receipt_image_view(request, file_name):
-#     if request == "GET":
-#         response = get_delivery_receipt_image(file_name)
-#         if response["success"]:
-#             return HttpResponse(response["file"], content_type="image/jpeg")
-#         else:
-#             return JsonResponse({"success": False, "message": response["message"]}, status=400)
-
-# View for retrieving receiving memo image
-# def receiving_memo_image_view(request, file_name):
-#     response = get_receiving_memo_image(file_name)
-#     if response["success"]:
-#         return HttpResponse(response["file"], content_type="image/jpeg")
-#     else:
-#         return JsonResponse({"success": False, "message": response["message"]}, status=400)
-   
  

@@ -156,7 +156,7 @@ export default function PurchaseOrderTable() {
 
   // Fetch purchase orders data
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/purchase_orders/`)
+    fetch('${import.meta.env.VITE_API_URL}/purchase_orders/')
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setPurchaseOrders(data.data);
@@ -165,7 +165,7 @@ export default function PurchaseOrderTable() {
   }, []);
 
   const fetchPurchaseItems = (purchaseOrderId) => {
-    fetch(`${import.meta.env.VITE_API_URL}/purchase_items/${purchaseOrderId}/`)
+    fetch('${import.meta.env.VITE_API_URL}/purchase_items/${purchaseOrderId}/')
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -203,7 +203,7 @@ export default function PurchaseOrderTable() {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/upload_po_with_quotations/`,
+        '${import.meta.env.VITE_API_URL}/upload_po_with_quotations/',
         formData, // Send the form data with file and ID
         {
           headers: {

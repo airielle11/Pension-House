@@ -4,17 +4,20 @@ import Loadable from '../components/Loadable.jsx';
 import Dashboard from '../layout/Dashboard';
 
 // import Requisition from '../pages/extra-pages/sample-page.jsx';
-// import AddRoomAndType from '../pages/add-rooms/add-rooms.jsx';
-// import Requisitions from '../pages/requisition/Requisitions.jsx';
+import AddRoomAndType from '../pages/add-rooms/add-rooms.jsx';
+import Requisitions from '../pages/requisition/Requisitions.jsx';
 // import BasicTable from '../pages/extra-pages/tables.jsx';
-// import DeskDashboard from '../pages/deskmanager/deskdashboard.jsx';
-// import HeadHouseDashboard from '../pages/headhousekeeper/headhousedashboard.jsx';
-// import RegularHousekeepeer from '../pages/regularhousekeeper/rhdashboard.jsx';
-// import PropertyCustodian from '../pages/propertycustodian/pcdashboard.jsx';
-// import MaintenanceDashboard from '../pages/maintenancemanager/mmdashboard.jsx';
-// import SupervisorDashboard from '../pages/supervisor/superdashboard.jsx';
+import DeskDashboard from '../pages/deskmanager/deskdashboard.jsx';
+import HeadHouseDashboard from '../pages/headhousekeeper/headhousedashboard.jsx';
+import RegularHousekeepeer from '../pages/regularhousekeeper/rhdashboard.jsx';
+import PropertyCustodian from '../pages/propertycustodian/pcdashboard.jsx';
+import MaintenanceDashboard from '../pages/maintenancemanager/mmdashboard.jsx';
+import SupervisorDashboard from '../pages/supervisor/superdashboard.jsx';
+import ReportComponent from '../pages/reports/Report.jsx';
+import MinimalLayout from '../layout/MinimalLayout'; 
+import RequisitionFormForHousekeeper from '../pages/regularhousekeeper/rh-requisitionform.jsx';// Adjust the path as needed
 
-// import MinimalLayout from '../layout/MinimalLayout'; 
+
 
 import Error404 from '../pages/404.jsx';
 
@@ -36,7 +39,8 @@ import Error404 from '../pages/404.jsx';
 // render - sample page
 // const SamplePage = Loadable(lazy(() => import('../pages/extra-pages/sample-page.jsx')));
 
- const UserProfile = Loadable(lazy(() => import('../pages/users/UserProfile.jsx')))
+// const Tables = Loadable(lazy(() => import('../pages/extra-pages/Tables.jsx'))) 
+const UserProfile = Loadable(lazy(() => import('../pages/users/UserProfile.jsx')))
 
 
 // render - sample page
@@ -50,7 +54,7 @@ const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.js
 // const InventoryDashboard = Loadable(lazy(() => import('../pages/inventory/InventoryDashboard.jsx')));
 // const TopDashboard = Loadable(lazy(() => import('../pages/top/TopDashboard.jsx')));
 // const DeskDashboard = Loadable(lazy(() => import('../pages/desk/DeskDashboard.jsx')));
-// const HousekeepingDashboard = Loadable(lazy(() => import('../pages/housekeeping/HousekeepingDashboard.jsx')));
+//const HousekeepingDashboard = Loadable(lazy(() => import('../pages/housekeeping/HousekeepingDashboard.jsx')));
 // const MaintenanceDashboard = Loadable(lazy(() => import('../pages/maintenance/MaintenanceDashboard.jsx')));
 const AdminDashboard = Loadable(lazy(() => import('../pages/admin/AdminDashboard/index.jsx')));
 const PurchaseOrder = Loadable(lazy(() => import('../pages/purchasing/PurchaseOrder.jsx')));
@@ -61,10 +65,15 @@ const MarkPO = Loadable(lazy(() => import('../pages/delivery/MarkPOComplete.jsx'
 
 
 // Corrected imports for inventory pages
-// const StocksInventoryPage = Loadable(lazy(() => import('../pages/InventoryPages/stocks-inventory-page.jsx')));
-// const AddNewItemForm = Loadable(lazy(() => import('../pages/InventoryPages/AddNewItemForm.jsx')));
-// const DefectiveItemsTable = Loadable(lazy(() => import('../pages/InventoryPages/DefectiveItemsTable.jsx')));
-// const AddDefectiveItem = Loadable(lazy(() => import('../pages/InventoryPages/AddDefectiveItem.jsx')));
+const StocksInventoryPage = Loadable(lazy(() => import('../pages/InventoryPages/stocks-inventory-page.jsx')));
+const AddNewItemForm = Loadable(lazy(() => import('../pages/InventoryPages/AddNewItemForm.jsx')));
+const DefectiveItemsTable = Loadable(lazy(() => import('../pages/InventoryPages/DefectiveItemsTable.jsx')));
+const AddDefectiveItem = Loadable(lazy(() => import('../pages/InventoryPages/AddDefectiveItem.jsx')));
+
+const SupplierPage = Loadable(lazy(() => import('../pages/supplierManagement/SupplierPage.jsx')));
+
+const DefectiveTable = Loadable(lazy(() => import('../pages/InventoryPages/DefectiveTable.jsx'))); 
+
 
 
 // New import for AR page
@@ -94,6 +103,7 @@ const MainRoutes = {
         }
       ]
     }, 
+    // {
 
     //   path: 'sample-page',
     //   element: <SamplePage />
@@ -116,72 +126,106 @@ const MainRoutes = {
     //   element: <BasicTable/>
     // }
     // ,  
-    // {
-    //   path: 'Requisitions',
-    //   element: <Requisitions/>
-    // }, 
-    // {
+    {
+      path: 'Requisitions',
+      element: <Requisitions/>
+    }, 
+    {
 
-    //   path: 'add-rooms',
-    //   element: <AddRoomAndType />
+      path: 'add-rooms',
+      element: <AddRoomAndType />
+    },
+    {
+      path: 'deskdashboard',
+      element: <DeskDashboard />
+    },
+    {
+      path: 'headhousedashboard',
+      element: <HeadHouseDashboard />
+    },
+
+    /*
+    {
+      path: 'propertycustodian',
+      element: <PropertyCustodian/>
+    },*/
+    {
+      path: 'supervisor',
+      element: <SupervisorDashboard />
+    },
+    {
+      path: 'regularhousekeeper',
+      element: <RegularHousekeepeer />
+    },
+    {
+      path: 'maintenancemanager',
+      element: <MaintenanceDashboard />
+    },
+    {
+      path: 'profile',
+      element: <UserProfile />
+    }, 
+    {
+      path: 'report',
+      element: <ReportComponent />
+    },
+    // {
+    //   path: 'add_employee'
+    //   element: < />
+    // }
+    // {
+    //   path: 'shadow',
+    //   element: <Shadow />
     // },
-    // {
-    //   path: 'deskdashboard',
-    //   element: <DeskDashboard />
-    // },
-    // {
-    //   path: 'headhousedashboard',
-    //   element: <HeadHouseDashboard />
-    // },
-    // {
-    //   path: 'propertycustodian',
-    //   element: <PropertyCustodian/>
-    // },
-    // {
-    //   path: 'supervisor',
-    //   element: <SupervisorDashboard />
-    // },
-    // {
-    //   path: 'regularhousekeeper',
-    //   element: <RegularHousekeepeer />
-    // },
-    // {
-    //   path: 'maintenancemanager',
-    //   element: <MaintenanceDashboard />
-    // },
-    // {
-    //   path: 'profile',
-    //   element: <UserProfile />
-    // },  
-    // {
-    //   path: '/add-new-item', // Route for Add New Item page
-    //   element: <AddNewItemForm />, 
-    // }, 
-    // {
-    //   path: 'stocksinventorypage',
-    //   element: <StocksInventoryPage />
+    // { 
+    //   path: 'typography',
+    //   element: <Typography />
     // },
 
-    // {
-    //   path: 'defective-items', // Route for Defective Items page
-    //   element: <DefectiveItemsTable />, 
-    // },
-    // {
-    //   path: 'add-defective-item', // Route for Add Defective Item page
-    //   element: <AddDefectiveItem />
-    // }, 
+    {
+      path: '/add-new-item', // Route for Add New Item page
+      element: <AddNewItemForm />, 
+    },
 
-    // Airielle
+
     {
       path: 'property_custodian',
       children: [
         // {
         //   path: 'dashboard',
         //   element: <InventoryDashboard />
-        // },
+        // }, 
         {
           path: 'purchase_orders',
           element: <PurchaseOrder />
+        },
+        {
+          path: 'requisitions',
+          element: <Requisitions/>
+        }, 
+        {
+          path: 'add-new-item', // Route for Add New Item page
+          element: <AddNewItemForm />, 
+        },
+        {
+          path: 'stocksinventorypage',
+          element: <StocksInventoryPage />
+        },
+        {
+          path: 'defective-items', // Route for Defective Items page
+          element: <DefectiveItemsTable />, 
+        },
+        {
+          path: 'defective-table',  // New route for DefectiveTable
+          element: <DefectiveTable />,  // Newly added route for DefectiveTable
+        },
+        {
+          path: 'add-defective-item', // Route for Add Defective Item page
+          element: <AddDefectiveItem />
+        },
+        {
+          path: 'supplier-management',
+          element: <SupplierPage />  // Move SupplierPage to top level
         },
         {
           path: 'delivery',
@@ -194,15 +238,33 @@ const MainRoutes = {
         },
       ]
     },  
-    // {
-    //   path: 'desk',
-    //   children: [
-    //     {
-    //       path: 'dashboard',
-    //       element: <DeskDashboard />
-    //     }
-    //   ]
-    // },
+    {
+      path: 'desk',
+      children: [
+        {
+          path: 'dashboard',
+          element: <DeskDashboard />
+        },
+            {
+      path: 'requisitions',
+      element: <Requisitions/>
+    }, 
+  ]
+},
+
+{
+  path: 'housekeeping',
+  children: [
+    {
+      path: 'dashboard',
+      element: <RegularHousekeepeer />
+    },
+    {
+      path: 'requisitions',
+      element: <RequisitionFormForHousekeeper /> // Use the updated component
+    },
+  ]
+},
     // {
     //   path: 'housekeeping',
     //   children: [
@@ -224,14 +286,18 @@ const MainRoutes = {
     {
       path: 'top',
       children: [
-        // {
-        //   path: 'dashboard',
-        //   element: <TopDashboard />
-        // },
+        {
+          path: 'dashboard',
+          element: <DashboardDefault />
+        },
         {
           path: 'purchase_orders',
           element: <PurchaseOrder />
         },
+        {
+          path: 'requisitions',
+          element: <Requisitions/>
+        }, 
       ]
     },
     { 
@@ -239,22 +305,32 @@ const MainRoutes = {
       children: [
         {
           path: 'dashboard',
-          element: <AdminDashboard />  
+          element: <DashboardDefault />
         },
         {
           path: 'purchase_orders',
           element: <PurchaseOrder /> 
         },
         {
-          path: 'employees',
-          element: <Employees /> 
+          path: 'add-rooms',
+          element: <AddRoomAndType />
         },
         {
-          path: 'profile',
-          element: <UserProfile /> 
+          path: 'requisitions',
+          element: <Requisitions />
         },
+        {
+        path: 'report',
+        element: <ReportComponent />
+      },
+      {
+        path: 'supplier-management',
+        element: <SupplierPage />  // Move SupplierPage to top level
+      },
+      
       ]
-    }
+    },
+    
   ]
 };
 

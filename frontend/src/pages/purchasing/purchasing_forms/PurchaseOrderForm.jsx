@@ -23,7 +23,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
-export default function PurchaseOrderForm() {
+export default function PurchaseOrderForm({ userRole }) {
   const [open, setOpen] = useState(false);
   const [stocks, setStocks] = useState([]); // All stocks
   const [filteredStocks, setFilteredStocks] = useState([]); // Filtered stocks

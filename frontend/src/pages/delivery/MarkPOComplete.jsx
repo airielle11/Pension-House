@@ -52,7 +52,7 @@ const MarkPOAsCompletedForm = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/mark_po_as_complete/`,
+        '${import.meta.env.VITE_API_URL}/mark_po_as_complete/',
         formData,
         {
           headers: {
