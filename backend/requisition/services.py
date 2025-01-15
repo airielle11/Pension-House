@@ -515,40 +515,49 @@ def get_ar_image(file_name: str):
         # Executes function then returns service role key
         response = supabase.rpc("service_role").execute()
 
-        if response.data:
-            print("Connecting...")
-            url2 = "https://hdlyxlxptyiblqssufxu.supabase.co"  # Supabase URL
-            key2 = response.data["service_role_key"]  # Supabase API key
-            supabase2: Client = create_client(url2, key2)
-
-            try:
-                # Fetch image from bucket
-                print("Retrieving image...")
-                try:
-                    response2 = supabase2.storage.from_("item").download(file_name)
-                except Exception:
-                    print("File not found. Retrieving fallback image...")
-                    response2 = supabase2.storage.from_("A-Receipt").download("item not found.png")
-
-                # Check if the response is bytes (binary data)
-                if isinstance(response2, bytes):
-                    # Convert the binary data to an image
-                    img = Image.open(io.BytesIO(response2))
-                    print("File retrieved successfully")
-                    return img
-                else:
-                    print("Unexpected response type:", type(response2))
-                    return {"error": "Unexpected response type from storage."}
-            except Exception as e:
-                print(f"Error downloading or processing the file: {e}")
-                return {"error": f"Error downloading or processing the file: {e}"}
-        else:
-            print("Failed. No data returned")
+        if not response.data:
+            print("Failed to retrieve service role key.")
             return {"error": "Failed to retrieve service role key."}
+
+        print("Connecting...")
+        url2 = "https://hdlyxlxptyiblqssufxu.supabase.co"  # Supabase URL
+        key2 = response.data["service_role_key"]  # Supabase API key
+        supabase2: Client = create_client(url2, key2)
+
+        try:
+            # Fetch image from bucket
+            print(f"Retrieving image: {file_name}...")
+            response2 = supabase2.storage.from_("item").download(file_name)
+
+            if not response2:  # Check if response is empty
+                raise FileNotFoundError(f"File '{file_name}' not found in 'item' bucket.")
+
+            print("File retrieved successfully.")
+            # Convert binary data to an image
+            img = Image.open(io.BytesIO(response2))
+            return img
+        except FileNotFoundError as fnf_error:
+            print(fnf_error)
+            print("Attempting to retrieve fallback image...")
+            try:
+                fallback_response = supabase2.storage.from_("A-Receipt").download("ar not found.png")
+
+                if not fallback_response:
+                    raise FileNotFoundError("Fallback image 'ar not found.png' not found in 'A-Receipt' bucket.")
+
+                print("Fallback image retrieved successfully.")
+                fallback_img = Image.open(io.BytesIO(fallback_response))
+                return fallback_img
+            except Exception as fallback_error:
+                print(f"Error retrieving fallback image: {fallback_error}")
+                return {"error": f"Fallback image error: {fallback_error}"}
+        except Exception as download_error:
+            print(f"Error downloading the file: {download_error}")
+            return {"error": f"Error downloading the file: {download_error}"}
     except Exception as e:
-        print(f"Failed. {e}")
+        print(f"Unexpected error: {e}")
         return {"error": f"An unexpected error occurred: {e}"}
-    
+
     
 def get_stocks():
     """

@@ -42,14 +42,14 @@ const icons = {
 // Role-based menu configuration
 const roleBasedMenu = {
   "General Manager": [
-    // {
-    //   id: 'dashboard',
-    //   title: 'Dashboard',
-    //   type: 'item',
-    //   url: 'admin/dashboard',
-    //   icon: icons.DashboardOutlined,
-    //   breadcrumbs: false,
-    // },
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'top/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
     {
       id: 'purchase_orders',
       title: 'Purchase Orders',
@@ -64,14 +64,6 @@ const roleBasedMenu = {
       type: 'item',
       url: 'top/requisitions',
       icon: icons.FileTextOutlined
-    },
-    {
-      id: 'dashboard',
-      title: 'Dashboard',
-      type: 'item',
-      url: 'top/dashboard',
-      icon: icons.DashboardOutlined,
-      breadcrumbs: false,
     },
   ],
   "Head Administrator": [
@@ -115,6 +107,13 @@ const roleBasedMenu = {
       breadcrumbs: false
     },
     {
+      id: 'stocks-inventory',
+      title: 'Stocks and Inventory',
+      type: 'item',
+      url: 'admin/stocksinventorypage',
+      icon: icons.DatabaseOutlined
+    },
+    {
       id: 'report',
       title: 'Reports',
       type: 'item',
@@ -140,14 +139,14 @@ const roleBasedMenu = {
     },
   ],
   "Property Custodian": [
-    // {
-    //   id: 'dashboard',
-    //   title: 'Dashboard',
-    //   type: 'item',
-    //   url: 'admin/dashboard',
-    //   icon: icons.DashboardOutlined,
-    //   breadcrumbs: false,
-    // },
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'property_custodian/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
     {
       id: 'stocks-inventory',
       title: 'Stocks and Inventory',
@@ -177,6 +176,23 @@ const roleBasedMenu = {
       title: 'Requisitions',
       type: 'item',
       url: 'property_custodian/requisitions',
+      icon: icons.FileTextOutlined
+    },
+  ],
+  "Front Office Manager": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'desk/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'desk/requisitions',
       icon: icons.FileTextOutlined
     },
   ],

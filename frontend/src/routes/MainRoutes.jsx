@@ -50,6 +50,7 @@ const UserProfile = Loadable(lazy(() => import('../pages/users/UserProfile.jsx')
 
 // const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx'))); 
 // Lazily load the components
+// const PropertyCustodian = Loadable(lazy(() => import('../pages/propertycustodian/pcdashboard.jsx')));
 const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.jsx')));
 // const InventoryDashboard = Loadable(lazy(() => import('../pages/inventory/InventoryDashboard.jsx')));
 // const TopDashboard = Loadable(lazy(() => import('../pages/top/TopDashboard.jsx')));
@@ -144,11 +145,10 @@ const MainRoutes = {
       element: <HeadHouseDashboard />
     },
 
-    /*
     {
       path: 'propertycustodian',
       element: <PropertyCustodian/>
-    },*/
+    },
     {
       path: 'supervisor',
       element: <SupervisorDashboard />
@@ -191,10 +191,10 @@ const MainRoutes = {
     {
       path: 'property_custodian',
       children: [
-        // {
-        //   path: 'dashboard',
-        //   element: <InventoryDashboard />
-        // }, 
+        {
+          path: 'dashboard',
+          element: <PropertyCustodian />
+        }, 
         {
           path: 'purchase_orders',
           element: <PurchaseOrder />
@@ -326,6 +326,10 @@ const MainRoutes = {
       {
         path: 'supplier-management',
         element: <SupplierPage />  // Move SupplierPage to top level
+      },
+      {
+        path: 'stocksinventorypage',
+        element: <StocksInventoryPage />
       },
       
       ]
