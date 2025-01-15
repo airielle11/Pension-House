@@ -1,10 +1,11 @@
 import logging
 from django.http import HttpResponse, JsonResponse
 import json
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from .services import create_purchase_order, get_purchase_orders, get_purchase_items, get_stocks_for_po, mark_po_as_completed, upload_po_with_quotations, get_po_quotations_image, get_delivery_receipt_image, get_receiving_memo_image
 from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
+from django.core.files.base import ContentFile 
 
 @csrf_exempt
 def create_purchase_order_view(request):
@@ -244,4 +245,4 @@ def receiving_memo_image_view(request):
     else:
         return JsonResponse({"success": False, "message": "Invalid request method."}, status=405)
 
- 
+   

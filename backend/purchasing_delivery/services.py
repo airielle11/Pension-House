@@ -1,11 +1,10 @@
 import base64
 import io
 import logging
-import mimetypes
-
-from supabase import Client, create_client
+import mimetypes 
+from django.http import JsonResponse
+from supabase import Client, create_client 
 from supabase_client import supabase 
-
 
 def create_purchase_order(items: list):
     try:
@@ -309,4 +308,3 @@ def get_receiving_memo_image(file_name: str):
     except Exception as e:
         print(f"An error occurred: {e}")
         return {"success": False, "message": str(e)}
- 

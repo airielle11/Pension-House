@@ -62,7 +62,7 @@ const MarkPOAsCompletedForm = () => {
       );
       if (response.data.success) {
         Swal.fire({
-          title: "Success!",
+          title: "Success",
           text:
             response.data.message || "Purchase Order Completed Successfully!",
           icon: "success",
@@ -72,15 +72,27 @@ const MarkPOAsCompletedForm = () => {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            handleCloseModal();
+            handleClose();
           }
-        });
+        }) 
+
         setSuccessModal(true);
         setErrorMessage("");
       } else {
-        setErrorMessage(
-          response.data.message || "Purchase Order ID not found."
-        );
+        Swal.fire({
+          title: "Error",
+          text:
+            response.data.message || "Purchase Order ID not found.",
+          icon: "error",
+          customClass: {
+            container: style.swalContainer,
+          },
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleClose();
+          }
+        }) 
       }
     } catch (error) {
       Swal.fire({

@@ -50,7 +50,7 @@ const Employees = Loadable(lazy(() => import('../pages/users/ManageEmployees.jsx
 
 // const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx'))); 
 // Lazily load the components
-const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.jsx')));
+const DashboardDefault = Loadable(lazy(() => import('../pages/admin/AdminDashboard/index.jsx')));
 // const InventoryDashboard = Loadable(lazy(() => import('../pages/inventory/InventoryDashboard.jsx')));
 // const TopDashboard = Loadable(lazy(() => import('../pages/top/TopDashboard.jsx')));
 // const DeskDashboard = Loadable(lazy(() => import('../pages/desk/DeskDashboard.jsx')));
