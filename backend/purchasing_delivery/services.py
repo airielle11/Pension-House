@@ -309,4 +309,4 @@ def get_receiving_memo_image(file_name: str):
     except Exception as e:
         print(f"An error occurred: {e}")
         return {"success": False, "message": str(e)}
-     
+ 

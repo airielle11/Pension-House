@@ -73,8 +73,8 @@ export default function AuthLogin({ isDemo = false }) {
               "Inventory Management(Head Position)":
                 "/property_custodian/purchase_orders",
               "Inventory Management": "/property_custodian/purchase_orders",
-              "Top Management(Head Position)": "/top/purchase_orders",
-              "Top Management": "/top/purchase_orders",
+              "Top Management(Head Position)": "/top/dashboard",
+              "Top Management": "/top/dashboard",
               "Desk Management": "/desk/dashboard",
               "Desk Management(Head Position)": "/desk/dashboard",
               "Housekeeping Management": "/housekeeping/dashboard",
@@ -87,7 +87,7 @@ export default function AuthLogin({ isDemo = false }) {
             };
 
             // Use the extracted positionManagement variable
-            navigate(roleRoutes[positionManagement] || "/login");
+            navigate(roleRoutes[positionManagement] || "/dashboard/Z");
           } catch (error) {
             console.error(error); // Log the full error for debugging
             const errorMsg =

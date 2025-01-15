@@ -17,6 +17,8 @@ import {
 import axios from "axios";
 import Swal from "sweetalert2";
 import style from "../../users/Styles.module.css";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function PurchaseOrderTable() {
   const [purchaseOrders, setPurchaseOrders] = useState([]);
@@ -31,8 +33,6 @@ export default function PurchaseOrderTable() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [deliveryReceiptImages, setDeliveryReceiptImages] = useState({});
   const [receivingMemoImages, setReceivingMemoImages] = useState({});
-
-
   const [poQuotationImages, setPoQuotationImages] = useState({}); // Store images
 
   const handleOpenImageModal = (imageUrl) => {
@@ -107,45 +107,45 @@ export default function PurchaseOrderTable() {
   
 
   useEffect(() => {
-    const fetchImages = async () => {
-      const poImages = {};
-      const drImages = {};
-      const rmImages = {};
-  
-      for (const order of purchaseOrders) {
-        // Fetch P.O Quotation images
-        if (order["P.O w/ Price Quotations"]) {
-          const poImageUrl = await fetchPoQuotationsImage(
-            order["P.O w/ Price Quotations"]
-          );
-          if (poImageUrl) poImages[order.id] = poImageUrl;
-        }
-  
-        // Fetch Delivery Receipt images
-        if (order["Delivery Receipt"]) {
-          const drImageUrl = await fetchDeliveryReceiptImage(
-            order["Delivery Receipt"]
-          );
-          if (drImageUrl) drImages[order.id] = drImageUrl;
-        }
-  
-        // Fetch Receiving Memo images
-        if (order["Receiving Memo"]) {
-          const rmImageUrl = await fetchReceivingMemoImage(
-            order["Receiving Memo"]
-          );
-          if (rmImageUrl) rmImages[order.id] = rmImageUrl;
-        }
+  const fetchImages = async () => {
+    const poImages = {};
+    const drImages = {};
+    const rmImages = {};
+
+    for (const order of purchaseOrders) {
+      // Fetch P.O Quotation images
+      if (order["P.O w/ Price Quotations"]) {
+        const poImageUrl = await fetchPoQuotationsImage(
+          order["P.O w/ Price Quotations"]
+        );
+        if (poImageUrl) poImages[order.id] = poImageUrl;
       }
-  
-      setPoQuotationImages(poImages);
-      setDeliveryReceiptImages(drImages);
-      setReceivingMemoImages(rmImages);
-    };
-  
-    fetchImages();
-  }, [purchaseOrders]);
-  
+
+      // Fetch Delivery Receipt images
+      if (order["Delivery Receipt"]) {
+        const drImageUrl = await fetchDeliveryReceiptImage(
+          order["Delivery Receipt"]
+        );
+        if (drImageUrl) drImages[order.id] = drImageUrl;
+      }
+
+      // Fetch Receiving Memo images
+      if (order["Receiving Memo"]) {
+        const rmImageUrl = await fetchReceivingMemoImage(
+          order["Receiving Memo"]
+        );
+        if (rmImageUrl) rmImages[order.id] = rmImageUrl;
+      }
+    }
+
+    setPoQuotationImages(poImages);
+    setDeliveryReceiptImages(drImages);
+    setReceivingMemoImages(rmImages);
+  };
+
+  fetchImages();
+}, [purchaseOrders]);
+
 
   // Fetch user role from localStorage once when the component mounts
   useEffect(() => {
@@ -156,7 +156,7 @@ export default function PurchaseOrderTable() {
 
   // Fetch purchase orders data
   useEffect(() => {
-    fetch('${import.meta.env.VITE_API_URL}/purchase_orders/')
+    fetch(`${import.meta.env.VITE_API_URL}/purchase_orders/`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) setPurchaseOrders(data.data);
@@ -165,7 +165,7 @@ export default function PurchaseOrderTable() {
   }, []);
 
   const fetchPurchaseItems = (purchaseOrderId) => {
-    fetch('${import.meta.env.VITE_API_URL}/purchase_items/${purchaseOrderId}/')
+    fetch(`${import.meta.env.VITE_API_URL}/purchase_items/${purchaseOrderId}/`)
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
@@ -182,6 +182,24 @@ export default function PurchaseOrderTable() {
     fetchPurchaseItems(purchaseOrderId);
     setModalOpen(true);
   };
+
+   
+
+const generatePDF = () => {
+  const modalContent = document.getElementById("modalContent"); // Wrap your modal content in a div with this ID
+  if (modalContent) {
+    html2canvas(modalContent).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("purchase_order.pdf");
+    });
+  }
+};
+
 
   const handleUploadPriceQuotations = async () => {
     if (!file) {
@@ -203,7 +221,7 @@ export default function PurchaseOrderTable() {
 
     try {
       const response = await axios.post(
-        '${import.meta.env.VITE_API_URL}/upload_po_with_quotations/',
+        `${import.meta.env.VITE_API_URL}/upload_po_with_quotations/`,
         formData, // Send the form data with file and ID
         {
           headers: {
@@ -483,48 +501,52 @@ export default function PurchaseOrderTable() {
       </Modal>
 
       {/* Modal for viewing purchase items */}
-      <Modal open={modalOpen} onClose={handleCloseModal}>
-        <Box sx={modalStyles}>
-          <Typography variant="h6" component="h2">
-            Order ID: {selectedPurchaseOrderId}
-          </Typography>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>SKU</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>Quantity</TableCell>
-                <TableCell>Unit Price</TableCell>
-                <TableCell>Total</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {selectedOrderItems.length ? (
-                selectedOrderItems.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{item.sku}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell>{item["unit price"] || "N/A"}</TableCell>
-                    <TableCell>{item["total"] || "N/A"}</TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    No items available
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <Button onClick={handleCloseModal} variant="contained">
-              Close
-            </Button>
-          </Box>
-        </Box>
-      </Modal>
+<Modal open={modalOpen} onClose={handleCloseModal}>
+  <Box sx={modalStyles} id="modalContent"> {/* Add ID here */}
+    <Typography variant="h6" component="h2">
+      Order ID: {selectedPurchaseOrderId}
+    </Typography>
+    <Table>
+      <TableHead>
+        <TableRow>
+          <TableCell>SKU</TableCell>
+          <TableCell>Description</TableCell>
+          <TableCell>Quantity</TableCell>
+          <TableCell>Unit Price</TableCell>
+          <TableCell>Total</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {selectedOrderItems.length ? (
+          selectedOrderItems.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>{item.sku}</TableCell>
+              <TableCell>{item.description}</TableCell>
+              <TableCell>{item.quantity}</TableCell>
+              <TableCell>{item["unit price"] || "N/A"}</TableCell>
+              <TableCell>{item["total"] || "N/A"}</TableCell>
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={5} align="center">
+              No items available
+            </TableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+      <Button onClick={generatePDF} variant="contained"> {/* Call generatePDF */}
+        Download PDF
+      </Button>
+      <Button onClick={handleCloseModal} variant="contained">
+        Close
+      </Button>
+    </Box>
+  </Box>
+</Modal>
+
     </div>
   );
 }

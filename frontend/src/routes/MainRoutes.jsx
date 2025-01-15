@@ -168,26 +168,11 @@ const MainRoutes = {
     {
       path: 'report',
       element: <ReportComponent />
-    },
-    // {
-    //   path: 'add_employee'
-    //   element: < />
-    // }
-    // {
-    //   path: 'shadow',
-    //   element: <Shadow />
-    // },
-    // { 
-    //   path: 'typography',
-    //   element: <Typography />
-    // },
-
+    }, 
     {
       path: '/add-new-item', // Route for Add New Item page
       element: <AddNewItemForm />, 
-    },
-
-
+    }, 
     {
       path: 'property_custodian',
       children: [
