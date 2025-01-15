@@ -46,7 +46,7 @@ const UserProfile = Loadable(lazy(() => import('../pages/users/UserProfile.jsx')
 // render - sample page
 // const SamplePage = Loadable(lazy(() => import('../pages/extra-pages/sample-page.jsx')));
 // const PurchaseOrderList = Loadable(lazy(() => import('../pages/purchasing/PurchaseOrder.jsx')));
-// const Employees = Loadable(lazy(() => import('../pages/users/ManageEmployees.jsx')));
+const Employees = Loadable(lazy(() => import('../pages/users/ManageEmployees.jsx')));
 
 // const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx'))); 
 // Lazily load the components
@@ -168,26 +168,11 @@ const MainRoutes = {
     {
       path: 'report',
       element: <ReportComponent />
-    },
-    // {
-    //   path: 'add_employee'
-    //   element: < />
-    // }
-    // {
-    //   path: 'shadow',
-    //   element: <Shadow />
-    // },
-    // { 
-    //   path: 'typography',
-    //   element: <Typography />
-    // },
-
+    }, 
     {
       path: '/add-new-item', // Route for Add New Item page
       element: <AddNewItemForm />, 
-    },
-
-
+    }, 
     {
       path: 'property_custodian',
       children: [
@@ -309,7 +294,7 @@ const MainRoutes = {
         },
         {
           path: 'purchase_orders',
-          element: <PurchaseOrder />
+          element: <PurchaseOrder /> 
         },
         {
           path: 'add-rooms',

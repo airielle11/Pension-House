@@ -222,3 +222,86 @@ def recover_employee_account(employee_id):
   except Exception as e:
     print("Exception occurred:", str(e))
     return {"success": False, "message": f"RPC Error: {str(e)}"} 
+ 
+def get_positions():
+    try:
+        response = supabase.rpc("get_positions").execute()
+
+        if response.data:
+            positions = []
+            # Iterate through each record and collect details
+            for column in response.data:
+                positions.append({
+                    "id": column.get("id", "N/A"),
+                    "position": column.get("position_name", "N/A"),
+                })
+            return positions  # Return the collected positions
+        else:
+            print("No positions found.")
+            return []  # Return an empty list if no data found
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return None  # Return None on error
+
+def update_employee_name_wrapper( p_new_lname: str, p_new_fname: str, p_new_mname: str):
+  try:
+    # Prepare parameters
+    function_params = {
+      "p_new_lname": p_new_lname,
+      "p_new_fname": p_new_fname,
+      "p_new_mname": p_new_mname
+    }
+
+    # Call the Supabase function
+    print("Updating employee name...")
+    response = supabase.rpc("update_employee_name_wrapper", function_params).execute()
+
+    print(response.data)  # Prints the returned message from the database
+  except Exception as e:
+    print("Exception occurred while updating employee name:", str(e))
+
+
+def update_employee_address(
+  p_st_no: str,
+  p_st_name: str,
+  p_unit_no: str,
+  p_city: str,
+  p_state: str,
+  p_zip: str,
+  p_country: str
+):
+  try:
+    # Prepare parameters
+    function_params = {
+      "p_st_no": p_st_no,
+      "p_st_name": p_st_name,
+      "p_unit_no": p_unit_no,
+      "p_city": p_city,
+      "p_state": p_state,
+      "p_zip": p_zip,
+      "p_country": p_country
+    }
+
+    # Call the Supabase function
+    print("Updating employee address...")
+    response = supabase.rpc("update_employee_address_wrapper", function_params).execute()
+
+    print(response.data)  # Prints the returned message from the database
+  except Exception as e:
+    print("Exception occurred while updating employee address:", str(e))
+
+
+def update_employee_phone_wrapper( p_phone: str):
+  try:
+    # Prepare parameters
+    function_params = {
+      "p_phone": p_phone
+    }
+
+    # Call the Supabase function
+    print("Updating employee phone...")
+    response = supabase.rpc("update_employee_phone_wrapper", function_params).execute()
+
+    print(response.data)  # Prints the returned message from the database
+  except Exception as e:
+    print("Exception occurred while updating employee phone:", str(e))

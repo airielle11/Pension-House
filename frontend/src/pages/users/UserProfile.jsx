@@ -46,7 +46,7 @@ const ProfileSettings = () => {
 
   const updateGeneralInfo = async () => {
     try {
-      const response = await fetch('${import.meta.env.VITE_API_URL}/update_general_info/', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/update_general_info/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -61,7 +61,7 @@ const ProfileSettings = () => {
         alert("General information updated successfully!");
         setIsEditingGeneral(false);
       } else {
-        alert('Error updating general information: ${data.error}');
+        alert(`Error updating general information: ${data.error}`);
       }
     } catch (error) {
       console.error("Error updating general information:", error);
@@ -70,7 +70,7 @@ const ProfileSettings = () => {
 
   const updateAddressInfo = async () => {
     try {
-      const response = await fetch('${import.meta.env.VITE_API_URL}/update_address_info/', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/update_address_info/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -88,7 +88,7 @@ const ProfileSettings = () => {
         alert("Address information updated successfully!");
         setIsEditingAddress(false);
       } else {
-        alert('Error updating address information: ${data.error}');
+        alert(`Error updating address information: ${data.error}`);
       }
     } catch (error) {
       console.error("Error updating address information:", error);
@@ -97,7 +97,7 @@ const ProfileSettings = () => {
 
   const updateContactInfo = async () => {
     try {
-      const response = await fetch('${import.meta.env.VITE_API_URL}/update_contact_info/', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/update_contact_info/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -110,7 +110,7 @@ const ProfileSettings = () => {
         alert("Contact information updated successfully!");
         setIsEditingContact(false);
       } else {
-        alert('Error updating contact information: ${data.error}');
+        alert(`Error updating contact information: ${data.error}`);
       }
     } catch (error) {
       console.error("Error updating contact information:", error);
