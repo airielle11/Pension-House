@@ -25,7 +25,7 @@ from .services import get_ar_image
 from .services import get_stocks
 from .services import identify_view_more
 from django.http import HttpResponse
-
+import os
 @csrf_exempt
 def get_rooms_view(request):
     if request.method == 'GET':
@@ -476,35 +476,40 @@ def accept_and_mark_item_as_unavailable_view(request):
     
     return JsonResponse({"error": "Invalid HTTP method. Use POST."}, status=405)
 
-
 @csrf_exempt
 def mark_item_as_completed_view(request):
     if request.method == "POST":
         try:
-            # Parse the JSON body of the request
-            data = json.loads(request.body)
+            # Retrieve the file and item_requisition_id from the request
+            file = request.FILES.get("file")
+            item_requisition_id = request.POST.get("item_requisition_id")
 
-            # Extract item_requisition_id from the request data
-            item_requisition_id = data.get("item_requisition_id")
-
-            # Validate the parameter
+            # Validate the parameters
+            if not file:
+                return JsonResponse({"error": "Missing file."}, status=400)
             if not item_requisition_id:
                 return JsonResponse({"error": "Missing required parameter: item_requisition_id."}, status=400)
 
-            # Call the mark_item_as_completed function
-            result = mark_item_as_completed(item_requisition_id)
+            # Log received data for debugging
+            print(f"Received item_requisition_id: {item_requisition_id}")
+            print(f"Received file: {file.name}")
 
-            # Return the result (either success or error message)
-            if result["status"] == "success":
-                return JsonResponse(result, status=200)
+            # Read file content
+            file_content = file.read()
+
+            # Call the updated mark_item_as_completed function
+            result = mark_item_as_completed(int(item_requisition_id), file_content, file.name)
+
+            # Return the result to the client
+            if result.get("status") == "success":
+                return JsonResponse({"message": "Item marked as completed successfully."}, status=200)
             else:
                 return JsonResponse(result, status=400)
-        
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON format."}, status=400)
+
         except Exception as e:
+            print(f"Error: {str(e)}")
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
-    
+
     return JsonResponse({"error": "Invalid HTTP method. Use POST."}, status=405)
 
 

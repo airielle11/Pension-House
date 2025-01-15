@@ -182,10 +182,10 @@ const MainRoutes = {
     //   element: <Typography />
     // },
 
-    // {
-    //   path: '/add-new-item', // Route for Add New Item page
-    //   element: <AddNewItemForm />, 
-    // },
+    {
+      path: '/add-new-item', // Route for Add New Item page
+      element: <AddNewItemForm />, 
+    },
 
 
     {
@@ -194,13 +194,17 @@ const MainRoutes = {
         // {
         //   path: 'dashboard',
         //   element: <InventoryDashboard />
-        // },
+        // }, 
         {
           path: 'purchase_orders',
           element: <PurchaseOrder />
         },
         {
-          path: '/add-new-item', // Route for Add New Item page
+          path: 'requisitions',
+          element: <Requisitions/>
+        }, 
+        {
+          path: 'add-new-item', // Route for Add New Item page
           element: <AddNewItemForm />, 
         },
         {
@@ -282,14 +286,18 @@ const MainRoutes = {
     {
       path: 'top',
       children: [
-        // {
-        //   path: 'dashboard',
-        //   element: <TopDashboard />
-        // },
+        {
+          path: 'dashboard',
+          element: <DashboardDefault />
+        },
         {
           path: 'purchase_orders',
           element: <PurchaseOrder />
         },
+        {
+          path: 'requisitions',
+          element: <Requisitions/>
+        }, 
       ]
     },
     { 
@@ -314,6 +322,10 @@ const MainRoutes = {
         {
         path: 'report',
         element: <ReportComponent />
+      },
+      {
+        path: 'supplier-management',
+        element: <SupplierPage />  // Move SupplierPage to top level
       },
       
       ]

@@ -446,7 +446,7 @@ def accept_and_mark_item_as_unavailable(item_requisition_id: int):
 
 
 
-def mark_item_as_completed(item_requisition_id: int):
+def mark_item_as_completed(item_requisition_id: int, file_content: bytes, file_name: str):
     try:
         # Execute the function to retrieve the service role key
         response = supabase.rpc("service_role").execute()
@@ -458,67 +458,51 @@ def mark_item_as_completed(item_requisition_id: int):
             new_key = response.data["service_role_key"]  # Supabase API key
             bucket: Client = create_client(new_url, new_key)
 
-            # Create a hidden tkinter window for sample file selection
-            root = tk.Tk()
-            root.withdraw()
+            # Sanitize the file name
+            safe_file_name = "".join(c if c.isalnum() or c in "._-" else "_" for c in file_name)
+            print(f"File name: {safe_file_name}")
 
-            # Ask the user to select an image file
-            file_path = filedialog.askopenfilename(
-                title="Select an Image to Upload",
-                filetypes=[("Image Files", "*.png *.jpg *.jpeg")]
-            )
-
-            # Check if a file was selected
-            if not file_path:
-                return {"status": "error", "message": "No file selected."}
-
-            # Extract the file name from the path
-            file_name = file_path.split("/")[-1]
-            print("file name is .", file_name)
-
-            # Determine the MIME type of the selected file
-            mime_type, _ = mimetypes.guess_type(file_path)
+            # Determine the MIME type of the uploaded file
+            mime_type, _ = mimetypes.guess_type(safe_file_name)
             if not mime_type:
-                return {"status": "error", "message": "Unable to determine the MIME type."}
+                print("Unable to determine the MIME type. Exiting.")
+                return {"status": "error", "message": "Invalid MIME type."}
             print(f"Detected MIME type: {mime_type}")
 
             try:
-                # Open the file and upload it to the bucket
-                with open(file_path, "rb") as file:
-                    upload_response = bucket.storage.from_("A-Receipt").upload(
-                        file_name,
-                        file,
-                        {"content-type": mime_type}  # Explicitly set the MIME type
-                    )
-
+                # Upload the file to the bucket
+                upload_response = bucket.storage.from_("A-Receipt").upload(
+                    safe_file_name,
+                    file_content,
+                    {"content-type": mime_type}  # Explicitly set the MIME type
+                )
                 if upload_response:
-                    print("Connecting to database..")
+                    print("Connecting to database...")
                     try:
                         print("Processing...")
                         params = {
                             "p_itemr_id": item_requisition_id,
-                            "p_image_name": file_name
+                            "p_image_name": safe_file_name
                         }
                         db = supabase.rpc("mark_item_as_complete_wrapper", params).execute()
 
-                        if db.data:
-                            return {"status": "success", "data": db.data}
-                        else:
-                            return {"status": "error", "message": "Failed to mark item as completed in the database."}
-
-                    except Exception as db_exception:
-                        return {"status": "error", "message": f"Database error: {str(db_exception)}"}
-
+                        print(db.data)
+                        return {"status": "success", "data": db.data}
+                    except Exception as e:
+                        print(str(e))
+                        return {"status": "error", "message": str(e)}
                 else:
+                    print("File upload failed.")
                     return {"status": "error", "message": "File upload failed."}
-            except Exception as file_exception:
-                return {"status": "error", "message": f"File upload error: {str(file_exception)}"}
+            except Exception as e:
+                print(str(e))
+                return {"status": "error", "message": str(e)}
         else:
+            print("Failed to retrieve service role key.")
             return {"status": "error", "message": "Failed to retrieve service role key."}
-
     except Exception as e:
-        return {"status": "error", "message": f"An unexpected error occurred: {str(e)}"}
-
+        print(f"Failed. {e}")
+        return {"status": "error", "message": str(e)}
 
 
 

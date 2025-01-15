@@ -37,16 +37,117 @@ function ProductRequisitionTable() {
   const [error, setError] = useState(null);
   const [showAttachItems, setShowAttachItems] = useState(false); // State to show AttachItemsTable
   const [showDownloadReceipt, setShowDownloadReceipt] = useState(false);
-  const [userRole, setUserRole] = useState(6); // Replace `1` with the role for testing
+  const [userRole, setUserRole] = useState(null); // Initialize as null
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Function to fetch the role from the backend
+  const fetchUserRole = async () => {
+    try {
+      const response = await fetch("http://localhost:8000/identify-view-more/"); // Replace with your actual backend URL
+      if (!response.ok) {
+        throw new Error("Failed to fetch user role");
+      }
+      const data = await response.json();
+      if (data.status === "success") {
+        setUserRole(data.data); // Assuming `data.data` contains the role
+      } else {
+        console.error(data.message || "Error fetching role");
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+    } finally {
+      setIsLoading(false); // Loading complete
+    }
+  };
+
+  useEffect(() => {
+    fetchUserRole(); // Fetch role when the component mounts
+  }, []);
+
+  // Render loading state if still fetching
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
+ // Replace `1` with the role for testing
+  const handleMarkAsComplete = async () => {
+    if (!selectedProduct) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Requisition Selected!",
+        text: "Please select a requisition to mark as complete.",
+      });
+      return;
+    }
+  
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/png, image/jpeg";
+    fileInput.onchange = async (event) => {
+      const file = event.target.files[0];
+      if (!file) {
+        Swal.fire({
+          icon: "warning",
+          title: "No File Selected!",
+          text: "Please select a file to upload.",
+        });
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("item_requisition_id", selectedProduct.ID);
+  
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/mark-item-as-completed/`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+  
+        if (response.status === 200) {
+          Swal.fire({
+            icon: "success",
+            title: "Action Completed",
+            text: "The item has been marked as complete.",
+          });
+          fetchRequisitions(); // Refresh the table
+        } else if (response.status === 400) {
+          Swal.fire({
+            icon: "error",
+            title: "Failed",
+            text: response.data.error || "Failed to mark the item as complete.",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Unexpected Response",
+            text: response.data.error || "An unexpected response was received.",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: error.response?.data?.error || "An unexpected error occurred.",
+        });
+      }
+    };
+  
+    fileInput.click(); // Trigger the file input
+  };
+  
   
 
 
   // Fetch product requisitions on component mount
   useEffect(() => {
-    if (productRequisitions.length === 0) {
-      fetchRequisitions();
-    }
-  }, [productRequisitions]);
+    fetchRequisitions(); // Always fetch data when the component mounts
+  }, []); // Empty dependency array ensures it runs only once
+  
 
   const fetchRequisitions = () => {
     setLoading(true);
@@ -131,10 +232,15 @@ function ProductRequisitionTable() {
     setShowAttachItems(false); // Hide AttachItemsTable
     setAttachedItems([]); // Reset attached items
     setAnchorEl(null);
+  
+    // Refresh the page
+    window.location.reload();
   };
+  
 
 
   const renderMenuItems = () => {
+    if (userRole === null) return null;
     switch (userRole) {
       case 1: // Desk
         return (
@@ -166,7 +272,7 @@ function ProductRequisitionTable() {
               <ListItemIcon>
                 <AttachFileIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Attach Item to Requisition</ListItemText>
+              <ListItemText>Manage Items in Requisition</ListItemText>
             </MenuItem>
             <MenuItem onClick={() => fetchAttachedItems(selectedProduct?.ID)}>
               <ListItemIcon>
@@ -229,22 +335,16 @@ function ProductRequisitionTable() {
               </ListItemIcon>
               <ListItemText>View Attached Items</ListItemText>
             </MenuItem>
-            <MenuItem onClick={() => handleViewAcknowledgementReceipt(selectedProduct)}>
-              <ListItemIcon>
-                <ReceiptLongIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>View Acknowledgement Receipt</ListItemText>
-            </MenuItem>
           </>
         );
-      case 6: // Admin
+        case 6: // Admin
         return (
           <>
             <MenuItem onClick={handleAttachItemsClick}>
               <ListItemIcon>
                 <AttachFileIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Attach Item to Requisition</ListItemText>
+              <ListItemText>Manage Items in Requisition</ListItemText>
             </MenuItem>
             <MenuItem onClick={handleApproveRequisition}>
               <ListItemIcon>
@@ -282,14 +382,15 @@ function ProductRequisitionTable() {
               </ListItemIcon>
               <ListItemText>View Acknowledgement Receipt</ListItemText>
             </MenuItem>
-            <MenuItem onClick={handleDownloadAcknowledgementReceipt}>
+            <MenuItem onClick={handleMarkAsComplete}>
               <ListItemIcon>
                 <ReceiptLongIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>Download Acknowledgement Receipt</ListItemText>
+              <ListItemText>Mark as Complete</ListItemText>
             </MenuItem>
           </>
         );
+      
       default:
         return null; // No actions for undefined roles
     }

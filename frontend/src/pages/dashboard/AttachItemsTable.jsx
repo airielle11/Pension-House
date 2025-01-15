@@ -135,7 +135,7 @@ function AttachItemsTable({ onBack, selectedProduct }) {
     <Box>
       {/* Header with Back Button */}
       <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-        <Typography variant="h6">Attach Items to Requisition</Typography>
+        <Typography variant="h6">Manage Items in Requisition</Typography>
         <Button variant="contained" onClick={onBack}>
           Back
         </Button>

@@ -58,6 +58,21 @@ const roleBasedMenu = {
       icon: icons.TransactionOutlined,
       breadcrumbs: false,
     },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'top/requisitions',
+      icon: icons.FileTextOutlined
+    },
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'top/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
   ],
   "Head Administrator": [
     {
@@ -90,6 +105,14 @@ const roleBasedMenu = {
       type: 'item',
       url: 'admin/requisitions',
       icon: icons.FileTextOutlined
+    },
+    { 
+      id: 'supplier_management',
+      title: 'Supplier Management',
+      type: 'item',
+      url: 'admin/supplier-management',  // Define the URL for the Supplier Management page
+      icon: icons.AppstoreAddOutlined,  // You can choose a different icon if preferred
+      breadcrumbs: false
     },
     {
       id: 'report',
@@ -125,7 +148,13 @@ const roleBasedMenu = {
     //   icon: icons.DashboardOutlined,
     //   breadcrumbs: false,
     // },
-
+    {
+      id: 'stocks-inventory',
+      title: 'Stocks and Inventory',
+      type: 'item',
+      url: 'property_custodian/stocksinventorypage',
+      icon: icons.DatabaseOutlined
+    },
     
     {
       id: 'purchase_orders',
@@ -144,20 +173,11 @@ const roleBasedMenu = {
       breadcrumbs: false,
     },    
     {
-      id: 'inventory',
-      title: 'Inventory Management',
+      id: 'requisitions',
+      title: 'Requisitions',
       type: 'item',
-      url: 'property_custodian/inventory',
-      icon: icons.TeamOutlined,
-      breadcrumbs: false,
-    },  
-    { 
-      id: 'supplier_management',
-      title: 'Supplier Management',
-      type: 'item',
-      url: 'supplier-management',  // Define the URL for the Supplier Management page
-      icon: icons.AppstoreAddOutlined,  // You can choose a different icon if preferred
-      breadcrumbs: false
+      url: 'property_custodian/requisitions',
+      icon: icons.FileTextOutlined
     },
   ],
 };
