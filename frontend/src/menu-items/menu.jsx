@@ -112,15 +112,7 @@ const roleBasedMenu = {
       url: 'admin/dashboard',
       icon: icons.DashboardOutlined,
       breadcrumbs: false,
-    },
-    {
-      id: 'purchase_orders',
-      title: 'Purchase Orders',
-      type: 'item',
-      url: 'admin/purchase_orders',
-      icon: icons.TeamOutlined,
-      breadcrumbs: false,
-    },
+    }, 
     {
       id: 'add-rooms',
       title: 'Add Rooms',
@@ -142,6 +134,14 @@ const roleBasedMenu = {
       url: 'admin/supplier-management',  // Define the URL for the Supplier Management page
       icon: icons.AppstoreAddOutlined,  // You can choose a different icon if preferred
       breadcrumbs: false
+    },
+    {
+      id: 'purchase_orders',
+      title: 'Purchase Orders',
+      type: 'item',
+      url: 'admin/purchase_orders',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
     },
     {
       id: 'report',
@@ -167,15 +167,7 @@ const roleBasedMenu = {
       url: 'admin/dashboard',
       icon: icons.DashboardOutlined,
       breadcrumbs: false,
-    },
-    {
-      id: 'purchase_orders',
-      title: 'Purchase Orders',
-      type: 'item',
-      url: 'admin/purchase_orders',
-      icon: icons.TeamOutlined,
-      breadcrumbs: false,
-    },
+    }, 
     {
       id: 'add-rooms',
       title: 'Add Rooms',
@@ -205,6 +197,14 @@ const roleBasedMenu = {
       type: 'item',
       url: 'admin/stocksinventorypage',
       icon: icons.DatabaseOutlined
+    },
+    {
+      id: 'purchase_orders',
+      title: 'Purchase Orders',
+      type: 'item',
+      url: 'admin/purchase_orders',
+      icon: icons.TeamOutlined,
+      breadcrumbs: false,
     },
     {
       id: 'report',

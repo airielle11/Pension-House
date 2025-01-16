@@ -60,15 +60,26 @@ export default function AuthLogin({ isDemo = false }) {
               throw new Error("Invalid response from server");
             }
         
-            // Extract the part after the comma
-            const positionManagement =
-              user_details[0]?.position_management?.split(", ")[1] ||
-              user_details[0]?.position_management ||
+            const rawFullName = user_details[0]?.full_name || "User";
+
+            let fullName = rawFullName;
+            
+            if (rawFullName.includes(",")) {
+              const nameParts = rawFullName.split(",").map(name => name.trim());
+            
+              fullName = `${nameParts[1]} ${nameParts[0]}`.trim();
+            }
+             
+            const positionManagement = 
+              user_details[0]?.position_management?.split(", ")[1] || 
+              user_details[0]?.position_management || 
               "Unknown";
+            
             setRole(positionManagement);
             localStorage.setItem("token", token);
+            localStorage.setItem("name", fullName);
             localStorage.setItem("role", positionManagement);
-        
+             
             const roleRoutes = {
               "Inventory Management(Head Position)": "/property_custodian/dashboard",
               "Inventory Management": "/property_custodian/dashboard",
@@ -85,7 +96,7 @@ export default function AuthLogin({ isDemo = false }) {
             };
         
             // Navigate to the dashboard
-            navigate(roleRoutes[positionManagement] || "/dashboard/Z");
+            navigate(roleRoutes[positionManagement] || "/login");
         
             // Refresh the page after navigation
             window.location.reload();
