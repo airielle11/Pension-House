@@ -21,7 +21,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const StockList = ({ handleAddNewItem }) => {
+
 const StockList = ({ handleAddNewItem }) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -236,7 +236,6 @@ const StockList = ({ handleAddNewItem }) => {
                   </TableCell>
                 </TableRow>
               )}
-              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -254,7 +253,7 @@ const StockList = ({ handleAddNewItem }) => {
             fullWidth
             value={quantity}
             onChange={handleQuantityChange}
-            onChange={handleQuantityChange}
+            
           />
         </DialogContent>
         <DialogActions>
@@ -271,7 +270,6 @@ const StockList = ({ handleAddNewItem }) => {
 };
 
 StockList.propTypes = {
-  handleAddNewItem: PropTypes.func.isRequired,
   handleAddNewItem: PropTypes.func.isRequired,
 };
 
