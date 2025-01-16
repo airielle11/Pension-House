@@ -95,39 +95,10 @@ def generate_report_v2_view(request):
 
 # Use code if there's already frontend
 @csrf_exempt
-def predict_demand_v1_view(request):
-    if request.method == "POST":
-        try:
-            p_item_id = request.POST.get("item_id")
-
-            if not p_item_id:
-                return JsonResponse({"error": "Missing item_id."}, status=400)
-
-            p_item_id = int(p_item_id)
-
-            # Call the function from services.py
-            forecast, mad, mse, mape = predict_demand_v1(p_item_id)
-
-            return JsonResponse({
-                "forecasted_value": forecast,
-                "mad": mad,
-                "mse": mse,
-                "mape": mape
-            })
-
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse({"error": "Invalid HTTP method. Use POST."}, status=405)
-
-# Use code for backend testing
-# @csrf_exempt
 # def predict_demand_v1_view(request):
 #     if request.method == "POST":
 #         try:
-#             # Parse JSON body
-#             body = json.loads(request.body)
-#             p_item_id = body.get("item_id")
+#             p_item_id = request.POST.get("item_id")
 
 #             if not p_item_id:
 #                 return JsonResponse({"error": "Missing item_id."}, status=400)
@@ -148,3 +119,32 @@ def predict_demand_v1_view(request):
 #             return JsonResponse({"error": str(e)}, status=500)
 
 #     return JsonResponse({"error": "Invalid HTTP method. Use POST."}, status=405)
+
+# Use code for backend testing
+@csrf_exempt
+def predict_demand_v1_view(request):
+    if request.method == "POST":
+        try:
+            # Parse JSON body
+            body = json.loads(request.body)
+            p_item_id = body.get("item_id")
+
+            if not p_item_id:
+                return JsonResponse({"error": "Missing item_id."}, status=400)
+
+            p_item_id = int(p_item_id)
+
+            # Call the function from services.py
+            forecast, mad, mse, mape = predict_demand_v1(p_item_id)
+
+            return JsonResponse({
+                "forecasted_value": forecast,
+                "mad": mad,
+                "mse": mse,
+                "mape": mape
+            })
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return JsonResponse({"error": "Invalid HTTP method. Use POST."}, status=405)

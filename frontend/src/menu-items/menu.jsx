@@ -16,6 +16,7 @@ import {
   FileTextOutlined,
   DatabaseOutlined,
   ShoppingCartOutlined,
+  LineChartOutlined,
   ProductOutlined} from '@ant-design/icons';
 
 // icons
@@ -36,7 +37,8 @@ const icons = {
   ShoppingCartOutlined,
   FileTextOutlined,
   DatabaseOutlined,
-  PieChartOutlined
+  PieChartOutlined,
+  LineChartOutlined
 };
  
 // Role-based menu configuration
@@ -149,15 +151,16 @@ const roleBasedMenu = {
       type: 'item',
       url: '/report',
       icon: icons.PieChartOutlined // Updated icon for reports
-    },
-    {
-      id: 'employees',
-      title: 'Employees',
-      type: 'item',
-      url: 'admin/employees',
-      icon: icons.TeamOutlined,
-      breadcrumbs: false,
     }
+    // ,
+    // {
+    //   id: 'employees',
+    //   title: 'Employees',
+    //   type: 'item',
+    //   url: 'admin/employees',
+    //   icon: icons.TeamOutlined,
+    //   breadcrumbs: false,
+    // }
   ],
   "Administration": [
     {
@@ -213,14 +216,23 @@ const roleBasedMenu = {
       url: '/report',
       icon: icons.PieChartOutlined // Updated icon for reports
     },
+    // {
+    //   id: 'employees',
+    //   title: 'Employees',
+    //   type: 'item',
+    //   url: 'admin/employees',
+    //   icon: icons.TeamOutlined,
+    //   breadcrumbs: false,
+    // },
     {
-      id: 'employees',
-      title: 'Employees',
+      id: 'graph_page',
+      title: 'Graph and Predictions',
       type: 'item',
-      url: 'admin/employees',
-      icon: icons.TeamOutlined,
+      url: 'admin/graph-page',  // Matches the route defined above
+      icon: icons.LineChartOutlined, // Choose an appropriate icon
       breadcrumbs: false,
     },
+    
     
   ],
 

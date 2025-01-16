@@ -16,7 +16,7 @@ import SupervisorDashboard from '../pages/supervisor/superdashboard.jsx';
 import ReportComponent from '../pages/reports/Report.jsx';
 import MinimalLayout from '../layout/MinimalLayout'; 
 import RequisitionFormForHousekeeper from '../pages/regularhousekeeper/rh-requisitionform.jsx';// Adjust the path as needed
-
+import GraphPage from '../pages/dashboard/GraphPage.jsx';
 
 
 import Error404 from '../pages/404.jsx';
@@ -49,14 +49,14 @@ const UserProfile = Loadable(lazy(() => import('../pages/users/UserProfile.jsx')
 const Employees = Loadable(lazy(() => import('../pages/users/ManageEmployees.jsx')));
 
 // const AuthLogin = Loadable(lazy(() => import('../pages/authentication/login.jsx'))); 
-// Lazily load the components
-const DashboardDefault = Loadable(lazy(() => import('../pages/admin/AdminDashboard/index.jsx')));
+// Lazily load the components 
+const DashboardDefault = Loadable(lazy(() => import('../pages/dashboard/index.jsx')));
 // const InventoryDashboard = Loadable(lazy(() => import('../pages/inventory/InventoryDashboard.jsx')));
 // const TopDashboard = Loadable(lazy(() => import('../pages/top/TopDashboard.jsx')));
 // const DeskDashboard = Loadable(lazy(() => import('../pages/desk/DeskDashboard.jsx')));
 //const HousekeepingDashboard = Loadable(lazy(() => import('../pages/housekeeping/HousekeepingDashboard.jsx')));
 // const MaintenanceDashboard = Loadable(lazy(() => import('../pages/maintenance/MaintenanceDashboard.jsx')));
-const AdminDashboard = Loadable(lazy(() => import('../pages/admin/AdminDashboard/index.jsx')));
+// const AdminDashboard = Loadable(lazy(() => import('../pages/admin/AdminDashboard/index.jsx')));
 const PurchaseOrder = Loadable(lazy(() => import('../pages/purchasing/PurchaseOrder.jsx')));
 const MarkPO = Loadable(lazy(() => import('../pages/delivery/MarkPOComplete.jsx')));
 
@@ -126,6 +126,10 @@ const MainRoutes = {
     //   element: <BasicTable/>
     // }
     // ,  
+    {
+      path: 'graph-page',
+      element: <GraphPage />,
+    },
     {
       path: 'Requisitions',
       element: <Requisitions/>
@@ -328,6 +332,10 @@ const MainRoutes = {
       {
         path: 'add-new-item', // Route for Add New Item page
         element: <AddNewItemForm />, 
+      },
+      {
+        path: 'graph-page',
+        element: <GraphPage />,
       },
       
       ]
