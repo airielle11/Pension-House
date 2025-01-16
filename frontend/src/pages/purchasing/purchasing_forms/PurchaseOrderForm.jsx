@@ -18,6 +18,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  TextField,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -78,13 +79,24 @@ export default function PurchaseOrderForm() {
 
   // Handle checkbox selection
   const handleCheckboxChange = (stock) => {
-    if (selectedStocks.find((s) => s.id === stock.id)) {
+    const existingStock = selectedStocks.find((s) => s.id === stock.id);
+
+    if (existingStock) {
       // Remove stock from selection if already selected
       setSelectedStocks(selectedStocks.filter((s) => s.id !== stock.id));
     } else {
-      // Add stock to selection
-      setSelectedStocks([...selectedStocks, stock]);
+      // Add stock to selection with default quantity of 1
+      setSelectedStocks([...selectedStocks, { ...stock, qty: 1 }]);
     }
+  };
+
+  // Handle quantity change
+  const handleQuantityChange = (stockId, quantity) => {
+    setSelectedStocks((prevSelected) =>
+      prevSelected.map((s) =>
+        s.id === stockId ? { ...s, qty: parseInt(quantity, 10) || 1 } : s
+      )
+    );
   };
 
   // Submit purchase order
@@ -102,51 +114,46 @@ export default function PurchaseOrderForm() {
         }
       );
 
-      if (response.data.success) { 
+      if (response.data.success) {
         Swal.fire({
           title: "Success",
-          text:
-            response.data.message ||
-            "Successfully added purchase order.",
+          text: response.data.message || "Successfully added purchase order.",
           icon: "success",
           customClass: {
             container: style.swalContainer,
           },
           confirmButtonText: "OK",
-        })
-        .then((result) => {
+        }).then((result) => {
           if (result.isConfirmed) {
             handleClose();
           }
-        })
-        .then(handleClose);
-        
+        });
+
         setSelectedStocks([]); // Reset selections
         handleClose(); // Close modal
       } else {
         Swal.fire({
           title: "Error",
           text:
-            response.data.message || 
-            "An error has occured. Try to check if items are from the same supplier.",
+            response.data.message ||
+            "An error has occurred. Try to check if items are from the same supplier.",
           icon: "error",
           customClass: {
             container: style.swalContainer,
           },
           confirmButtonText: "OK",
-        }); 
+        });
       }
     } catch (error) {
       Swal.fire({
         title: "Error",
-        text:
-          "Error creating purchase order:", error,
+        text: "Error creating purchase order:",
         icon: "error",
         customClass: {
           container: style.swalContainer,
         },
         confirmButtonText: "OK",
-      }); 
+      });
     }
   };
 
@@ -195,6 +202,8 @@ export default function PurchaseOrderForm() {
             boxShadow: 24,
             borderRadius: "8px",
             p: 4,
+            maxHeight: "80vh", // Limit height to make it scrollable
+            overflowY: "auto", // Enable scrolling when content overflows
           }}
         >
           <Typography id="modal-title" variant="h6" component="h2" mb={2}>
@@ -243,6 +252,8 @@ export default function PurchaseOrderForm() {
                         <TableCell>Brand</TableCell>
                         <TableCell>Net Vol/Qty.</TableCell>
                         <TableCell>Supplier</TableCell>
+                        <TableCell>Quantity</TableCell>{" "}
+                        {/* New Quantity Column */}
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -275,6 +286,26 @@ export default function PurchaseOrderForm() {
                           <TableCell>{stock.brand}</TableCell>
                           <TableCell>{stock["Net Vol/Qty."]}</TableCell>
                           <TableCell>{stock.supplier}</TableCell>
+                          <TableCell>
+                            {/* Quantity Input Field */}
+                            <input
+                              type="number"
+                              min="1"
+                              value={
+                                selectedStocks.find((s) => s.id === stock.id)
+                                  ?.qty || 1
+                              }
+                              onChange={(e) => {
+                                const qty = parseInt(e.target.value, 10) || 1;
+                                setSelectedStocks((prev) =>
+                                  prev.map((s) =>
+                                    s.id === stock.id ? { ...s, qty } : s
+                                  )
+                                );
+                              }}
+                              style={{ width: "60px" }}
+                            />
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
