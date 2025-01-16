@@ -275,14 +275,14 @@ const roleBasedMenu = {
       icon: icons.TeamOutlined,
       breadcrumbs: false,
     },
-    {
-      id: 'delivery',
-      title: 'Delivery',
-      type: 'item',
-      url: 'property_custodian/delivery/mark_po',
-      icon: icons.TeamOutlined,
-      breadcrumbs: false,
-    },    
+    // {
+    //   id: 'delivery',
+    //   title: 'Delivery',
+    //   type: 'item',
+    //   url: 'property_custodian/delivery/mark_po',
+    //   icon: icons.TeamOutlined,
+    //   breadcrumbs: false,
+    // },    
     {
       id: 'requisitions',
       title: 'Requisitions',

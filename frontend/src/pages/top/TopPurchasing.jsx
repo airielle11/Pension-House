@@ -26,8 +26,6 @@ export default function PurchaseOrderTable() {
   const [selectedPurchaseOrderId, setSelectedPurchaseOrderId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
-  const [uploadQuotationModalOpen, setUploadQuotationModalOpen] =
-    useState(false);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [file, setFile] = useState(null);
   const [userRole, setUserRole] = useState(""); // State to store the user's role
@@ -178,14 +176,7 @@ export default function PurchaseOrderTable() {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
         <CircularProgress />
       </div>
     );
@@ -243,8 +234,6 @@ export default function PurchaseOrderTable() {
       return;
     }
 
-    setLoading(true); // Show loading spinner
-
     const formData = new FormData();
     formData.append("purchase_order_id", selectedPurchaseOrderId);
     formData.append("file_name", file);
@@ -264,7 +253,7 @@ export default function PurchaseOrderTable() {
         console.log("response data: ", response.data);
         Swal.fire({
           title: "Success",
-          text: response.data.data || "File uploaded successfully.",
+          text: response.data.message || "File uploaded successfully.",
           icon: "success",
           customClass: {
             container: style.swalContainer,
@@ -272,11 +261,11 @@ export default function PurchaseOrderTable() {
           confirmButtonText: "OK",
         });
         setFile(null);
-        setUploadQuotationModalOpen(false); // Close the upload modal
+        setUploadModalOpen(false); // Close the upload modal
       } else {
         Swal.fire({
           title: "Error",
-          text: response.data.data || "Failed to upload file.",
+          text: response.data.message || "Failed to upload file.",
           icon: "error",
           customClass: {
             container: style.swalContainer,
@@ -285,7 +274,6 @@ export default function PurchaseOrderTable() {
         });
       }
     } catch (error) {
-      setLoading(false); // Hide the loading spinner
       Swal.fire({
         title: "Error",
         text:
@@ -314,14 +302,12 @@ export default function PurchaseOrderTable() {
       });
       return;
     }
-
-    setLoading(true); // Show loading spinner
-
+  
     const formData = new FormData();
     formData.append("purchase_order_id", selectedPurchaseOrderId);
     formData.append("receiving_memo", receivingMemoFile);
     formData.append("delivery_receipt", deliveryReceiptFile);
-
+  
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/mark_po_as_complete/`,
@@ -332,28 +318,21 @@ export default function PurchaseOrderTable() {
           },
         }
       );
-
-      console.log("response: ", response.data);
-
+  
       if (response.data.success) {
         Swal.fire({
-          title: "Success",
+          title: "Success!",
           text: response.data.message || "Purchase Order marked as complete.",
           icon: "success",
           customClass: {
             container: style.swalContainer,
           },
           confirmButtonText: "OK",
-        }) .then((result) => {
-          if (result.isConfirmed) {
-            handleClose();
-          }
-        })
-        .then(handleClose);
-
-        setModalOpen(false);
-        setReceivingMemoFile(null);
-        setDeliveryReceiptFile(null);
+        }).then(() => {
+          setModalOpen(false);
+          setReceivingMemoFile(null);
+          setDeliveryReceiptFile(null);
+        });
       } else {
         Swal.fire({
           title: "Error",
@@ -363,14 +342,9 @@ export default function PurchaseOrderTable() {
             container: style.swalContainer,
           },
           confirmButtonText: "OK",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            handleClose();
-          }
         });
       }
     } catch (error) {
-      setLoading(false); // Hide the loading spinner
       Swal.fire({
         title: "Error",
         text:
@@ -385,7 +359,8 @@ export default function PurchaseOrderTable() {
       });
     }
   };
-
+  
+  
   const handleOpenMenu = (event, purchaseOrderId) => {
     setMenuAnchorEl(event.currentTarget);
     setSelectedPurchaseOrderId(purchaseOrderId);
@@ -408,297 +383,235 @@ export default function PurchaseOrderTable() {
     setUploadModalOpen(false); // Close the upload modal
   };
 
-  const handleOpenUploadQuotationModalOpen = () => {
-    setUploadQuotationModalOpen(true); // Open the upload modal
-  };
-
-  const handleCloseUploadQuotationModalOpen = () => {
-    setUploadQuotationModalOpen(false); // Close the upload modal
-  };
-
   return (
     <div>
       <br />
       {purchaseOrders.length > 0 ? (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Created by</TableCell>
-                <TableCell>P.O w/ Price Quotations</TableCell>
-                <TableCell>Delivery Receipt</TableCell>
-                <TableCell>Receiving Memo</TableCell>
-                <TableCell>Created at</TableCell>
-                <TableCell>Received by</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {purchaseOrders.length > 0 ? (
-                purchaseOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell>{order.id}</TableCell>
-                    <TableCell>{order["Created by"]}</TableCell>
-                    <TableCell>
-                      {poQuotationImages[order.id] ? (
-                        <img
-                          src={poQuotationImages[order.id]}
-                          alt={`P.O Quotation ${order.id}`}
-                          style={{
-                            width: 40,
-                            height: 40,
-                            objectFit: "contain",
-                            cursor: "pointer",
-                          }}
-                          onClick={() =>
-                            handleOpenImageModal(poQuotationImages[order.id])
-                          }
-                        />
-                      ) : (
-                        "N/A"
-                      )}
-                    </TableCell>
-
-                    <TableCell>
-                      {deliveryReceiptImages[order.id] ? (
-                        <img
-                          src={deliveryReceiptImages[order.id]}
-                          alt={`Delivery Receipt ${order.id}`}
-                          style={{
-                            width: 30,
-                            height: 30,
-                            objectFit: "contain",
-                            cursor: "pointer",
-                          }}
-                          onClick={() =>
-                            handleOpenImageModal(
-                              deliveryReceiptImages[order.id]
-                            )
-                          }
-                        />
-                      ) : (
-                        "N/A"
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {receivingMemoImages[order.id] ? (
-                        <img
-                          src={receivingMemoImages[order.id]}
-                          alt={`Receiving Memo ${order.id}`}
-                          style={{
-                            width: 30,
-                            height: 30,
-                            objectFit: "contain",
-                            cursor: "pointer",
-                          }}
-                          onClick={() =>
-                            handleOpenImageModal(receivingMemoImages[order.id])
-                          }
-                        />
-                      ) : (
-                        "N/A"
-                      )}
-                    </TableCell>
-
-                    <TableCell>{order["Created at"]}</TableCell>
-                    <TableCell>{order["Received by"] || "N/A"}</TableCell>
-                    <TableCell>{order.status}</TableCell>
-                    <TableCell>
-                      <Button onClick={(e) => handleOpenMenu(e, order.id)}>
-                        More
-                      </Button>
-                      <Menu
-                        anchorEl={menuAnchorEl}
-                        open={
-                          Boolean(menuAnchorEl) &&
-                          selectedPurchaseOrderId === order.id
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Created by</TableCell>
+              <TableCell>P.O w/ Price Quotations</TableCell>
+              <TableCell>Delivery Receipt</TableCell>
+              <TableCell>Receiving Memo</TableCell>
+              <TableCell>Created at</TableCell>
+              <TableCell>Received by</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {purchaseOrders.length > 0 ? (
+              purchaseOrders.map((order) => (
+                <TableRow key={order.id}>
+                  <TableCell>{order.id}</TableCell>
+                  <TableCell>{order["Created by"]}</TableCell>
+                  <TableCell>
+                    {poQuotationImages[order.id] ? (
+                      <img
+                        src={poQuotationImages[order.id]}
+                        alt={`P.O Quotation ${order.id}`}
+                        style={{
+                          width: 40,
+                          height: 40,
+                          objectFit: "contain",
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          handleOpenImageModal(poQuotationImages[order.id])
                         }
-                        onClose={handleCloseMenu}
+                      />
+                    ) : (
+                      "N/A"
+                    )}
+                  </TableCell>
+
+                  <TableCell>
+                    {deliveryReceiptImages[order.id] ? (
+                      <img
+                        src={deliveryReceiptImages[order.id]}
+                        alt={`Delivery Receipt ${order.id}`}
+                        style={{
+                          width: 30,
+                          height: 30,
+                          objectFit: "contain",
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          handleOpenImageModal(deliveryReceiptImages[order.id])
+                        }
+                      />
+                    ) : (
+                      "N/A"
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {receivingMemoImages[order.id] ? (
+                      <img
+                        src={receivingMemoImages[order.id]}
+                        alt={`Receiving Memo ${order.id}`}
+                        style={{
+                          width: 30,
+                          height: 30,
+                          objectFit: "contain",
+                          cursor: "pointer",
+                        }}
+                        onClick={() =>
+                          handleOpenImageModal(receivingMemoImages[order.id])
+                        }
+                      />
+                    ) : (
+                      "N/A"
+                    )}
+                  </TableCell>
+
+                  <TableCell>{order["Created at"]}</TableCell>
+                  <TableCell>{order["Received by"] || "N/A"}</TableCell>
+                  <TableCell>{order.status}</TableCell>
+                  <TableCell>
+                    <Button onClick={(e) => handleOpenMenu(e, order.id)}>
+                      More
+                    </Button>
+                    <Menu
+                      anchorEl={menuAnchorEl}
+                      open={
+                        Boolean(menuAnchorEl) &&
+                        selectedPurchaseOrderId === order.id
+                      }
+                      onClose={handleCloseMenu}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          handleCloseMenu();
+                          handleViewItems(order.id);
+                        }}
                       >
+                        View Items
+                      </MenuItem>
+
+                      {(userRole === "Top Management(Head Position)" ||
+                        userRole === "Top Management") && (
                         <MenuItem
                           onClick={() => {
                             handleCloseMenu();
-                            handleViewItems(order.id);
+                            handleOpenUploadModal(); // Open the upload modal
                           }}
                         >
-                          View Items
+                          Upload Price Quotations
                         </MenuItem>
-
-                        {(userRole === "Top Management(Head Position)" ||
-                          userRole === "Top Management") && (
+                      )}
+                      {(userRole === "Inventory Management(Head Position)" ||
+                        userRole === "Inventory Management") && (
+                        <>
                           <MenuItem
                             onClick={() => {
                               handleCloseMenu();
-                              handleOpenUploadQuotationModalOpen(); // Open the upload modal
+                              handleOpenUploadModal(); // Open the upload modal
                             }}
                           >
                             Upload Price Quotations
                           </MenuItem>
-                        )}
-                        {(userRole === "Inventory Management(Head Position)" ||
-                          userRole === "Inventory Management") && (
-                          <>
-                            <MenuItem
-                              onClick={() => {
-                                handleCloseMenu();
-                                handleOpenUploadModal(); // Open the upload modal
-                              }}
-                            >
-                              Mark PO as Complete
-                            </MenuItem>
-                          </>
-                        )}
-                      </Menu>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={9} align="center">
-                    No purchase orders currently available
+                          <MenuItem
+                            onClick={() => {
+                              handleCloseMenu();
+                              handleOpenUploadModal(); // Open the upload modal
+                            }}
+                          >
+                            Mark PO as Complete
+                          </MenuItem>
+                        </>
+                      )}
+                    </Menu>
                   </TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={9} align="center">
+                  No purchase orders currently available
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
       ) : (
         <div>No purchase orders available.</div>
       )}
-
+      
       {/* Modal for uploading price quotations */}
-      <Modal
-  open={uploadQuotationModalOpen}
-  onClose={handleCloseUploadQuotationModalOpen}
->
-  <Box sx={modalStyles}>
-    {/* Modal Content */}
-    <Typography variant="h6" component="h2">
-      Upload Price Quotations
-    </Typography>
-    <Box sx={{ p: 2 }}>
-      <Button variant="contained" component="label">
-        Choose File
-        <input
-          type="file"
-          hidden
-          onChange={(e) => setFile(e.target.files[0])}
-        />
-      </Button>
-      {file && <Typography sx={{ mt: 1 }}>{file.name}</Typography>}
-    </Box>
-
-    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-      <Button onClick={handleCloseUploadQuotationModalOpen} sx={{ mr: 2 }} disabled={loading}>
-        Cancel
-      </Button>
-      <Button
-        onClick={handleUploadPriceQuotations}
-        variant="contained"
-        disabled={loading} // Disable button while loading
-      >
-        Upload
-      </Button>
-    </Box>
-
-    {/* Loading Spinner Overlay */}
-    {loading && (
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          bgcolor: "rgba(255, 255, 255, 0.8)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 2000, // Ensure it overlays the modal content
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    )}
-  </Box>
-</Modal>
+      <Modal open={uploadModalOpen} onClose={handleCloseUploadModal}>
+        <Box sx={modalStyles}>
+          <Typography variant="h6" component="h2">
+            Upload Price Quotations
+          </Typography>
+          <Box sx={{ p: 2 }}>
+            <Button variant="contained" component="label">
+              Choose File
+              <input
+                type="file"
+                hidden
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+            </Button>
+            {file && <Typography>{file.name}</Typography>}
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button onClick={handleCloseUploadModal} sx={{ mr: 2 }}>
+              Cancel
+            </Button>
+            <Button onClick={handleUploadPriceQuotations} variant="contained">
+              Upload
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
 
       {/* Modal to mark PO as complete */}
       <Modal open={uploadModalOpen} onClose={handleCloseUploadModal}>
-  <Box sx={modalStyles}>
-    {/* Modal Content */}
-    <Typography variant="h6" component="h2">
-      Upload Receiving Memo
-    </Typography>
-    <Box sx={{ p: 2 }}>
-      <Button variant="contained" component="label">
-        Choose File
-        <input
-          type="file"
-          hidden 
-          onChange={(e) => setReceivingMemoFile(e.target.files[0])}
-        />
-      </Button>
-      {receivingMemoFile && (
-        <Typography sx={{ mt: 1 }}>{receivingMemoFile.name}</Typography>
-      )}
-    </Box>
+        <Box sx={modalStyles}>
+        <Typography variant="h6" component="h2">
+  Upload Receiving Memo
+</Typography>
+<Box sx={{ p: 2 }}>
+  <Button variant="contained" component="label">
+    Choose File
+    <input
+      type="file"
+      hidden
+      onChange={(e) => setReceivingMemoFile(e.target.files[0])}
+    />
+  </Button>
+  {receivingMemoFile && <Typography>{receivingMemoFile.name}</Typography>}
+</Box>
 
-    <Typography variant="h6" component="h2">
-      Upload Delivery Receipt
-    </Typography>
-    <Box sx={{ p: 2 }}>
-      <Button variant="contained" component="label">
-        Choose File
-        <input
-          type="file"
-          hidden
-          // accept="application/pdf,image/*"
-          onChange={(e) => setDeliveryReceiptFile(e.target.files[0])}
-        />
-      </Button>
-      {deliveryReceiptFile && (
-        <Typography sx={{ mt: 1 }}>{deliveryReceiptFile.name}</Typography>
-      )}
-    </Box>
+<Typography variant="h6" component="h2">
+  Upload Delivery Receipt
+</Typography>
+<Box sx={{ p: 2 }}>
+  <Button variant="contained" component="label">
+    Choose File
+    <input
+      type="file"
+      hidden
+      onChange={(e) => setDeliveryReceiptFile(e.target.files[0])}
+    />
+  </Button>
+  {deliveryReceiptFile && <Typography>{deliveryReceiptFile.name}</Typography>}
+</Box>
 
-    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-      <Button onClick={handleCloseUploadModal} sx={{ mr: 2 }}>
-        Cancel
-      </Button>
-      <Button
-        onClick={handleUploadMemoReceipt}
-        variant="contained"
-        disabled={loading} // Disable button while loading
-      >
-        Upload
-      </Button>
-    </Box>
-
-    {/* Loading Spinner */}
-    {loading && (
-      <Box
-        sx={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100vw",
-          height: "100vh",
-          bgcolor: "rgba(255, 255, 255, 0.8)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 2000, // Ensure it overlays everything, including the modal
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    )}
-  </Box>
-</Modal>
-
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button onClick={handleCloseUploadModal} sx={{ mr: 2 }}>
+              Cancel
+            </Button>
+            <Button onClick={handleUploadMemoReceipt} variant="contained">
+              Upload
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
 
       {/* Modal for enlarging images */}
       <Modal

@@ -212,15 +212,15 @@ const MainRoutes = {
           path: 'supplier-management',
           element: <SupplierPage />  // Move SupplierPage to top level
         },
-        {
-          path: 'delivery',
-          children: [
-            {
-              path: 'mark_po',
-              element: <MarkPO />
-            },
-          ]
-        },
+        // {
+        //   path: 'delivery',
+        //   children: [
+        //     {
+        //       path: 'mark_po',
+        //       element: <MarkPO />
+        //     },
+        //   ]
+        // },
       ]
     },  
     {
@@ -311,6 +311,10 @@ const MainRoutes = {
       {
         path: 'supplier-management',
         element: <SupplierPage />  // Move SupplierPage to top level
+      },
+      {
+        path: 'employees',
+        element: <Employees />  
       },
       
       ]
