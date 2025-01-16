@@ -94,32 +94,44 @@ function AttachItemsTable({ onBack, selectedProduct }) {
     setAttachingItemId(item.id);
   
     axios
-      .post(`${import.meta.env.VITE_API_URL}/requisitions-attach-items/`, payload)
-      .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Success",
-          text: "Item attached successfully!",
-        });
-  
-        // Reset attachingItemId to re-enable the button
-        setAttachingItemId(null);
+  .post(`${import.meta.env.VITE_API_URL}/requisitions-attach-items/`, payload)
+  .then((response) => {
+    // Access the status and message from the response
+    const { status, message } = response.data;
 
-        // Clear the quantity for the attached item
-        setQuantities((prev) => ({
-          ...prev,
-          [item.id]: "",
-        }));
-      })
-      .catch((err) => {
-        console.error("Error attaching item:", err);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Failed to attach item. Please try again later.",
-        });
-        setAttachingItemId(null);
+    if (status === "information") {
+      Swal.fire({
+        icon: "information",
+        title: "Information",
+        text: message, // Display the message from the backend
       });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: message || "An unexpected error occurred.",
+      });
+    }
+
+    // Reset attachingItemId to re-enable the button
+    setAttachingItemId(null);
+
+    // Clear the quantity for the attached item
+    setQuantities((prev) => ({
+      ...prev,
+      [item.id]: "",
+    }));
+  })
+  .catch((error) => {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error.response?.data?.message || "An unexpected error occurred.",
+    });
+
+    // Reset attachingItemId to re-enable the button
+    setAttachingItemId(null);
+  });
   };
   
 

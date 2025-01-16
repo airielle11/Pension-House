@@ -39,7 +39,7 @@ function AnalyticCard({ title, count, percentage, extra, onClick }) {
             variant="subtitle2"
             sx={{ color: percentage > 0 ? 'green' : 'red' }}
           >
-            Details
+            ...
           </Typography>
         </CardContent>
       </Card>
@@ -122,26 +122,18 @@ export default function DashboardDefault() {
                   <Grid container item xs={12} spacing={4}>
                     <Grid item xs={12} sm={3}>
                       <AnalyticCard
-                        title="Total number of staff"
-                        count="15"
+                        title="Maribago Pension House"
+                        count="2019"
                         percentage={12}
                         extra="more than last quarter"
                       />
                     </Grid>
                     <Grid item xs={12} sm={3}>
                       <AnalyticCard
-                        title="Pending Requests"
-                        count="3"
+                        title="Penistock"
+                        count="2025"
                         percentage={-0.2}
                         extra="lower than last quarter"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={3}>
-                      <AnalyticCard
-                        title="Accepted Requests"
-                        count="1"
-                        percentage={2}
-                        extra="more than last quarter"
                       />
                     </Grid>
                     <Grid item xs={12} sm={3}>

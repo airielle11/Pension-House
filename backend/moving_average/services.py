@@ -110,7 +110,7 @@ def predict_demand_v1(p_item_id: int):
     print("MSE: ", round(result[2]))
     print("MAPE: ", round(result[3]))
 
-    return round(result[0]), result[1], result[2], result[3]
+    return round(result[0]), result[1], result[2], result[3], inverted_demand_dict
 
   except Exception as e:
     print(f"An error occurred: {e}")

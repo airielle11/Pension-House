@@ -77,9 +77,9 @@ const DefectiveTable = Loadable(lazy(() => import('../pages/InventoryPages/Defec
 
 
 // New import for AR page
-// const DownloadAcknowledgementReceipt = Loadable(
-//   lazy(() => import('../pages/ARpages/DownloadAcknowledgementReceipt.jsx'))
-// );
+const DownloadAcknowledgementReceipt = Loadable(
+  lazy(() => import('../pages/dashboard/download_acknowledgement.jsx'))
+);
 
 
 
@@ -116,10 +116,10 @@ const MainRoutes = {
     //   path: 'view-acknowledgement-receipt',
     //   element: <ViewAcknowledgementReceipt />
     // },
-    // {
-    //   path: 'arpages/download-acknowledgement-receipt', // Route for DownloadAcknowledgementReceipt
-    //   element: <DownloadAcknowledgementReceipt />
-    // },
+    {
+      path: 'dashboard/download-acknowledgement-receipt', // Route for DownloadAcknowledgementReceipt
+      element: <DownloadAcknowledgementReceipt />
+    },
     // {
 
     //   path: 'tables',
@@ -177,6 +177,14 @@ const MainRoutes = {
       element: <AddNewItemForm />, 
     }, 
     {
+      path: 'defective-items', // Route for Defective Items page
+      element: <DefectiveItemsTable />, 
+    },
+    {
+      path: 'add-defective-item', // Route for Add Defective Item page
+      element: <AddDefectiveItem />
+    },
+    {
 
 
       path: 'property_custodian',
@@ -216,6 +224,10 @@ const MainRoutes = {
         {
           path: 'supplier-management',
           element: <SupplierPage />  // Move SupplierPage to top level
+        },
+        {
+          path: 'download-acknowledgement-receipt', // Route for DownloadAcknowledgementReceipt
+          element: <DownloadAcknowledgementReceipt />
         },
         {
           path: 'delivery',
@@ -333,10 +345,10 @@ const MainRoutes = {
         path: 'add-new-item', // Route for Add New Item page
         element: <AddNewItemForm />, 
       },
-      {
-        path: 'graph-page',
-        element: <GraphPage />,
-      },
+      // {
+      //   path: 'graph-page',
+      //   element: <GraphPage />,
+      // },
       
       ]
     },

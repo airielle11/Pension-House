@@ -135,13 +135,14 @@ def predict_demand_v1_view(request):
             p_item_id = int(p_item_id)
 
             # Call the function from services.py
-            forecast, mad, mse, mape = predict_demand_v1(p_item_id)
+            forecast, mad, mse, mape, demand = predict_demand_v1(p_item_id)
 
             return JsonResponse({
                 "forecasted_value": forecast,
                 "mad": mad,
                 "mse": mse,
-                "mape": mape
+                "mape": mape,
+                "demand":demand
             })
 
         except Exception as e:

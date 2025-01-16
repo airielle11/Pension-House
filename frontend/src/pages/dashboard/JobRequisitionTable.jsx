@@ -37,6 +37,26 @@ function JobRequisitionTable() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAttachModalOpen, setIsAttachModalOpen] = useState(false);
   const [jobDescription, setJobDescription] = useState('');
+  const [userRole, setUserRole] = useState(null);
+
+useEffect(() => {
+  const fetchUserRole = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/identify-view-more/`);
+      if (response.data.status === 'success') {
+        setUserRole(response.data.data); // Store the role as an integer
+      } else {
+        console.error('Failed to fetch user role:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+    }
+  };
+
+  fetchUserRole();
+}, []);
+
+
 
   // Fetch job requisitions on component mount
   useEffect(() => {
@@ -60,6 +80,66 @@ function JobRequisitionTable() {
     }
   };
 
+
+  const handleMarkAsComplete = async () => {
+    if (!selectedJob?.ID) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Job Selected',
+        text: 'Please select a job to mark as complete.',
+      });
+      return;
+    }
+  
+    Swal.fire({
+      title: 'Confirm Action',
+      text: `Are you sure you want to mark Job Requisition ID ${selectedJob.ID} as complete?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Mark as Complete',
+      cancelButtonText: 'Cancel',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.post(
+            `${import.meta.env.VITE_API_URL}/mark-job-as-completed/`,
+            {
+              job_requisition_id: selectedJob.ID, // Pass the job ID
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+  
+          if (response.data.status === 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: 'Job Marked as Complete',
+              text: 'The job requisition has been marked as complete successfully.',
+            });
+            fetchJobRequisitions(); // Refresh data
+          } else {
+            Swal.fire({
+              icon: 'success',
+              title: 'Success in Marking Requisition',
+              text: response.data.message || 'An error occurred.',
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.response?.data?.message || 'An unexpected error occurred.',
+          });
+        }
+      }
+    });
+  
+    handleCloseMenu();
+  };
+  
   const handleAcceptJob = async () => {
     if (!selectedJob?.ID) {
       Swal.fire({
@@ -101,7 +181,7 @@ function JobRequisitionTable() {
             fetchJobRequisitions(); // Refresh data
           } else {
             Swal.fire({
-              icon: 'error',
+              icon: 'success',
               title: 'Failed to Accept Job',
               text: response.data.message || 'An error occurred.',
             });
@@ -206,9 +286,7 @@ function JobRequisitionTable() {
       return;
     }
   
-    // Check if there is an existing attached job properly
-    if (selectedJob['Job attachment by'] && selectedJob['Job attachment by'].trim() !== '') {
-      // Close the modal before showing the alert
+    if (typeof selectedJob['Job attachment by'] === 'string' && selectedJob['Job attachment by'].trim() !== '') {
       handleCloseAttachModal();
       Swal.fire({
         icon: 'warning',
@@ -228,9 +306,10 @@ function JobRequisitionTable() {
     }
   
     const payload = {
-      job_requisition_id: Number(selectedJob.ID),
-      job_description: jobDescription.trim(),
+      job_requisition_id: Number(selectedJob.ID), // Ensure this is correct
+      job_description: jobDescription.trim(),    // Ensure this is not empty
     };
+    
   
     try {
       const response = await axios.post(
@@ -242,32 +321,36 @@ function JobRequisitionTable() {
           },
         }
       );
-  
-      if (response.data.success) {
+    
+      if (response.data.success || response.data.status === 'success') {
         Swal.fire({
           icon: 'success',
-          title: 'Job Attached',
+          title: 'Job Attached Successfully',
           text: response.data.message,
         });
         setIsAttachModalOpen(false);
         setJobDescription('');
         setSelectedJob(null);
-        fetchJobRequisitions(); // Refresh the data after attaching the job
+        fetchJobRequisitions(); // Refresh the data
       } else {
         Swal.fire({
           icon: 'error',
           title: 'Failed to Attach Job',
-          text: response.data.message || 'An error occurred.',
+          text: response.data.message || 'An error occurred while attaching the job.',
         });
       }
     } catch (error) {
+      // Log error details for debugging
+      console.error("API Error:", error);
+    
+      // Handle error gracefully
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error.response?.data?.message || 'An error occurred.',
+        icon: 'success',
+        title: 'Success',
+        text: error.response?.data?.message || 'An unexpected error occurred.',
       });
     }
-  };
+  }    
   
   
   
@@ -309,58 +392,38 @@ function JobRequisitionTable() {
   };
 
   // Function to decline job requisition
-  const handleDeclineJobRequisition = async () => {
-    if (!selectedJob) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'No Job Selected',
-        text: 'Please select a job to decline.',
-      });
-      return;
-    }
+// Function to decline job requisition
+const handleDeclineJobRequisition = async () => {
+  if (!selectedJob) {
+    console.warn('No job selected. Please select a job to decline.');
+    return;
+  }
+
+  const rejectionNote = prompt('Reason for Declining (optional):', 'Type your reason here...');
   
-    const { value: rejectionNote } = await Swal.fire({
-      title: 'Decline Job Requisition',
-      input: 'textarea',
-      inputLabel: 'Reason for Declining (optional)',
-      inputPlaceholder: 'Type your reason here...',
-      showCancelButton: true,
-    });
-  
-    if (rejectionNote === null) return; // User canceled
-  
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/approve-decline-job/`,
-        {
-          action_type: 2, // Decline
-          job_requisition_id: selectedJob.ID,
-          p_rejection_note: rejectionNote,
-        }
-      );
-  
-      if (response.status === 200) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Job Requisition Declined',
-          text: 'The job requisition has been declined successfully.',
-        });
-        fetchJobRequisitions();
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Decline Failed',
-          text: response.data.message || 'Failed to decline the job requisition.',
-        });
+  if (rejectionNote === null) return; // User canceled
+
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/approve-decline-job/`,
+      {
+        action_type: 2, // Decline
+        job_requisition_id: selectedJob.ID,
+        p_rejection_note: rejectionNote,
       }
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An error occurred while declining the job requisition.',
-      });
+    );
+
+    if (response.status === 200) {
+      console.log('The job requisition has been declined successfully.');
+      fetchJobRequisitions();
+    } else {
+      console.error(response.data.message || 'Failed to decline the job requisition.');
     }
-  };
+  } catch (error) {
+    console.error('An error occurred while declining the job requisition.');
+  }
+};
+
   
 
   // Conditional rendering based on loading and error state
@@ -403,14 +466,14 @@ function JobRequisitionTable() {
                 <Typography
                   sx={{
                     color:
-                      product.status === 'Accepted'
+                    product['Status:'] === 'Accepted'
                         ? 'green'
-                        : product.status === 'Declined'
+                        : product['Status:'] === 'Declined'
                         ? 'red'
                         : 'orange',
                   }}
                 >
-                  {product.status}
+                  {product['Status:']}
                 </Typography>
               </TableCell>
               <TableCell>
@@ -441,38 +504,83 @@ function JobRequisitionTable() {
   open={Boolean(anchorEl)}
   onClose={handleCloseMenu}
 >
-  <MenuItem onClick={() => handleOpenAttachModal(selectedJob)}>
-    <IconButton color="primary">
-      <EditIcon />
-    </IconButton>
-    Attach Job
-  </MenuItem>
-  <MenuItem onClick={handleViewAttachedJob}>
-    <IconButton color="primary">
-      <EditIcon />
-    </IconButton>
-    View Attached Job
-  </MenuItem>
-  <MenuItem onClick={handleApproveJobRequisition}>
-    <IconButton color="secondary">
-      <CheckCircleIcon />
-    </IconButton>
-    Approve Job Requisition
-  </MenuItem>
-  <MenuItem onClick={handleDeclineJobRequisition}>
-    <IconButton color="error">
-      <CheckCircleIcon />
-    </IconButton>
-    Decline Job Requisition
-  </MenuItem>
-  <MenuItem onClick={handleAcceptJob}>
-  <IconButton color="success">
-    <CheckCircleIcon />
-  </IconButton>
-  Accept Job
-</MenuItem>
+  {/* Role 1: View Attach Job, Approve Job */}
+  {userRole === 1 && [
+    <MenuItem key="view-attached-job" onClick={handleViewAttachedJob}>
+      <IconButton color="primary">
+        <EditIcon />
+      </IconButton>
+      View Attached Job
+    </MenuItem>,
+    <MenuItem key="approve-job-requisition" onClick={handleApproveJobRequisition}>
+      <IconButton color="secondary">
+        <CheckCircleIcon />
+      </IconButton>
+      Approve Job Requisition
+    </MenuItem>,
+  ]}
 
+  {/* Role 2: Attach Job, View Attach Job */}
+  {userRole === 2 && [
+    <MenuItem key="attach-job" onClick={() => handleOpenAttachModal(selectedJob)}>
+      <IconButton color="primary">
+        <EditIcon />
+      </IconButton>
+      Attach Job
+    </MenuItem>,
+    <MenuItem key="view-attached-job" onClick={handleViewAttachedJob}>
+      <IconButton color="primary">
+        <EditIcon />
+      </IconButton>
+      View Attached Job
+    </MenuItem>,
+  ]}
+
+  {/* Role 3: View Attach Job, Accept Job, Mark as Complete */}
+  {userRole === 3 && [
+    <MenuItem key="view-attached-job" onClick={handleViewAttachedJob}>
+      <IconButton color="primary">
+        <EditIcon />
+      </IconButton>
+      View Attached Job
+    </MenuItem>,
+    <MenuItem key="accept-job" onClick={handleAcceptJob}>
+      <IconButton color="success">
+        <CheckCircleIcon />
+      </IconButton>
+      Accept Job
+    </MenuItem>,
+    <MenuItem key="mark-complete" onClick={handleMarkAsComplete}>
+      <IconButton color="primary">
+        <CheckCircleIcon />
+      </IconButton>
+      Mark as Complete
+    </MenuItem>,
+  ]}
+
+  {/* Role 6: Attach Job, View Attach Job, Approve Job */}
+  {userRole === 6 && [
+    <MenuItem key="attach-job" onClick={() => handleOpenAttachModal(selectedJob)}>
+      <IconButton color="primary">
+        <EditIcon />
+      </IconButton>
+      Attach Job
+    </MenuItem>,
+    <MenuItem key="view-attached-job" onClick={handleViewAttachedJob}>
+      <IconButton color="primary">
+        <EditIcon />
+      </IconButton>
+      View Attached Job
+    </MenuItem>,
+    <MenuItem key="approve-job-requisition" onClick={handleApproveJobRequisition}>
+      <IconButton color="secondary">
+        <CheckCircleIcon />
+      </IconButton>
+      Approve Job Requisition
+    </MenuItem>,
+  ]}
 </Menu>
+
 
       {/* Dialog for viewing job description */}
       <Dialog open={isModalOpen} onClose={handleCloseModal} fullWidth>

@@ -66,7 +66,11 @@ const GraphPage = ({ handleAddNewItem }) => {
         item_id: itemId,
       });
       console.log('Predicted demand:', response.data);
-  
+      let chartData = Object.entries(response.data).map(([date, demand]) => ({
+        date: date,
+        demand: demand
+      })) ;
+
       // Assuming forecasted_value is a single value
       const forecastedValue = response.data.forecasted_value || 0;
   
@@ -75,16 +79,21 @@ const GraphPage = ({ handleAddNewItem }) => {
         date: `2025-01-${String(index + 1).padStart(2, '0')}`, // Replace with real dates if available
         demand: forecastedValue,
       }));
+
+       
   
       setPredictedDemand(generatedData); // Set as array for LineChart
-  
+      console.log("generated data: ", generatedData)
       setPredictionStats({
         mape: response.data.mape || 0,
         mse: response.data.mse || 0,
         mad: response.data.mad || 0,
+        forecasted_value: response.data.forecasted_value || 0,
+        demand: response.data.demand 
       });
+      console.log("demand: ", demand)
     } catch (error) {
-      console.error('Error fetching predicted demand:', error.message);
+      console.log('Error fetching predicted demand:',  response.data.error || response.data.message);
     } finally {
       setLoadingPrediction(false);
     }
@@ -262,6 +271,7 @@ const GraphPage = ({ handleAddNewItem }) => {
           </ResponsiveContainer>
 
           <Box sx={{ mt: 2 }}>
+            <Typography variant="body1">FORECASTED DEMAND FOR NEXT MONTH: {predictionStats.forecasted_value}</Typography>
             <Typography variant="body1">MAPE: {predictionStats.mape}</Typography>
             <Typography variant="body1">MSE: {predictionStats.mse}</Typography>
             <Typography variant="body1">MAD: {predictionStats.mad}</Typography>

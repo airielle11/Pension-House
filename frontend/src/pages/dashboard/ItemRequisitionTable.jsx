@@ -108,24 +108,18 @@ function ProductRequisitionTable() {
           }
         );
   
-        if (response.status === 200) {
+        if (response.data.status === 'information') {
           Swal.fire({
-            icon: "success",
-            title: "Action Completed",
-            text: "The item has been marked as complete.",
+            icon: 'info',
+            title: 'Information',
+            text: response.data.message,
           });
           fetchRequisitions(); // Refresh the table
-        } else if (response.status === 400) {
-          Swal.fire({
-            icon: "error",
-            title: "Failed",
-            text: response.data.error || "Failed to mark the item as complete.",
-          });
         } else {
           Swal.fire({
-            icon: "error",
-            title: "Unexpected Response",
-            text: response.data.error || "An unexpected response was received.",
+            icon: 'error',
+            title: 'Failed',
+            text: response.data.message || 'Failed to mark the item as unavailable.',
           });
         }
       } catch (error) {
@@ -213,8 +207,12 @@ function ProductRequisitionTable() {
   };
 
   const handleDownloadAcknowledgementReceipt = () => {
-    setShowDownloadReceipt(true);
-    setTimeout(() => setShowDownloadReceipt(false), 500); // Automatically hide after 500ms
+    const filePath = '/penistock/templates/AcknowledgementReceipt.pdf';
+    console.log('Downloading file from:', filePath);
+    const link = document.createElement('a');
+    link.href = filePath;
+    link.download = 'AcknowledgementReceipt.pdf';
+    link.click();
   };
   
 
@@ -321,6 +319,7 @@ function ProductRequisitionTable() {
               </ListItemIcon>
               <ListItemText>Download Acknowledgement Receipt</ListItemText>
             </MenuItem>
+
           </>
         );
       case 3: // Maintenance Management
@@ -422,11 +421,11 @@ function ProductRequisitionTable() {
             { item_requisition_id: selectedProduct.ID }
           );
   
-          if (response.data.status === "success") {
+          if (response.data.status === "information") {
             Swal.fire({
-              icon: "success",
+              icon: "info",
               title: "Action Completed",
-              text: "The item has been marked as available.",
+              text: response.data.message,
             });
             fetchRequisitions(); // Refresh the table
           } else {
@@ -476,11 +475,11 @@ function ProductRequisitionTable() {
             { item_requisition_id: selectedProduct.ID }
           );
   
-          if (response.data.status === 'success') {
+          if (response.data.status === 'information') {
             Swal.fire({
-              icon: 'success',
+              icon: 'info',
               title: 'Action Completed',
-              text: 'The item has been marked as unavailable.',
+              text: response.data.message,
             });
             fetchRequisitions(); // Refresh the table
           } else {
@@ -780,9 +779,21 @@ function ProductRequisitionTable() {
                       <TableCell>{item.SKU}</TableCell>
                       <TableCell>{item.Category}</TableCell>
                       <TableCell>{item.Brand}</TableCell>
-                      <TableCell>{item.Supplier}</TableCell>
+                      <TableCell>{item.supplier}</TableCell>
                       <TableCell>{item.Pieces}</TableCell>
-                      <TableCell>{item.Status}</TableCell>
+                      <TableCell style={{
+                        color:
+                          item.status === "Low in Stock"
+                            ? "orange"
+                            : item.status === "Out of Stock"
+                            ? "red"
+                            : item.status === "In Stock"
+                            ? "green"
+                            : "black",
+                        fontWeight: "bold"
+                      }}>
+                        {item.status}
+                      </TableCell>
                     </TableRow>
                   ))
                 ) : (

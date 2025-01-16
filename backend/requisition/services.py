@@ -155,7 +155,7 @@ def get_job_requisitions():
                     "Job attachment by": column.get("Job attachment by", "N/A"),
                     "Approved by": column.get("Approved by", "N/A"),
                     "Accepted by": column.get("Accepted by", "N/A"),
-                    "Status": column.get("Status", "N/A"),
+                    "Status:": column.get("Status", "N/A"),
                 }
                 requisitions.append(requisition)
             return requisitions
@@ -165,38 +165,24 @@ def get_job_requisitions():
     except Exception as e:
         print(f"An error occurred: {e}")
         return None  # Return None to indicate an error
+    
 
 
 
 def requisition_attach_items(item_requisition_id: int, items: list):
     try:
-        # Convert the list of dictionaries into a JSON string (if needed)
+    # Convert the list of dictionaries into a JSON string
         function_params = {
-            "p_itemr_id": item_requisition_id,
-            "items": items
+        "p_itemr_id": item_requisition_id,
+        "items": items
         }
 
-        # Call the Supabase function (assuming 'requisition_attach_items_wrapper' is the stored procedure)
+        # Call the Supabase function
         print("Attaching items to requisition...")
         response = supabase.rpc("requisition_attach_items_wrapper", function_params).execute()
-        print("Function Parameters:", function_params)
-        print("Supabase Response:", response.data if response.data else response.error_message)
 
-        # Check if the response data is not empty and return success
-        if response.data:
-            return {
-                "success": True,
-                "message": "Items successfully attached.",
-                "data": response.data  # Return the data received from Supabase
-            }
-        else:
-            # Handle case where no data is returned, but no error occurred
-            error_message = response.error_message if hasattr(response, 'error_message') else "Unknown error"
-            return {
-                "success": False,
-                "message": "Failed to attach items",
-                "details": error_message
-            }
+        return response.data
+
 
     except Exception as e:
         # Catch any unexpected exceptions and return a meaningful error
@@ -207,58 +193,35 @@ def requisition_attach_items(item_requisition_id: int, items: list):
         }
 
 
-
 def requisition_attach_job(job_requisition_id: int, job_description: str):
     try:
-        # Check if the job requisition exists and if a job is already attached
-        existing_job = supabase.table("job_requisitions").select("*").eq("id", job_requisition_id).execute()
-        
-        if not existing_job or not existing_job.data:
-            return {
-                "success": False,
-                "message": "Job requisition not found.",
-                "details": "The provided job requisition ID does not exist."
-            }
-        
-        if existing_job.data[0].get("job_attached"):
-            return {
-                "success": False,
-                "message": "Job already attached.",
-                "details": "The job requisition already has an attached job. Remove it first."
-            }
-
-        # Attach the job using Supabase RPC
+        # Convert the parameters into a dictionary
         function_params = {
             "p_jobr_id": job_requisition_id,
             "p_job_descr": job_description
         }
 
+        # Call the Supabase function
+        print("Attaching a job to requisition...")
         response = supabase.rpc("requisition_attach_job_wrapper", function_params).execute()
 
-        if response.data:
-            return {
-                "success": True,
-                "message": "Job successfully attached.",
-                "data": response.data
-            }
+        # Debug: Print raw response
+        print("Raw response:", response)
+
+        # Check if the response has a `data` attribute and handle it
+        if hasattr(response, "data"):
+            # If data exists, return it
+            if response.data:
+                return {"message": response.data}
+            else:
+                raise ValueError("No data returned from the Supabase function.")
         else:
-            error_message = getattr(response, 'error', "Unknown error occurred")
-            return {
-                "success": False,
-                "message": "Failed to attach job.",
-                "details": error_message
-            }
-
+            raise ValueError("Supabase response is not in a recognized format.")
     except Exception as e:
-        # Log the exception instead of returning it
-        print(f"Error in requisition_attach_job: {str(e)}")
-        return {
-            "success": False,
-            "message": "An unexpected error occurred.",
-            "details": "Please try again later."
-        }
-
-
+        # Log and return the exception details
+        error_message = str(e)
+        print("Exception occurred:", error_message)
+        return {"error": "An unexpected error occurred.", "details": error_message}
 
 
 
@@ -332,8 +295,8 @@ def get_attached_items(item_requisition_id: int):
                     "Category": column.get("Category", "N/A"),
                     "Brand": column.get("brand", "N/A"),
                     "Net Vol/Qty.": column.get("Net Vol/Qty.", "N/A"),
-                    "Supplier": column.get("Supplier", "N/A"),
-                    "Status": column.get("Status", "N/A"),
+                    "supplier": column.get("supplier", "N/A"),
+                    "status": column.get("status", "N/A"),
                     "Pieces": column.get("Pieces", "N/A")
                 }
                 attached_items.append(item_details)
@@ -398,7 +361,7 @@ def get_attached_job(job_requisition_id: int):
     except Exception as e:
         # Return an error message if an exception occurs
         return {"error": f"An error occurred: {e}"}
-
+    
 
 
 def accept_job(job_requisition_id: int):
@@ -429,12 +392,8 @@ def accept_and_mark_item_as_available(item_requisition_id: int):
 
         # Call the Supabase function
         response = supabase.rpc("accept_and_mark_item_as_available_wrapper", function_params).execute()
-
         # Check if the response contains data
-        if response.data:
-            return {"status": "success", "data": response.data}
-        else:
-            return {"status": "error", "message": "No data returned from the function."}
+        return response.data
     except Exception as e:
         # Return the exception message in case of error
         return {"status": "error", "message": str(e)}
@@ -452,35 +411,26 @@ def accept_and_mark_item_as_unavailable(item_requisition_id: int):
         response = supabase.rpc("accept_and_mark_item_as_unavailable_wrapper", function_params).execute()
 
         # Check if the response contains data
-        if response.data:
-            return {"status": "success", "data": response.data}
-        else:
-            return {"status": "error", "message": "No data returned from the function."}
+    
+        return response.data
+    
     except Exception as e:
         # Return the exception message in case of error
         return {"status": "error", "message": str(e)}
 
-import json
-
 def mark_job_as_completed(job_requisition_id: int):
     try:
-        function_params = {
-            "p_jobr_id": job_requisition_id
-        }
+        function_params = {"p_jobr_id": job_requisition_id}
         response = supabase.rpc("complete_job_wrapper", function_params).execute()
 
-        # Convert response.data to dictionary if it's a string
-        if isinstance(response.data, str):
-            response_data = json.loads(response.data)
-        else:
-            response_data = response.data
-
-        print(f"Supabase response data: {response_data}")  # Debugging
-        return response_data  # Return the response data
+        # Ensure a consistent dictionary response
+        return {"status": "success", "message": "Job marked as completed."} if response.data else {"status": "error", "message": "Failed to mark job as completed."}
     except Exception as e:
-        return {"error": str(e)}  # Return the error message as a dictionary
+        print(f"An error occurred: {e}")
+        return {"status": "error", "message": str(e)}
 
-
+    
+    
 def mark_item_as_completed(item_requisition_id: int, file_content: bytes, file_name: str):
     try:
         # Execute the function to retrieve the service role key
@@ -522,7 +472,7 @@ def mark_item_as_completed(item_requisition_id: int, file_content: bytes, file_n
                         db = supabase.rpc("mark_item_as_complete_wrapper", params).execute()
 
                         print(db.data)
-                        return {"status": "success", "data": db.data}
+                        return  db.data
                     except Exception as e:
                         print(str(e))
                         return {"status": "error", "message": str(e)}
@@ -562,7 +512,7 @@ def get_ar_image(file_name: str):
         try:
             # Fetch image from bucket
             print(f"Retrieving image: {file_name}...")
-            response2 = supabase2.storage.from_("item").download(file_name)
+            response2 = supabase2.storage.from_("A-Receipt").download(file_name)
 
             if not response2:  # Check if response is empty
                 raise FileNotFoundError(f"File '{file_name}' not found in 'item' bucket.")

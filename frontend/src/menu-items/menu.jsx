@@ -17,6 +17,7 @@ import {
   DatabaseOutlined,
   ShoppingCartOutlined,
   LineChartOutlined,
+  ExclamationCircleOutlined,
   ProductOutlined} from '@ant-design/icons';
 
 // icons
@@ -38,7 +39,8 @@ const icons = {
   FileTextOutlined,
   DatabaseOutlined,
   PieChartOutlined,
-  LineChartOutlined
+  LineChartOutlined,
+  ExclamationCircleOutlined
 };
  
 // Role-based menu configuration
@@ -224,14 +226,14 @@ const roleBasedMenu = {
     //   icon: icons.TeamOutlined,
     //   breadcrumbs: false,
     // },
-    {
-      id: 'graph_page',
-      title: 'Graph and Predictions',
-      type: 'item',
-      url: 'admin/graph-page',  // Matches the route defined above
-      icon: icons.LineChartOutlined, // Choose an appropriate icon
-      breadcrumbs: false,
-    },
+    // {
+    //   id: 'graph_page',
+    //   title: 'Graph and Predictions',
+    //   type: 'item',
+    //   url: 'admin/graph-page',  // Matches the route defined above
+    //   icon: icons.LineChartOutlined, // Choose an appropriate icon
+    //   breadcrumbs: false,
+    // },
     
     
   ],
@@ -328,6 +330,14 @@ const roleBasedMenu = {
       breadcrumbs: false,
     },
     {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'property_custodian/requisitions',
+      icon: icons.FileTextOutlined
+    },
+
+    {
       id: 'stocks-inventory',
       title: 'Stocks and Inventory',
       type: 'item',
@@ -352,11 +362,11 @@ const roleBasedMenu = {
       breadcrumbs: false,
     },    
     {
-      id: 'requisitions',
-      title: 'Requisitions',
+      id: 'defective-items',
+      title: 'Defective Items',
       type: 'item',
-      url: 'property_custodian/requisitions',
-      icon: icons.FileTextOutlined
+      url: 'defective-items',
+      icon: icons.ExclamationCircleOutlined 
     },
   ],
   "Front Office Manager": [

@@ -158,7 +158,7 @@ def requisition_attach_items_view(request):
             result = requisition_attach_items(item_requisition_id, items)
 
             # Return the result as a JSON response
-            return JsonResponse(result, status=200 if result.get("success") else 400)
+            return JsonResponse({"status": "information", "message": result}, status=200)
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format."}, status=400)
@@ -440,8 +440,9 @@ def accept_and_mark_item_as_available_view(request):
             result = accept_and_mark_item_as_available(item_requisition_id)
 
             # Return the result (either success or error message)
-            return JsonResponse(result, status=200)
-        
+            # return JsonResponse(result, status=200)
+            return JsonResponse({"status": "information", "message": result}, status=200)
+
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format."}, status=400)
         except Exception as e:
@@ -468,7 +469,7 @@ def accept_and_mark_item_as_unavailable_view(request):
             result = accept_and_mark_item_as_unavailable(item_requisition_id)
 
             # Return the result (either success or error message)
-            return JsonResponse(result, status=200)
+            return JsonResponse({"status": "information", "message": result}, status=200)
         
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format."}, status=400)
@@ -505,10 +506,9 @@ def mark_item_as_completed_view(request):
             result = mark_item_as_completed(int(item_requisition_id), file_content, file.name)
 
             # Return the result to the client
-            if result.get("status") == "success":
-                return JsonResponse({"message": "Item marked as completed successfully."}, status=200)
-            else:
-                return JsonResponse(result, status=400)
+            
+            return JsonResponse({"status": "information", "message": result}, status=200)
+            
 
         except Exception as e:
             print(f"Error: {str(e)}")
@@ -521,39 +521,35 @@ def mark_item_as_completed_view(request):
 def mark_job_as_completed_view(request):
     if request.method == "POST":
         try:
-            # Debugging raw body
-            print(f"Raw request body: {request.body}")
+            # Parse JSON data
+            data = json.loads(request.body.decode("utf-8"))
+            job_requisition_id = data.get("job_requisition_id")
 
-            # Parse JSON body
-            body = json.loads(request.body)  # Convert JSON string to dictionary
-            print(f"Parsed body: {body}")
-
-            # Extract job_requisition_id
-            job_requisition_id = body.get("job_requisition_id")
-            print(f"Received job_requisition_id: {job_requisition_id}")
-
-            # Validate job_requisition_id
             if not job_requisition_id:
                 return JsonResponse({"error": "Missing required parameter: job_requisition_id."}, status=400)
 
-            # Call the mark_job_as_completed function
+            # Call the function
             result = mark_job_as_completed(int(job_requisition_id))
-            print(f"Result from mark_job_as_completed: {result}")  # Debugging
 
-            # Return result
-            if result.get("success"):
-                return JsonResponse({"message": "Job requisition marked as completed successfully."}, status=200)
+            # Log the result
+            print(f"mark_job_as_completed returned: {result}")
+
+            # Validate response
+            if not isinstance(result, dict):
+                return JsonResponse({"error": "Unexpected response from mark_job_as_completed."}, status=500)
+
+            if result.get("status") == "success":
+                return JsonResponse({"message": result["message"]}, status=200)
             else:
-                return JsonResponse({"error": result.get("error", "Unknown error occurred.")}, status=400)
+                return JsonResponse({"error": result.get("message", "Unknown error")}, status=400)
 
         except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON body."}, status=400)
+            return JsonResponse({"error": "Invalid JSON format."}, status=400)
         except Exception as e:
-            print(f"Error: {str(e)}")
-            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+            print(f"Unexpected error: {e}")
+            return JsonResponse({"error": "An unexpected error occurred."}, status=500)
 
     return JsonResponse({"error": "Invalid HTTP method. Use POST."}, status=405)
-
 
 
 from io import BytesIO
