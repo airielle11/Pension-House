@@ -19,9 +19,9 @@ import Swal from "sweetalert2";
 import style from "../../users/Styles.module.css";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function PurchaseOrderTable() {
-  const [purchaseOrders, setPurchaseOrders] = useState([]);
   const [selectedOrderItems, setSelectedOrderItems] = useState([]);
   const [selectedPurchaseOrderId, setSelectedPurchaseOrderId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -34,6 +34,10 @@ export default function PurchaseOrderTable() {
   const [deliveryReceiptImages, setDeliveryReceiptImages] = useState({});
   const [receivingMemoImages, setReceivingMemoImages] = useState({});
   const [poQuotationImages, setPoQuotationImages] = useState({}); // Store images
+  const [receivingMemoFile, setReceivingMemoFile] = useState(null);
+  const [deliveryReceiptFile, setDeliveryReceiptFile] = useState(null);
+  const [purchaseOrders, setPurchaseOrders] = useState([]);
+  const [loading, setLoading] = useState(true); // State to track loading status
 
   const handleOpenImageModal = (imageUrl) => {
     setSelectedImage(imageUrl);
@@ -70,28 +74,35 @@ export default function PurchaseOrderTable() {
   const fetchDeliveryReceiptImage = async (fileName) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/delivery_receipt_image/?file_name=${fileName}`
+        `${
+          import.meta.env.VITE_API_URL
+        }/delivery_receipt_image/?file_name=${fileName}`
       );
-  
+
       if (response.ok) {
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
         return imageUrl;
       } else {
-        console.error("Failed to fetch delivery receipt image:", response.status);
+        console.error(
+          "Failed to fetch delivery receipt image:",
+          response.status
+        );
       }
     } catch (error) {
       console.error("Error fetching delivery receipt image:", error);
     }
     return null;
   };
-  
+
   const fetchReceivingMemoImage = async (fileName) => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/receiving_memo_image/?file_name=${fileName}`
+        `${
+          import.meta.env.VITE_API_URL
+        }/receiving_memo_image/?file_name=${fileName}`
       );
-  
+
       if (response.ok) {
         const blob = await response.blob();
         const imageUrl = URL.createObjectURL(blob);
@@ -104,48 +115,46 @@ export default function PurchaseOrderTable() {
     }
     return null;
   };
-  
 
   useEffect(() => {
-  const fetchImages = async () => {
-    const poImages = {};
-    const drImages = {};
-    const rmImages = {};
+    const fetchImages = async () => {
+      const poImages = {};
+      const drImages = {};
+      const rmImages = {};
 
-    for (const order of purchaseOrders) {
-      // Fetch P.O Quotation images
-      if (order["P.O w/ Price Quotations"]) {
-        const poImageUrl = await fetchPoQuotationsImage(
-          order["P.O w/ Price Quotations"]
-        );
-        if (poImageUrl) poImages[order.id] = poImageUrl;
+      for (const order of purchaseOrders) {
+        // Fetch P.O Quotation images
+        if (order["P.O w/ Price Quotations"]) {
+          const poImageUrl = await fetchPoQuotationsImage(
+            order["P.O w/ Price Quotations"]
+          );
+          if (poImageUrl) poImages[order.id] = poImageUrl;
+        }
+
+        // Fetch Delivery Receipt images
+        if (order["Delivery Receipt"]) {
+          const drImageUrl = await fetchDeliveryReceiptImage(
+            order["Delivery Receipt"]
+          );
+          if (drImageUrl) drImages[order.id] = drImageUrl;
+        }
+
+        // Fetch Receiving Memo images
+        if (order["Receiving Memo"]) {
+          const rmImageUrl = await fetchReceivingMemoImage(
+            order["Receiving Memo"]
+          );
+          if (rmImageUrl) rmImages[order.id] = rmImageUrl;
+        }
       }
 
-      // Fetch Delivery Receipt images
-      if (order["Delivery Receipt"]) {
-        const drImageUrl = await fetchDeliveryReceiptImage(
-          order["Delivery Receipt"]
-        );
-        if (drImageUrl) drImages[order.id] = drImageUrl;
-      }
+      setPoQuotationImages(poImages);
+      setDeliveryReceiptImages(drImages);
+      setReceivingMemoImages(rmImages);
+    };
 
-      // Fetch Receiving Memo images
-      if (order["Receiving Memo"]) {
-        const rmImageUrl = await fetchReceivingMemoImage(
-          order["Receiving Memo"]
-        );
-        if (rmImageUrl) rmImages[order.id] = rmImageUrl;
-      }
-    }
-
-    setPoQuotationImages(poImages);
-    setDeliveryReceiptImages(drImages);
-    setReceivingMemoImages(rmImages);
-  };
-
-  fetchImages();
-}, [purchaseOrders]);
-
+    fetchImages();
+  }, [purchaseOrders]);
 
   // Fetch user role from localStorage once when the component mounts
   useEffect(() => {
@@ -161,10 +170,20 @@ export default function PurchaseOrderTable() {
       .then((data) => {
         if (data.success) setPurchaseOrders(data.data);
       })
-      .catch((err) => console.error("Error fetching purchase orders:", err));
+      .catch((err) => console.error("Error fetching purchase orders:", err))
+      .finally(() => setLoading(false)); // Set loading to false after fetch
   }, []);
 
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <CircularProgress />
+      </div>
+    );
+  }
+
   const fetchPurchaseItems = (purchaseOrderId) => {
+    setLoading(true); // Start loading
     fetch(`${import.meta.env.VITE_API_URL}/purchase_items/${purchaseOrderId}/`)
       .then((res) => res.json())
       .then((data) => {
@@ -174,7 +193,10 @@ export default function PurchaseOrderTable() {
           console.error("Error fetching items:", data.message);
         }
       })
-      .catch((err) => console.error("Error fetching items:", err));
+      .catch((err) => console.error("Error fetching items:", err))
+      .finally(() => {
+        ssetLoading(false); // Stop loading
+      });
   };
 
   const handleViewItems = (purchaseOrderId) => {
@@ -183,23 +205,20 @@ export default function PurchaseOrderTable() {
     setModalOpen(true);
   };
 
-   
+  const generatePDF = () => {
+    const modalContent = document.getElementById("modalContent"); // Wrap your modal content in a div with this ID
+    if (modalContent) {
+      html2canvas(modalContent).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-const generatePDF = () => {
-  const modalContent = document.getElementById("modalContent"); // Wrap your modal content in a div with this ID
-  if (modalContent) {
-    html2canvas(modalContent).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save("purchase_order.pdf");
-    });
-  }
-};
-
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("purchase_order.pdf");
+      });
+    }
+  };
 
   const handleUploadPriceQuotations = async () => {
     if (!file) {
@@ -270,6 +289,78 @@ const generatePDF = () => {
     }
   };
 
+  const handleUploadMemoReceipt = async () => {
+    if (!receivingMemoFile || !deliveryReceiptFile) {
+      Swal.fire({
+        title: "Error",
+        text: "Please select files for both Receiving Memo and Delivery Receipt before uploading.",
+        icon: "error",
+        customClass: {
+          container: style.swalContainer,
+        },
+        confirmButtonText: "OK",
+      });
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append("purchase_order_id", selectedPurchaseOrderId);
+    formData.append("receiving_memo", receivingMemoFile);
+    formData.append("delivery_receipt", deliveryReceiptFile);
+  
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/mark_po_as_complete/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
+      if (response.data.success) {
+        Swal.fire({
+          title: "Success!",
+          text: response.data.message || "Purchase Order marked as complete.",
+          icon: "success",
+          customClass: {
+            container: style.swalContainer,
+          },
+          confirmButtonText: "OK",
+        }).then(() => {
+          setModalOpen(false);
+          setReceivingMemoFile(null);
+          setDeliveryReceiptFile(null);
+        });
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: response.data.message || "Failed to complete Purchase Order.",
+          icon: "error",
+          customClass: {
+            container: style.swalContainer,
+          },
+          confirmButtonText: "OK",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text:
+          error.response?.data?.message ||
+          error.message ||
+          "An unexpected error occurred.",
+        icon: "error",
+        customClass: {
+          container: style.swalContainer,
+        },
+        confirmButtonText: "OK",
+      });
+    }
+  };
+  
+  
   const handleOpenMenu = (event, purchaseOrderId) => {
     setMenuAnchorEl(event.currentTarget);
     setSelectedPurchaseOrderId(purchaseOrderId);
@@ -295,6 +386,7 @@ const generatePDF = () => {
   return (
     <div>
       <br />
+      {purchaseOrders.length > 0 ? (
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -322,8 +414,8 @@ const generatePDF = () => {
                         src={poQuotationImages[order.id]}
                         alt={`P.O Quotation ${order.id}`}
                         style={{
-                          width: 30,
-                          height: 30,
+                          width: 40,
+                          height: 40,
                           objectFit: "contain",
                           cursor: "pointer",
                         }}
@@ -412,14 +504,24 @@ const generatePDF = () => {
                       )}
                       {(userRole === "Inventory Management(Head Position)" ||
                         userRole === "Inventory Management") && (
-                        <MenuItem
-                          onClick={() => {
-                            handleCloseMenu();
-                            handleOpenUploadModal(); // Open the upload modal
-                          }}
-                        >
-                          Upload Price Quotations
-                        </MenuItem>
+                        <>
+                          <MenuItem
+                            onClick={() => {
+                              handleCloseMenu();
+                              handleOpenUploadModal(); // Open the upload modal
+                            }}
+                          >
+                            Upload Price Quotations
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              handleCloseMenu();
+                              handleOpenUploadModal(); // Open the upload modal
+                            }}
+                          >
+                            Mark PO as Complete
+                          </MenuItem>
+                        </>
                       )}
                     </Menu>
                   </TableCell>
@@ -435,7 +537,10 @@ const generatePDF = () => {
           </TableBody>
         </Table>
       </TableContainer>
-
+      ) : (
+        <div>No purchase orders available.</div>
+      )}
+      
       {/* Modal for uploading price quotations */}
       <Modal open={uploadModalOpen} onClose={handleCloseUploadModal}>
         <Box sx={modalStyles}>
@@ -458,6 +563,50 @@ const generatePDF = () => {
               Cancel
             </Button>
             <Button onClick={handleUploadPriceQuotations} variant="contained">
+              Upload
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* Modal to mark PO as complete */}
+      <Modal open={uploadModalOpen} onClose={handleCloseUploadModal}>
+        <Box sx={modalStyles}>
+        <Typography variant="h6" component="h2">
+  Upload Receiving Memo
+</Typography>
+<Box sx={{ p: 2 }}>
+  <Button variant="contained" component="label">
+    Choose File
+    <input
+      type="file"
+      hidden
+      onChange={(e) => setReceivingMemoFile(e.target.files[0])}
+    />
+  </Button>
+  {receivingMemoFile && <Typography>{receivingMemoFile.name}</Typography>}
+</Box>
+
+<Typography variant="h6" component="h2">
+  Upload Delivery Receipt
+</Typography>
+<Box sx={{ p: 2 }}>
+  <Button variant="contained" component="label">
+    Choose File
+    <input
+      type="file"
+      hidden
+      onChange={(e) => setDeliveryReceiptFile(e.target.files[0])}
+    />
+  </Button>
+  {deliveryReceiptFile && <Typography>{deliveryReceiptFile.name}</Typography>}
+</Box>
+
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button onClick={handleCloseUploadModal} sx={{ mr: 2 }}>
+              Cancel
+            </Button>
+            <Button onClick={handleUploadMemoReceipt} variant="contained">
               Upload
             </Button>
           </Box>
@@ -501,52 +650,55 @@ const generatePDF = () => {
       </Modal>
 
       {/* Modal for viewing purchase items */}
-<Modal open={modalOpen} onClose={handleCloseModal}>
-  <Box sx={modalStyles} id="modalContent"> {/* Add ID here */}
-    <Typography variant="h6" component="h2">
-      Order ID: {selectedPurchaseOrderId}
-    </Typography>
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>SKU</TableCell>
-          <TableCell>Description</TableCell>
-          <TableCell>Quantity</TableCell>
-          <TableCell>Unit Price</TableCell>
-          <TableCell>Total</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {selectedOrderItems.length ? (
-          selectedOrderItems.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell>{item.sku}</TableCell>
-              <TableCell>{item.description}</TableCell>
-              <TableCell>{item.quantity}</TableCell>
-              <TableCell>{item["unit price"] || "N/A"}</TableCell>
-              <TableCell>{item["total"] || "N/A"}</TableCell>
-            </TableRow>
-          ))
-        ) : (
-          <TableRow>
-            <TableCell colSpan={5} align="center">
-              No items available
-            </TableCell>
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
-    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-      <Button onClick={generatePDF} variant="contained"> {/* Call generatePDF */}
-        Download PDF
-      </Button>
-      <Button onClick={handleCloseModal} variant="contained">
-        Close
-      </Button>
-    </Box>
-  </Box>
-</Modal>
-
+      <Modal open={modalOpen} onClose={handleCloseModal}>
+        <Box sx={modalStyles} id="modalContent">
+          {" "}
+          {/* Add ID here */}
+          <Typography variant="h6" component="h2">
+            Order ID: {selectedPurchaseOrderId}
+          </Typography>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>SKU</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Quantity</TableCell>
+                <TableCell>Unit Price</TableCell>
+                <TableCell>Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {selectedOrderItems.length ? (
+                selectedOrderItems.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{item.sku}</TableCell>
+                    <TableCell>{item.description}</TableCell>
+                    <TableCell>{item.quantity}</TableCell>
+                    <TableCell>{item["unit price"] || "N/A"}</TableCell>
+                    <TableCell>{item["total"] || "N/A"}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    No items available
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button onClick={generatePDF} variant="contained">
+              {" "}
+              {/* Call generatePDF */}
+              Download PDF
+            </Button>
+            <Button onClick={handleCloseModal} variant="contained">
+              Close
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </div>
   );
 }

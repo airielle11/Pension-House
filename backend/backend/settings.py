@@ -72,7 +72,7 @@ INSTALLED_APPS = [
     "rooms",
     "report",
     "supplier",
-    
+    "moving_average",
 ]
 
 MIDDLEWARE = [

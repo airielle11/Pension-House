@@ -31,4 +31,6 @@ urlpatterns = [
      path("", include("inventory.urls")),
 
      path("", include("supplier.urls")),
+     path("", include("moving_average.urls")),
+
 ]
