@@ -14,7 +14,7 @@ export default function StocksInventoryPage() {
   // Fetch stock data on component load
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/stocks`) 
+    .get(`${import.meta.env.VITE_API_URL}/stocks`)
       .then((response) => {
         setStockListData(response.data.stocks);
         setLoading(false);

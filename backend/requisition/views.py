@@ -24,6 +24,7 @@ from .services import mark_item_as_completed
 from .services import get_ar_image
 from .services import get_stocks
 from .services import identify_view_more
+from .services import mark_job_as_completed
 from django.http import HttpResponse
 import os
 @csrf_exempt
@@ -176,29 +177,29 @@ def requisition_attach_job_view(request):
             # Parse the incoming JSON data
             data = json.loads(request.body)
 
-            # Extract the job requisition ID and job description from the request body
+            # Validate parameters
             job_requisition_id = data.get("job_requisition_id")
             job_description = data.get("job_description")
 
-            # Check if the necessary parameters are provided
-            if not job_requisition_id or not job_description:
-                return JsonResponse({"error": "Missing 'job_requisition_id' or 'job_description' in request."}, status=400)
+            if not isinstance(job_requisition_id, int) or not isinstance(job_description, str):
+                return JsonResponse({
+                    "error": "'job_requisition_id' must be an integer and 'job_description' must be a string."
+                }, status=400)
 
-            # Call the service function to attach job
+            # Call the service function
             result = requisition_attach_job(job_requisition_id, job_description)
 
-            # Return the result as a JSON response
-            return JsonResponse(result, status=200 if result.get("error") is None else 400)
+            # Return the result as JSON
+            return JsonResponse(result, status=200 if result.get("success") else 400)
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON format."}, status=400)
         except Exception as e:
-            return JsonResponse({"error": "An unexpected error occurred", "details": str(e)}, status=500)
+            return JsonResponse({"error": "An unexpected error occurred.", "details": str(e)}, status=500)
 
-    # Handle invalid HTTP methods (only POST is allowed)
+    # Handle invalid HTTP methods
     return JsonResponse({"error": "Invalid HTTP method. Only POST requests are allowed."}, status=405)
 
-    
     
 @csrf_exempt
 def approve_or_decline_item_view(request):
@@ -476,6 +477,9 @@ def accept_and_mark_item_as_unavailable_view(request):
     
     return JsonResponse({"error": "Invalid HTTP method. Use POST."}, status=405)
 
+
+
+
 @csrf_exempt
 def mark_item_as_completed_view(request):
     if request.method == "POST":
@@ -511,6 +515,45 @@ def mark_item_as_completed_view(request):
             return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
 
     return JsonResponse({"error": "Invalid HTTP method. Use POST."}, status=405)
+
+
+@csrf_exempt
+def mark_job_as_completed_view(request):
+    if request.method == "POST":
+        try:
+            # Debugging raw body
+            print(f"Raw request body: {request.body}")
+
+            # Parse JSON body
+            body = json.loads(request.body)  # Convert JSON string to dictionary
+            print(f"Parsed body: {body}")
+
+            # Extract job_requisition_id
+            job_requisition_id = body.get("job_requisition_id")
+            print(f"Received job_requisition_id: {job_requisition_id}")
+
+            # Validate job_requisition_id
+            if not job_requisition_id:
+                return JsonResponse({"error": "Missing required parameter: job_requisition_id."}, status=400)
+
+            # Call the mark_job_as_completed function
+            result = mark_job_as_completed(int(job_requisition_id))
+            print(f"Result from mark_job_as_completed: {result}")  # Debugging
+
+            # Return result
+            if result.get("success"):
+                return JsonResponse({"message": "Job requisition marked as completed successfully."}, status=200)
+            else:
+                return JsonResponse({"error": result.get("error", "Unknown error occurred.")}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON body."}, status=400)
+        except Exception as e:
+            print(f"Error: {str(e)}")
+            return JsonResponse({"error": f"An unexpected error occurred: {str(e)}"}, status=500)
+
+    return JsonResponse({"error": "Invalid HTTP method. Use POST."}, status=405)
+
 
 
 from io import BytesIO

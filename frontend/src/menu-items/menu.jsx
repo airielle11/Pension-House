@@ -94,6 +94,13 @@ const roleBasedMenu = {
       icon: icons.TransactionOutlined,
       breadcrumbs: false,
     },
+    {
+      id: 'stocks-inventory',
+      title: 'Stocks and Inventory',
+      type: 'item',
+      url: 'top/stocksinventorypage',
+      icon: icons.DatabaseOutlined
+    },
   ],
 
   // Users: Head Administrator, Administrator
@@ -193,6 +200,13 @@ const roleBasedMenu = {
       breadcrumbs: false
     },
     {
+      id: 'stocks-inventory',
+      title: 'Stocks and Inventory',
+      type: 'item',
+      url: 'admin/stocksinventorypage',
+      icon: icons.DatabaseOutlined
+    },
+    {
       id: 'report',
       title: 'Reports',
       type: 'item',
@@ -206,7 +220,8 @@ const roleBasedMenu = {
       url: 'admin/employees',
       icon: icons.TeamOutlined,
       breadcrumbs: false,
-    }
+    },
+    
   ],
 
   // Users: Executive Housekeeper, Housekeeping Supervisor,
@@ -292,14 +307,14 @@ const roleBasedMenu = {
     },
   ],
   "Inventory Management": [
-    // {
-    //   id: 'dashboard',
-    //   title: 'Dashboard',
-    //   type: 'item',
-    //   url: 'admin/dashboard',
-    //   icon: icons.DashboardOutlined,
-    //   breadcrumbs: false,
-    // },
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'property_custodian/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
     {
       id: 'stocks-inventory',
       title: 'Stocks and Inventory',
@@ -329,6 +344,57 @@ const roleBasedMenu = {
       title: 'Requisitions',
       type: 'item',
       url: 'property_custodian/requisitions',
+      icon: icons.FileTextOutlined
+    },
+  ],
+  "Front Office Manager": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'desk/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'desk/requisitions',
+      icon: icons.FileTextOutlined
+    },
+  ],
+  "Desk Management": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'housekeeping/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'housekeeping/requisitions',
+      icon: icons.FileTextOutlined
+    },
+  ],
+  "Maintenance Management": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'maintenance/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'maintenance/requisitions',
       icon: icons.FileTextOutlined
     },
   ],

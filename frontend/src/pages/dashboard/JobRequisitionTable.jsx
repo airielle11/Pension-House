@@ -206,7 +206,8 @@ function JobRequisitionTable() {
       return;
     }
   
-    if (selectedJob['Job attachment by']) {
+    // Check if there is an existing attached job properly
+    if (selectedJob['Job attachment by'] && selectedJob['Job attachment by'].trim() !== '') {
       // Close the modal before showing the alert
       handleCloseAttachModal();
       Swal.fire({
@@ -267,6 +268,7 @@ function JobRequisitionTable() {
       });
     }
   };
+  
   
   
   

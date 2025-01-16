@@ -144,11 +144,10 @@ const MainRoutes = {
       element: <HeadHouseDashboard />
     },
 
-    /*
     {
       path: 'propertycustodian',
       element: <PropertyCustodian/>
-    },*/
+    },
     {
       path: 'supervisor',
       element: <SupervisorDashboard />
@@ -174,12 +173,14 @@ const MainRoutes = {
       element: <AddNewItemForm />, 
     }, 
     {
+
+
       path: 'property_custodian',
       children: [
-        // {
-        //   path: 'dashboard',
-        //   element: <InventoryDashboard />
-        // }, 
+        {
+          path: 'dashboard',
+          element: <PropertyCustodian />
+        }, 
         {
           path: 'purchase_orders',
           element: <PurchaseOrder />
@@ -228,7 +229,7 @@ const MainRoutes = {
       children: [
         {
           path: 'dashboard',
-          element: <DeskDashboard />
+          element: <DashboardDefault />
         },
             {
       path: 'requisitions',
@@ -242,11 +243,11 @@ const MainRoutes = {
   children: [
     {
       path: 'dashboard',
-      element: <RegularHousekeepeer />
+      element: <PropertyCustodian />
     },
     {
       path: 'requisitions',
-      element: <RequisitionFormForHousekeeper /> // Use the updated component
+      element: <Requisitions/> // Use the updated component
     },
   ]
 },
@@ -259,15 +260,19 @@ const MainRoutes = {
     //     }
     //   ]
     // },
-    // {
-    //   path: 'maintenance',
-    //   children: [
-    //     {
-    //       path: 'dashboard',
-    //       element: <MaintenanceDashboard />
-    //     }
-    //   ]
-    // },
+    {
+      path: 'maintenance',
+      children: [
+        {
+          path: 'dashboard',
+          element: <PropertyCustodian/>
+        },
+        {
+          path: 'requisitions',
+          element: <Requisitions/>
+        },
+      ]
+    },
     {
       path: 'top',
       children: [
@@ -282,7 +287,11 @@ const MainRoutes = {
         {
           path: 'requisitions',
           element: <Requisitions/>
-        }, 
+        },
+        {
+          path: 'stocksinventorypage',
+          element: <StocksInventoryPage />
+        },
       ]
     },
     { 
@@ -311,6 +320,14 @@ const MainRoutes = {
       {
         path: 'supplier-management',
         element: <SupplierPage />  // Move SupplierPage to top level
+      },
+      {
+        path: 'stocksinventorypage',
+        element: <StocksInventoryPage />
+      },
+      {
+        path: 'add-new-item', // Route for Add New Item page
+        element: <AddNewItemForm />, 
       },
       {
         path: 'employees',

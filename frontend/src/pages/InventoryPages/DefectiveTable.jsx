@@ -12,6 +12,7 @@ import {
   Button,
 } from '@mui/material';
 import axios from 'axios';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 // Function to determine the status color based on product status
 const getStatusColor = (status) => {
@@ -32,7 +33,7 @@ const DefectiveTable = ({ handleViewMoreClick }) => {
   // Fetch defective items on initial load
   useEffect(() => {
     setLoading(true); // Set loading to true when the request is made
-    axios.get(${import.meta.env.VITE_API_URL}/defective-items)
+    axios.get(`${import.meta.env.VITE_API_URL}/defective-items`)
       .then((response) => {
         console.log('Full response:', response); // Log full response object
         console.log('Response data:', response.data); // Log only the response data
@@ -56,32 +57,111 @@ const DefectiveTable = ({ handleViewMoreClick }) => {
       });
   }, []); // Empty dependency array to fetch data only once when the component mounts
 
-  // Function to handle marking an item as "Returned"
-  const handleMarkAsReturned = (itemId) => {
-    // Optimistically update the UI to mark the item as returned
+  // Function to handle marking an item as "Returned and Refunded"
+  const handleMarkAsReturnedRefunded = (itemId) => {
     setDefectiveItems((prevItems) =>
       prevItems.map((item) =>
         item.id === itemId ? { ...item, status: 'Returned' } : item
       )
     );
 
-    // Make an API call to your backend to mark the item as returned
-    axios.post(${import.meta.env.VITE_API_URL}/mark-defect-as-returned/, {
-      defect_item_id: itemId,  // Sending the defect item ID in the request body
+    axios.post(`${import.meta.env.VITE_API_URL}/mark-defect-as-returned-refunded/`, {
+      defect_item_id: itemId,
     })
       .then((response) => {
-        console.log('Item marked as returned:', response.data.success);
-        // Optionally, you can show a message to the user here
+        console.log('Full Response Data:', response.data);
+
+        // Show the response message in a SweetAlert modal
+        Swal.fire({
+          title: 'Success!',
+          text: response.data.message,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+
+        return response.data; // Returning the success response data
       })
       .catch((error) => {
-        setError('Error marking item as returned.');
-        console.error('Error marking item as returned:', error);
-        // If there's an error, revert the status change in the UI
-        setDefectiveItems((prevItems) =>
-          prevItems.map((item) =>
-            item.id === itemId ? { ...item, status: 'Pending' } : item
-          )
-        );
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+
+          // Show error message in SweetAlert modal
+          Swal.fire({
+            title: 'Error!',
+            text: error.response.data.message || 'Something went wrong!',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+
+          return error.response.data;
+        } else {
+          console.error('Network or unknown error:', error.message);
+          Swal.fire({
+            title: 'Error!',
+            text: error.message || 'Network error occurred!',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+
+          return { success: false, error: error.message };
+        }
+      })
+      .finally(() => {
+        // Optionally, handle any cleanup if necessary
+      });
+  };
+
+  // Function to handle marking an item as "Returned and Replaced"
+  const handleMarkAsReturnedReplaced = (itemId) => {
+    setDefectiveItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId ? { ...item, status: 'Returned' } : item
+      )
+    );
+
+    axios.post(`${import.meta.env.VITE_API_URL}/mark-defect-as-returned-replaced/`, {
+      defect_item_id: itemId,
+    })
+      .then((response) => {
+        console.log('Item marked as returned and replaced:', response.data.success);
+
+        // Show success message in SweetAlert modal
+        Swal.fire({
+          title: 'Success!',
+          text: response.data.message,
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+
+        return response.data; // Returning the success response data
+      })
+      .catch((error) => {
+        if (error.response) {
+          console.error('Error response:', error.response.data);
+
+          // Show error message in SweetAlert modal
+          Swal.fire({
+            title: 'Error!',
+            text: error.response.data.message || 'Something went wrong!',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+
+          return error.response.data;
+        } else {
+          console.error('Network or unknown error:', error.message);
+          Swal.fire({
+            title: 'Error!',
+            text: error.message || 'Network error occurred!',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
+
+          return { success: false, error: error.message };
+        }
+      })
+      .finally(() => {
+        // Optionally, handle any cleanup if necessary
       });
   };
 
@@ -143,14 +223,22 @@ const DefectiveTable = ({ handleViewMoreClick }) => {
                   </Typography>
                 </TableCell>
                 <TableCell>
-                  {/* Action Button to mark as "Returned" */}
+                  {/* Action Buttons */}
                   <Button
                     variant="outlined"
                     color="error"
-                    onClick={() => handleMarkAsReturned(row.id)}
-                    disabled={row.status === 'Returned'} // Disable button if already marked as returned
+                    onClick={() => handleMarkAsReturnedRefunded(row.id)}
+                    disabled={row.status === 'Returned'}
                   >
-                    Mark as Returned
+                    Mark as Returned and Refunded
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="warning"
+                    onClick={() => handleMarkAsReturnedReplaced(row.id)}
+                    disabled={row.status === 'Returned'}
+                  >
+                    Mark as Returned and Replaced
                   </Button>
                 </TableCell>
               </TableRow>
@@ -166,4 +254,4 @@ const DefectiveTable = ({ handleViewMoreClick }) => {
   );
 };
 
-export default DefectiveTable;s
+export default DefectiveTable;
