@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -38,7 +39,7 @@ function AnalyticCard({ title, count, percentage, extra, onClick }) {
             variant="subtitle2"
             sx={{ color: percentage > 0 ? 'green' : 'red' }}
           >
-            {percentage > 0 ? '↑' : '↓'} {Math.abs(percentage)}% {extra}
+            ...
           </Typography>
         </CardContent>
       </Card>
@@ -48,40 +49,28 @@ function AnalyticCard({ title, count, percentage, extra, onClick }) {
 
 // Main Dashboard Component
 export default function DashboardDefault() {
+  const [requests, setRequests] = useState([]); // State for requests data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
   const [showGenerateIRF, setShowGenerateIRF] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [hideAnalytics, setHideAnalytics] = useState(false); // New state to hide analytics
 
-  // Sample data for table
-  const requests = [
-    {
-      id: 1,
-      roomNo: 101,
-      roomType: 'Family',
-      floorNo: 'John Doe',
-      requestedBy: 'Otor John Stephen',
-      date: '21/11/2022',
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      roomNo: 203,
-      roomType: 'Family',
-      floorNo: 'Melisa Mores',
-      requestedBy: 'Otor John Stephen',
-      date: '21/11/2022',
-      status: 'Pending',
-    },
-    {
-      id: 3,
-      roomNo: 302,
-      roomType: 'Twin',
-      floorNo: '360,000.00',
-      requestedBy: 'Otor John Stephen',
-      date: '21/11/2022',
-      status: 'Accepted',
-    },
-  ];
+  useEffect(() => {
+    // Fetch data from backend
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/get-rooms`) // Update to match your API endpoint
+      .then((response) => {
+        const items = response.data?.items || []; // Optional chaining and fallback
+        setRequests(items); // Update requests state
+        setLoading(false); // Data loading complete
+      })
+      .catch((err) => {
+        setError('No Current Rooms Registered.');
+        console.error('Error fetching rooms:', err);
+        setLoading(false); // Ensure loading stops even on error
+      });
+  }, []);
 
   const handleGenerateInitial = () => {
     setOpenModal(true); // Open confirmation modal
@@ -128,33 +117,23 @@ export default function DashboardDefault() {
               <Dropdown setShowDashboard={setShowGenerateIRF} />
             ) : (
               <>
-
-
                 {/* Conditionally render the analytics cards */}
                 {!hideAnalytics && (
                   <Grid container item xs={12} spacing={4}>
                     <Grid item xs={12} sm={3}>
                       <AnalyticCard
-                        title="Total number of staff"
-                        count="250"
+                        title="Maribago Pension House"
+                        count="2019"
                         percentage={12}
                         extra="more than last quarter"
                       />
                     </Grid>
                     <Grid item xs={12} sm={3}>
                       <AnalyticCard
-                        title="Pending Requests"
-                        count="100"
+                        title="Penistock"
+                        count="2025"
                         percentage={-0.2}
                         extra="lower than last quarter"
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={3}>
-                      <AnalyticCard
-                        title="Accepted Requests"
-                        count="10"
-                        percentage={2}
-                        extra="more than last quarter"
                       />
                     </Grid>
                     <Grid item xs={12} sm={3}>
@@ -172,10 +151,10 @@ export default function DashboardDefault() {
                       >
                         <Card sx={{ width: '100%', p: 2 }}>
                           <CardContent>
-                            <Typography variant="h6">Generate Initial Request</Typography>
+                            <Typography variant="h6">Generate Requisition Service</Typography>
                             <Typography variant="h5"><br /></Typography>
                             <Typography variant="subtitle2" sx={{ color: 'gray', mt: 1 }}>
-                              Click to Generate IR
+                              Click to Generate RF
                             </Typography>
                           </CardContent>
                         </Card>
@@ -184,18 +163,28 @@ export default function DashboardDefault() {
                   </Grid>
                 )}
 
-                {/* Initial Requests Section */}
-                <Grid item xs={12}>
-                  <RRTable
-                    requests={requests}
-                    setHideAnalytics={handleHideAnalytics} // Pass the function to hide analytics
-                  />
-                </Grid>
-              </>
-            )}
-          </Grid>
-        }
-      />
+                  {/* Initial Requests Section */}
+                  <Grid item xs={12}>
+                    {loading ? (
+                      <Typography variant="h6" textAlign="center">
+                        Loading...
+                      </Typography>
+                    ) : error ? (
+                      <Typography variant="h6" textAlign="center" color="error">
+                        {error}
+                      </Typography>
+                    ) : (
+                      <RRTable
+                        requests={requests}
+                        setHideAnalytics={handleHideAnalytics} // Pass the function to hide analytics
+                      />
+                    )}
+                  </Grid>
+                </>
+              )}
+            </Grid>
+          }
+        />
 
       {/* Other Routes */}
       <Route

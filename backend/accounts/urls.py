@@ -11,6 +11,4 @@ urlpatterns = [
     path("positions/", views.get_positions_view, name="positions"),
     path("update_general_info/", views.update_employee_name_view, name="update_general_info"),
     path("update_address_info/", views.update_employee_address_view, name="update_address_info"),
-    path("update_contact_info/", views.update_employee_phone_view, name="update_contact_info")
-
-]
+    path("update_contact_info/", views.update_employee_phone_view, name="update_contact_info")]

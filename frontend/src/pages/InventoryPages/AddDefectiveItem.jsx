@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Avatar } from '@mui/material';
 import axios from 'axios';
+import Swal from 'sweetalert2'; // Import Swal
 
 export default function AddDefectiveItem() {
   const [rows, setRows] = useState([]); // State for table rows
@@ -61,13 +62,21 @@ export default function AddDefectiveItem() {
   
     // If no defective items were selected, show alert and return
     if (defectiveItems.length === 0) {
-      alert('No defective items selected');
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Defective Items Selected',
+        text: 'Please select items with a quantity greater than 0.',
+      });
       return;
     }
   
     // Validate the data before sending
     if (defectiveItems.some((item) => item.qty <= 0)) {
-      alert('Invalid quantity, please check the quantity for defective items.');
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid Quantity',
+        text: 'Please check the quantity for defective items.',
+      });
       return;
     }
   
@@ -78,26 +87,30 @@ export default function AddDefectiveItem() {
     axios
       .post(`${import.meta.env.VITE_API_URL}/add-defective-items/`, defectiveItems)  // Send the array directly
       .then((response) => {
-
         if (response.data.message) {
           // Success case: Show the success message
-          alert(response.data.message);
-        } 
-        /*
-        if (response.data.success) {
-          alert('Defectives items added successfully!');
-        } else {
-          alert('Failed to add defective items.');
+          Swal.fire({
+            icon: 'success',
+            title: 'Defective Items Added',
+            text: response.data.message || 'Defective items added successfully!',
+          });
         }
-          */
       })
       .catch((error) => {
         if (error.response) {
           console.error('Error response:', error.response);
-          alert(`Error: ${error.response.data.message || 'An error occurred while adding defective items.'}`);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.response.data.message || 'An error occurred while adding defective items.',
+          });
         } else {
           console.error('Error:', error);
-          alert('An error occurred while adding defective items.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while adding defective items.',
+          });
         }
       });
   };

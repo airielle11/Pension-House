@@ -69,6 +69,10 @@ INSTALLED_APPS = [
     "purchasing_delivery",
     "login",
     "accounts",
+    "rooms",
+    "report",
+    "supplier",
+    "moving_average",
 ]
 
 MIDDLEWARE = [

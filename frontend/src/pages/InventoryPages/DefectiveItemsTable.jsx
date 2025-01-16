@@ -48,7 +48,7 @@ export default function DefectiveItemsTable() {
         setLoading(false);
       })
       .catch((error) => {
-        setError('Failed to fetch defective items.');
+        setError("There's currently no defective items.");
         setLoading(false);
         console.error('Error fetching defective items:', error);
       });

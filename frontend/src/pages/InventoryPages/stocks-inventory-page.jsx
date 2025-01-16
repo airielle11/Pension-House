@@ -4,6 +4,12 @@ import AnalyticsInventory from './AnalyticsInventory'; // Import AnalyticsInvent
 import { useNavigate } from 'react-router-dom'; // For navigation
 import { Grid, Box, CircularProgress, Typography, Button } from '@mui/material'; // For UI components
 import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import StockList from './StockList'; // Import StockList component
+import AnalyticsInventory from './AnalyticsInventory'; // Import AnalyticsInventory component
+import { useNavigate } from 'react-router-dom'; // For navigation
+import { Grid, Box, CircularProgress, Typography, Button } from '@mui/material'; // For UI components
+import axios from 'axios';
 
 export default function StocksInventoryPage() {
   const navigate = useNavigate();
@@ -14,7 +20,7 @@ export default function StocksInventoryPage() {
   // Fetch stock data on component load
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/stocks`) 
+    .get(`${import.meta.env.VITE_API_URL}/stocks`)
       .then((response) => {
         setStockListData(response.data.stocks);
         setLoading(false);

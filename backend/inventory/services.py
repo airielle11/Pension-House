@@ -6,10 +6,16 @@ import mimetypes
 
 from supabase_client import supabase
 
+from django.conf import settings
+import os
 
 import logging
+import psycopg2
+from psycopg2 import IntegrityError  # Add this import
 
 logger = logging.getLogger(__name__)
+
+
 
 
 def get_stocks():
@@ -368,7 +374,73 @@ def add_new_item_v2(
 """
 
 
+
 def add_new_item(
+    p_item_name: str,
+    p_item_descr: str,
+    p_scat_id: int,
+    p_br_id: int,
+    p_splr_id: int,
+    p_net_volqty: float,
+    p_in_stock: int,
+    p_rol: int,
+    p_pk_descr: str,
+    p_cont_id: int,
+    p_ut_id: int,
+    uploaded_image: str = None
+):
+    try:
+        # Create Supabase client
+        new_url = "https://hdlyxlxptyiblqssufxu.supabase.co"
+        new_key = "your_service_role_key"  # You should securely fetch this key
+        bucket = create_client(new_url, new_key).storage
+
+        if uploaded_image:
+            # Handle file upload to Supabase
+            file_name = os.path.basename(uploaded_image)
+            mime_type, _ = mimetypes.guess_type(uploaded_image)
+
+            if not mime_type:
+                return {"success": False, "message": "Unable to determine MIME type of file."}
+
+            with open(uploaded_image, "rb") as file:
+                upload_response = bucket.from_("item").upload(file_name, file, {"content-type": mime_type})
+
+            if upload_response:
+                # Item data and image file name ready to be added to the database
+                item_data = {
+                    "p_item_name": p_item_name,
+                    "p_item_descr": p_item_descr,
+                    "p_image": file_name,
+                    "p_scat_id": p_scat_id,
+                    "p_br_id": p_br_id,
+                    "p_splr_id": p_splr_id,
+                    "p_net_volqty": p_net_volqty,
+                    "p_in_stock": p_in_stock,
+                    "p_rol": p_rol,
+                    "p_pk_descr": p_pk_descr,
+                    "p_cont_id": p_cont_id,
+                    "p_ut_id": p_ut_id
+                }
+
+                # Call to Supabase function to add item data
+                response = supabase.rpc("add_new_item_wrapper", item_data).execute()
+
+                # Check for errors in the RPC response
+               
+            return {"da": True, "ywa ka": response.data}
+
+            
+        else:
+            return {"success": False, "message": "No image uploaded."}
+    except Exception as e:
+        return {"das": False, "df": str(e)}
+
+
+
+
+
+def add_new_item_v3(
     p_item_name: str,
     p_item_descr: str,
     p_scat_id: int,
@@ -381,80 +453,40 @@ def add_new_item(
     p_cont_id: int,
     p_ut_id: int
 ):
-    try:
-        # Execute the function to retrieve the service role key
-        response = supabase.rpc("service_role").execute()
+  try:
+    print("Connecting to database...")
+    print("Adding new item...")
+    params = {
+      "p_item_name": p_item_name,
+      "p_item_descr": p_item_descr,
+      "p_image": None,
+      "p_scat_id": p_scat_id,
+      "p_br_id": p_br_id,
+      "p_splr_id": p_splr_id,
+      "p_net_volqty": p_net_volqty,
+      "p_in_stock": p_in_stock,
+      "p_rol": p_rol,
+      "p_pk_descr": p_pk_descr,
+      "p_cont_id": p_cont_id,
+      "p_ut_id": p_ut_id
+    }
+    db = supabase.rpc("add_new_item_wrapper", params).execute()
+    print("Response Data:", db.data)
+    # return db.data
+    return str(db.data)
 
-        if response.data:
-            print("Connecting to Supabase...")
-            # Initialize Supabase client with service role key
-            new_url = "https://hdlyxlxptyiblqssufxu.supabase.co"  # Supabase URL
-            new_key = response.data["service_role_key"]  # Supabase API key
-            bucket: Client = create_client(new_url, new_key)
+  except Exception as e:
+    # print(f"Database operation failed: {e}")
+    return {"success": False, "error": f"An error occurred: {str(e)}"}
+    print(f"Error occurred: {str(e)}")
 
-            # Create a hidden tkinter window for sample file selection
-            root = tk.Tk()
-            root.withdraw()
 
-            # Ask the user to select an image file
-            file_path = filedialog.askopenfilename(
-                title="Select an Image to Upload",
-                filetypes=[("Image Files", "*.png *.jpg *.jpeg")]
-            )
 
-            # Check if a file was selected
-            if not file_path:
-                return {"success": False, "message": "No file selected."}
 
-            # Extract the file name from the path
-            file_name = file_path.split("/")[-1]
-            print("File name:", file_name)
 
-            # Determine the MIME type of the selected file
-            mime_type, _ = mimetypes.guess_type(file_path)
-            if not mime_type:
-                return {"success": False, "message": "Unable to determine the MIME type."}
-            print(f"Detected MIME type: {mime_type}")
 
-            try:
-                # Open the file and upload it to the bucket
-                with open(file_path, "rb") as file:
-                    upload_response = bucket.storage.from_("item").upload(
-                        file_name,
-                        file,
-                        {"content-type": mime_type}  # Explicitly set the MIME type
-                    )
-                if upload_response:
-                    print("Connecting to database...")
-                    try:
-                        print("Adding new item...")
-                        params = {
-                            "p_item_name": p_item_name,
-                            "p_item_descr": p_item_descr,
-                            "p_image": file_name,
-                            "p_scat_id": p_scat_id,
-                            "p_br_id": p_br_id,
-                            "p_splr_id": p_splr_id,
-                            "p_net_volqty": p_net_volqty,
-                            "p_in_stock": p_in_stock,
-                            "p_rol": p_rol,
-                            "p_pk_descr": p_pk_descr,
-                            "p_cont_id": p_cont_id,
-                            "p_ut_id": p_ut_id
-                        }
-                        db = supabase.rpc("add_new_item_wrapper", params).execute()
 
-                        return {"success": True, "data": db.data}
-                    except Exception as e:
-                        return {"success": False, "error": f"Database error: {str(e)}"}
-                else:
-                    return {"success": False, "message": "File upload failed."}
-            except Exception as e:
-                return {"success": False, "error": f"File upload error: {str(e)}"}
-        else:
-            return {"success": False, "message": "Failed to retrieve service role key."}
-    except Exception as e:
-        return {"success": False, "error": f"Initialization error: {str(e)}"}
+
 
 
 def add_defective_items(defectives):
@@ -544,11 +576,12 @@ def add_defective_items(defectives):
         return False  # Return False if an exception occurs
 """
 
-def mark_defect_as_returned(defect_item_id: int):
+def mark_defect_as_returned(defect_item_id: int, p_status: bool):
     try:
         # Define the function parameters as a dictionary
         function_params = {
-            "p_item_id": defect_item_id  # Pass the defect item ID
+            "p_item_id": defect_item_id,  # Pass the defect item ID,
+            "status": p_status  # Pass the defect item ID
         }
 
         # Call the Supabase RPC function to mark the defect as returned
@@ -556,15 +589,14 @@ def mark_defect_as_returned(defect_item_id: int):
         response = supabase.rpc("mark_defect_as_returned_wrapper", function_params).execute()
 
         # Check if the response contains data and return a success message
-        if response.data:
-            return {"success": True, "message": "Defective item marked as returned successfully."}
-        else:
-            return {"success": False, "message": "Failed to mark defective item as returned."}
+        return {"success": True, "message": response.data}
 
     except Exception as e:
         # Handle any errors that occur during the RPC call
         print(f"Exception occurred: {str(e)}")
         return {"success": False, "error": f"An error occurred: {str(e)}"}
+
+        
 
 def update_stock(item_id: int, new_stock: int):
     try:
@@ -729,7 +761,7 @@ def add_new_item_v2(
     except Exception as e:
         print(f"Operation failed: {e}")
 """
-
+"""
 
 def add_new_item_v2(p_item_name: str, p_item_descr: str, p_scat_id: int, p_br_id: int, p_splr_id: int,
                      p_net_volqty: float, p_in_stock: int, p_rol: int, p_pk_descr: str, p_cont_id: int, p_ut_id: int):
@@ -738,6 +770,7 @@ def add_new_item_v2(p_item_name: str, p_item_descr: str, p_scat_id: int, p_br_id
         function_params = {
             "item_name": p_item_name,
             "item_descr": p_item_descr,
+            "p_image": p_image,
             "scat_id": p_scat_id,
             "br_id": p_br_id,
             "splr_id": p_splr_id,
@@ -764,3 +797,4 @@ def add_new_item_v2(p_item_name: str, p_item_descr: str, p_scat_id: int, p_br_id
     except Exception as e:
         print(f"Exception occurred: {str(e)}")  # Print exception details
         return False
+"""

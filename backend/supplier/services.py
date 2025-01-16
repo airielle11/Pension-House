@@ -288,4 +288,3 @@ def get_brands():
 
     except Exception as e:
         return {"success": False, "error": f"An error occurred: {str(e)}"}
-
