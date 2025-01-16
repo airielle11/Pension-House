@@ -419,6 +419,15 @@ const roleBasedMenu = {
       url: 'maintenance/requisitions',
       icon: icons.FileTextOutlined
     },
+
+    {
+      id: 'supplier_management',
+      title: 'Supplier Management',
+      type: 'item',
+      url: 'supplier-management',  // Define the URL for the Supplier Management page
+      icon: icons.AppstoreAddOutlined,  // You can choose a different icon if preferred
+      breadcrumbs: false
+    },
   ],
 };
 

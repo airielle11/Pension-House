@@ -19,6 +19,15 @@ urlpatterns = [
      # Login app
      path("", include("login.urls")), 
      path("", include("accounts.urls")),
+<<<<<<< HEAD
+
+
+     #inventory
+     path("", include("inventory.urls")),
+
+      path("", include("supplier.urls")),
+     
+=======
      
      # puchasing and delivery app
      path("", include("purchasing_delivery.urls")),
@@ -33,4 +42,5 @@ urlpatterns = [
      path("", include("supplier.urls")),
      path("", include("moving_average.urls")),
 
+>>>>>>> refs/remotes/origin/airielle
 ]

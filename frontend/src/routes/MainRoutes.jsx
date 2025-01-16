@@ -72,7 +72,6 @@ const AddDefectiveItem = Loadable(lazy(() => import('../pages/InventoryPages/Add
 
 const SupplierPage = Loadable(lazy(() => import('../pages/supplierManagement/SupplierPage.jsx')));
 
-const DefectiveTable = Loadable(lazy(() => import('../pages/InventoryPages/DefectiveTable.jsx'))); 
 
 
 
@@ -81,7 +80,7 @@ const DownloadAcknowledgementReceipt = Loadable(
   lazy(() => import('../pages/dashboard/download_acknowledgement.jsx'))
 );
 
-
+const DefectiveTable = Loadable(lazy(() => import('../pages/InventoryPages/DefectiveTable.jsx'))); 
 
 // Main Routes Configuration
 const MainRoutes = { 
@@ -310,6 +309,11 @@ const MainRoutes = {
         },
       ]
     },
+    {
+      path: 'supplier-management',
+      element: <SupplierPage />  // Move SupplierPage to top level
+    },
+    
     { 
       path: 'admin',
       children: [
