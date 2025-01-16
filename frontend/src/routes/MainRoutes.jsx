@@ -174,6 +174,8 @@ const MainRoutes = {
       element: <AddNewItemForm />, 
     }, 
     {
+
+
       path: 'property_custodian',
       children: [
         {
@@ -228,7 +230,7 @@ const MainRoutes = {
       children: [
         {
           path: 'dashboard',
-          element: <DeskDashboard />
+          element: <DashboardDefault />
         },
             {
       path: 'requisitions',
@@ -242,11 +244,11 @@ const MainRoutes = {
   children: [
     {
       path: 'dashboard',
-      element: <RegularHousekeepeer />
+      element: <PropertyCustodian />
     },
     {
       path: 'requisitions',
-      element: <RequisitionFormForHousekeeper /> // Use the updated component
+      element: <Requisitions/> // Use the updated component
     },
   ]
 },
@@ -259,15 +261,19 @@ const MainRoutes = {
     //     }
     //   ]
     // },
-    // {
-    //   path: 'maintenance',
-    //   children: [
-    //     {
-    //       path: 'dashboard',
-    //       element: <MaintenanceDashboard />
-    //     }
-    //   ]
-    // },
+    {
+      path: 'maintenance',
+      children: [
+        {
+          path: 'dashboard',
+          element: <PropertyCustodian/>
+        },
+        {
+          path: 'requisitions',
+          element: <Requisitions/>
+        },
+      ]
+    },
     {
       path: 'top',
       children: [
@@ -282,7 +288,11 @@ const MainRoutes = {
         {
           path: 'requisitions',
           element: <Requisitions/>
-        }, 
+        },
+        {
+          path: 'stocksinventorypage',
+          element: <StocksInventoryPage />
+        },
       ]
     },
     { 
@@ -315,6 +325,10 @@ const MainRoutes = {
       {
         path: 'stocksinventorypage',
         element: <StocksInventoryPage />
+      },
+      {
+        path: 'add-new-item', // Route for Add New Item page
+        element: <AddNewItemForm />, 
       },
       
       ]

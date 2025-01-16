@@ -164,7 +164,7 @@ function ProductRequisitionTable() {
           title: 'Failed to Fetch Data',
           text: 'Unable to fetch requisition data. Please try again later.',
         });
-        setError('Failed to fetch requisition data.');
+        setError('You are not Allowed to View the Item requisiton');
         setLoading(false);
       });
   };
@@ -288,7 +288,7 @@ function ProductRequisitionTable() {
             </MenuItem>
           </>
         );
-      case 4: // Property Maintenance
+      case 4: // Property Management
         return (
           <>
             <MenuItem onClick={() => fetchAttachedItems(selectedProduct?.ID)}>

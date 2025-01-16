@@ -58,7 +58,7 @@ function RRTable({ setHideAnalytics }) {
     return (
         <Box sx={{ overflowX: 'auto' }}>
             <Box sx={{ mb: 6 }}>
-                <Typography variant="h5" sx={{ mb: 2, textAlign: 'center' }}>
+                <Typography variant="h5" sx={{ mb: 2, textAlign: 'left' }}>
                     List of Rooms
                 </Typography>
                 <Table>

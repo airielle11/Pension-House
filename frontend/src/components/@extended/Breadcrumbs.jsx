@@ -73,7 +73,7 @@ export default function Breadcrumbs({ navigation, title, ...others }) {
               <MuiBreadcrumbs aria-label="breadcrumb" separator=" / ">
                 {/* Home Link with Separator */}
                 <Typography component={Link} to="/stocksinventorypage" color="textSecondary" variant="h6" sx={{ textDecoration: 'none' }}>
-                  Admin
+                  Stocks
                 </Typography>
 
                 {/* Defective Items Link with no separator after it */}
@@ -84,7 +84,7 @@ export default function Breadcrumbs({ navigation, title, ...others }) {
                   variant="h6" 
                   sx={{ textDecoration: 'none' }}
                 >
-                  Dashboard
+                  Defective Items
                 </Typography>
               </MuiBreadcrumbs>
             </Grid>
