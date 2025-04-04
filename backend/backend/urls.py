@@ -21,5 +21,16 @@ urlpatterns = [
      path("", include("accounts.urls")),
      
      # puchasing and delivery app
-     path("", include("purchasing_delivery.urls"))
+     path("", include("purchasing_delivery.urls")),
+     path("", include("accounts.urls")),
+     path("", include("requisition.urls")),
+     path("", include("rooms.urls")),
+     path("", include("report.urls")),
+     
+     #inventory
+     path("", include("inventory.urls")),
+
+     path("", include("supplier.urls")),
+     path("", include("moving_average.urls")),
+
 ]

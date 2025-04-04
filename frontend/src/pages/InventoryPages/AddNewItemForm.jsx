@@ -1,190 +1,162 @@
-import React, { useState } from 'react';
-import { Box, Button, Grid, TextField, MenuItem, Typography, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
-
-// Mock data for dropdowns
-const categories = ['Category 1', 'Category 2', 'Category 3'];
-const suppliers = ['Supplier 1', 'Supplier 2', 'Supplier 3'];
-const brands = ['Brand 1', 'Brand 2', 'Brand 3'];
-const containers = ['Container 1', 'Container 2', 'Container 3'];
-const units = ['Unit 1', 'Unit 2', 'Unit 3'];
+import React, { useState, useEffect } from 'react'; 
+import { Box, Button, Grid, TextField, MenuItem } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; 
+import axios from 'axios';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 const AddNewItemForm = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
 
-  // State for modal visibility
-  const [openModal, setOpenModal] = useState(false);
+  // State for dropdowns
+  const [categories, setCategories] = useState([]);  
+  const [brands, setBrands] = useState([]);  
+  const [suppliers, setSuppliers] = useState([]);  
+  const [containers, setContainers] = useState([]);  
+  const [units, setUnits] = useState([]);  
 
-  // Handle back button click
+  // Item details
+  const [itemName, setItemName] = useState("");  
+  const [itemDescription, setItemDescription] = useState("");  
+  const [netVol, setNetVol] = useState(0);  
+  const [inStock, setInStock] = useState(0);  
+  const [reOrderLevel, setReOrderLevel] = useState(0);  
+  const [pkDescription, setPkDescription] = useState("");
+
+  // States for selected values
+  const [selectedCategory, setSelectedCategory] = useState(""); 
+  const [selectedBrand, setSelectedBrand] = useState(""); 
+  const [selectedSupplier, setSelectedSupplier] = useState(""); 
+  const [selectedContainer, setSelectedContainer] = useState(""); 
+  const [selectedUnit, setSelectedUnit] = useState(""); 
+
   const handleBack = () => {
-    navigate(-1); // Go back to the previous page
+    navigate(-1); 
   };
 
-  // Handle Add New Item click
-  const handleAddItem = () => {
-    // Add logic to save the new item (e.g., API call)
-    setOpenModal(true); // Open the success modal
+  const handleAddItem = async () => {
+    const formData = {
+      p_item_name: itemName,
+      p_item_descr: itemDescription,
+      p_scat_id: selectedCategory,
+      p_br_id: selectedBrand,
+      p_splr_id: selectedSupplier,
+      p_net_volqty: parseInt(netVol, 10),
+      p_in_stock: parseInt(inStock, 10),
+      p_rol: reOrderLevel,
+      p_pk_descr: pkDescription,
+      p_cont_id: selectedContainer,
+      p_ut_id: selectedUnit,
+    };
+
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/add-new-item3/`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.success) {
+        Swal.fire({
+          title: 'Success!',
+          text: 'The item has been successfully added.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        });
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: response.data.error || 'An error occurred',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || error.message || 'An unexpected error occurred';
+      Swal.fire({
+        title: 'Error',
+        text: `Error: ${errorMessage}`, // errorMessage is interpolated here
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+    }
   };
 
-  // Handle modal close
-  const handleCloseModal = () => {
-    setOpenModal(false); // Close the modal
+  useEffect(() => {
+    fetchCategories();
+    fetchBrands();
+    fetchSuppliers();
+    fetchContainers();
+    fetchUnits();
+  }, []);
+
+  const fetchCategories = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/categories`) // Use backticks here
+      .then((response) => setCategories(response.data.categories || []))
+      .catch((error) => console.error('Error fetching categories:', error));
   };
+  
+  const fetchBrands = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/brands`) // Use backticks here
+      .then((response) => setBrands(response.data.brands || []))
+      .catch((error) => console.error('Error fetching brands:', error));
+  };
+  
+  const fetchSuppliers = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/suppliers`) // Use backticks here
+      .then((response) => setSuppliers(response.data.suppliers || []))
+      .catch((error) => console.error('Error fetching suppliers:', error));
+  };
+  
+  const fetchContainers = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/containers`) // Use backticks here
+      .then((response) => setContainers(response.data.containers || []))
+      .catch((error) => console.error('Error fetching containers:', error));
+  };
+  
+  const fetchUnits = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/units`) // Use backticks here
+      .then((response) => setUnits(response.data.units || []))
+      .catch((error) => console.error('Error fetching units:', error));
+  };
+  
 
   return (
     <Box sx={{ p: 3 }}>
-      {/* Back Button */}
-      <Button
-        variant="text"
-        sx={{
-          color: '#384295', // Blue text color
-          textTransform: 'none', // Keep the text as is (not uppercase)
-          fontWeight: 'normal',
-          mb: 2, // Margin bottom to separate from the form
-        }}
-        onClick={handleBack} // Trigger back navigation
-      >
-        Back
-      </Button>
-
-      {/* Form Content */}
+      <Button variant="text" onClick={handleBack}>Back</Button>
       <Grid container spacing={3}>
-        {/* Upload Photo Container */}
-        <Grid item xs={12} md={4}>
-          <Box
-            sx={{
-              border: '1px solid #ccc',
-              borderRadius: '8px',
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '85%',
-            }}
-          >
-            {/* Upload Photo and Choose File */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <Typography variant="body1" gutterBottom>
-                Upload Photo
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary', marginTop: 1 }}>
-                File size limit: 2MB
-              </Typography>
-              <Button variant="contained" component="label">
-                Choose File
-                <input type="file" hidden />
-              </Button>
-            </Box>
-          </Box>
-
-          {/* Add New Item Button below Upload Photo container */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-            <Button
-              variant="contained"
-              sx={{
-                background: 'linear-gradient(to right, #14ADD6, #384295)',
-                color: '#fff',
-                '&:hover': {
-                  background: 'linear-gradient(to right, #14ADD6, #384295)',
-                },
-                width: '100%',
-                maxWidth: '400px',
-                borderRadius: '8px',
-              }}
-              onClick={handleAddItem} // Trigger Add Item logic
-            >
-              Add New Item
-            </Button>
-          </Box>
-        </Grid>
-
-        {/* Item Details Form */}
         <Grid item xs={12} md={8}>
-          <Box
-            sx={{
-              border: '1px solid #ccc',
-              borderRadius: '8px',
-              p: 3,
-            }}
-          >
+          <Box sx={{ border: '1px solid #ccc', borderRadius: '8px', p: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <TextField label="Item Name" fullWidth />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField label="Item Description" fullWidth />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField select label="Category" fullWidth defaultValue="">
-                  {categories.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField select label="Supplier" fullWidth defaultValue="">
-                  {suppliers.map((supplier) => (
-                    <MenuItem key={supplier} value={supplier}>
-                      {supplier}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField select label="Brand" fullWidth defaultValue="">
-                  {brands.map((brand) => (
-                    <MenuItem key={brand} value={brand}>
-                      {brand}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField select label="Container" fullWidth defaultValue="">
-                  {containers.map((container) => (
-                    <MenuItem key={container} value={container}>
-                      {container}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField label="Net Vol/Qty" fullWidth />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField select label="Unit" fullWidth defaultValue="">
-                  {units.map((unit) => (
-                    <MenuItem key={unit} value={unit}>
-                      {unit}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField label="Pieces" fullWidth />
-              </Grid>
+              <Grid item xs={12} md={6}><TextField label="Item Name" fullWidth value={itemName} onChange={(e) => setItemName(e.target.value)} /></Grid>
+              <Grid item xs={12} md={6}><TextField label="Item Description" fullWidth value={itemDescription} onChange={(e) => setItemDescription(e.target.value)} /></Grid>
+              <Grid item xs={12} md={6}><TextField select label="Category" fullWidth value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>{categories.map((category) => <MenuItem key={category.ID} value={category.ID}>{category.Category}</MenuItem>)}</TextField></Grid>
+              <Grid item xs={12} md={6}><TextField select label="Supplier" fullWidth value={selectedSupplier} onChange={(e) => setSelectedSupplier(e.target.value)}>{suppliers.map((supplier) => <MenuItem key={supplier.ID} value={supplier.ID}>{supplier.Supplier}</MenuItem>)}</TextField></Grid>
+              <Grid item xs={12} md={6}><TextField select label="Brand" fullWidth value={selectedBrand} onChange={(e) => setSelectedBrand(e.target.value)}>{brands.map((brand) => <MenuItem key={brand.ID} value={brand.ID}>{brand.Brand}</MenuItem>)}</TextField></Grid>
+              <Grid item xs={12} md={6}><TextField select label="Container" fullWidth value={selectedContainer} onChange={(e) => setSelectedContainer(e.target.value)}>{containers.map((container) => <MenuItem key={container.ID} value={container.ID}>{container.Container}</MenuItem>)}</TextField></Grid>
+              <Grid item xs={12} md={6}><TextField label="Net Vol/Qty" fullWidth type="number" value={netVol} onChange={(e) => setNetVol(e.target.value)} /></Grid>
+              <Grid item xs={12} md={6}><TextField select label="Unit" fullWidth value={selectedUnit} onChange={(e) => setSelectedUnit(e.target.value)}>{units.map((unit) => <MenuItem key={unit.ID} value={unit.ID}>{unit.Unit}</MenuItem>)}</TextField></Grid>
+              <Grid item xs={12} md={6}><TextField label="In Stock" fullWidth type="number" value={inStock} onChange={(e) => setInStock(e.target.value)} /></Grid>
+              <Grid item xs={12} md={6}><TextField label="Reorder Level" fullWidth type="number" value={reOrderLevel} onChange={(e) => setReOrderLevel(e.target.value)} /></Grid>
+              <Grid item xs={12} md={6}><TextField label="Pack Description" fullWidth value={pkDescription} onChange={(e) => setPkDescription(e.target.value)} /></Grid>
             </Grid>
           </Box>
         </Grid>
       </Grid>
 
-      {/* Success Modal */}
-      <Dialog open={openModal} onClose={handleCloseModal}>
-        <DialogTitle>Success</DialogTitle>
-        <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography variant="body1">Item successfully added!</Typography>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Button variant="contained" sx={{ background: 'linear-gradient(to right, #14ADD6, #384295)', width: '100%', maxWidth: '400px' }} onClick={handleAddItem}>
+          Add New Item
+        </Button>
+      </Box>
     </Box>
   );
 };

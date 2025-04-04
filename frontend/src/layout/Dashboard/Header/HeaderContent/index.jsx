@@ -21,7 +21,7 @@ export default function HeaderContent() {
         width: '100%',
       }}
     > 
-      <Notification />   
+       
       {/* Display layout for large screens */}
       {!downLG && <Profile />}
 

@@ -12,8 +12,11 @@ import {
   HomeOutlined,
   TransactionOutlined,
   TeamOutlined,
-  ProductOutlined,
-} from '@ant-design/icons';
+  PieChartOutlined,
+  FileTextOutlined,
+  DatabaseOutlined,
+  ShoppingCartOutlined,
+  ProductOutlined} from '@ant-design/icons';
 
 // icons
 const icons = {
@@ -30,12 +33,34 @@ const icons = {
   TransactionOutlined,
   TeamOutlined,
   ProductOutlined,
+  ShoppingCartOutlined,
+  FileTextOutlined,
+  DatabaseOutlined,
+  PieChartOutlined
 };
-
-// Role-based menu configuration
+ 
 // Role-based menu configuration
 const roleBasedMenu = {
+
+  // Users: General Manager, Assistant General Manager,
+  // Duty Manager, Operations Manager,
+  // Quality Assurance Manager, Supervisor
   "Top Management(Head Position)": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'top/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    }, 
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'top/requisitions',
+      icon: icons.FileTextOutlined
+    }, 
     {
       id: 'purchase_orders',
       title: 'Purchase Orders',
@@ -47,6 +72,21 @@ const roleBasedMenu = {
   ],
   "Top Management": [
     {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'top/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    }, 
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'top/requisitions',
+      icon: icons.FileTextOutlined
+    }, 
+    {
       id: 'purchase_orders',
       title: 'Purchase Orders',
       type: 'item',
@@ -54,7 +94,16 @@ const roleBasedMenu = {
       icon: icons.TransactionOutlined,
       breadcrumbs: false,
     },
+    {
+      id: 'stocks-inventory',
+      title: 'Stocks and Inventory',
+      type: 'item',
+      url: 'top/stocksinventorypage',
+      icon: icons.DatabaseOutlined
+    },
   ],
+
+  // Users: Head Administrator, Administrator
   "Administration(Head Position)": [
     {
       id: 'dashboard',
@@ -63,6 +112,28 @@ const roleBasedMenu = {
       url: 'admin/dashboard',
       icon: icons.DashboardOutlined,
       breadcrumbs: false,
+    }, 
+    {
+      id: 'add-rooms',
+      title: 'Add Rooms',
+      type: 'item',
+      url: 'admin/add-rooms',
+      icon: icons.ChromeOutlined 
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'admin/requisitions',
+      icon: icons.FileTextOutlined
+    },
+    { 
+      id: 'supplier_management',
+      title: 'Supplier Management',
+      type: 'item',
+      url: 'admin/supplier-management',  // Define the URL for the Supplier Management page
+      icon: icons.AppstoreAddOutlined,  // You can choose a different icon if preferred
+      breadcrumbs: false
     },
     {
       id: 'purchase_orders',
@@ -71,6 +142,13 @@ const roleBasedMenu = {
       url: 'admin/purchase_orders',
       icon: icons.TeamOutlined,
       breadcrumbs: false,
+    },
+    {
+      id: 'report',
+      title: 'Reports',
+      type: 'item',
+      url: '/report',
+      icon: icons.PieChartOutlined // Updated icon for reports
     },
     {
       id: 'employees',
@@ -89,6 +167,36 @@ const roleBasedMenu = {
       url: 'admin/dashboard',
       icon: icons.DashboardOutlined,
       breadcrumbs: false,
+    }, 
+    {
+      id: 'add-rooms',
+      title: 'Add Rooms',
+      type: 'item',
+      url: 'admin/add-rooms',
+      icon: icons.ChromeOutlined
+
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'admin/requisitions',
+      icon: icons.FileTextOutlined
+    },
+    { 
+      id: 'supplier_management',
+      title: 'Supplier Management',
+      type: 'item',
+      url: 'admin/supplier-management',  // Define the URL for the Supplier Management page
+      icon: icons.AppstoreAddOutlined,  // You can choose a different icon if preferred
+      breadcrumbs: false
+    },
+    {
+      id: 'stocks-inventory',
+      title: 'Stocks and Inventory',
+      type: 'item',
+      url: 'admin/stocksinventorypage',
+      icon: icons.DatabaseOutlined
     },
     {
       id: 'purchase_orders',
@@ -99,15 +207,81 @@ const roleBasedMenu = {
       breadcrumbs: false,
     },
     {
+      id: 'report',
+      title: 'Reports',
+      type: 'item',
+      url: '/report',
+      icon: icons.PieChartOutlined // Updated icon for reports
+    },
+    {
       id: 'employees',
       title: 'Employees',
       type: 'item',
       url: 'admin/employees',
       icon: icons.TeamOutlined,
       breadcrumbs: false,
-    }
+    },
+    
   ],
+
+  // Users: Executive Housekeeper, Housekeeping Supervisor,
+  // Room Attendant/Housekeeper, Laundry Attendant
+  // Public Area Cleaner, Linen Room Attendant
+  "Housekeeping Management(Head Position)": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'housekeeping/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'housekeeping/requisitions',
+      icon: icons.FileTextOutlined
+    },
+  ],
+  "Housekeeping Management": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'housekeeping/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'housekeeping/requisitions',
+      icon: icons.FileTextOutlined
+    },
+  ],
+
+  // Users: Property Custodian, Bookeeper,
+  // Inventory Clerk, Procurement Officer,
+  // Stockroom Manager, Maintenance Inventory Coordinator
   "Inventory Management(Head Position)": [
+    // {
+    //   id: 'dashboard',
+    //   title: 'Dashboard',
+    //   type: 'item',
+    //   url: 'admin/dashboard',
+    //   icon: icons.DashboardOutlined,
+    //   breadcrumbs: false,
+    // },
+    {
+      id: 'stocks-inventory',
+      title: 'Stocks and Inventory',
+      type: 'item',
+      url: 'property_custodian/stocksinventorypage',
+      icon: icons.DatabaseOutlined
+    },
+    
     {
       id: 'purchase_orders',
       title: 'Purchase Orders',
@@ -116,17 +290,40 @@ const roleBasedMenu = {
       icon: icons.TeamOutlined,
       breadcrumbs: false,
     },
+    // {
+    //   id: 'delivery',
+    //   title: 'Delivery',
+    //   type: 'item',
+    //   url: 'property_custodian/delivery/mark_po',
+    //   icon: icons.TeamOutlined,
+    //   breadcrumbs: false,
+    // },    
     {
-      id: 'delivery',
-      title: 'Delivery',
+      id: 'requisitions',
+      title: 'Requisitions',
       type: 'item',
-      url: 'property_custodian/delivery/mark_po',
-      icon: icons.TeamOutlined,
-      breadcrumbs: false,
+      url: 'property_custodian/requisitions',
+      icon: icons.FileTextOutlined
     },
   ],
   "Inventory Management": [
     {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'property_custodian/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'stocks-inventory',
+      title: 'Stocks and Inventory',
+      type: 'item',
+      url: 'property_custodian/stocksinventorypage',
+      icon: icons.DatabaseOutlined
+    },
+    
+    {
       id: 'purchase_orders',
       title: 'Purchase Orders',
       type: 'item',
@@ -141,9 +338,70 @@ const roleBasedMenu = {
       url: 'property_custodian/delivery/mark_po',
       icon: icons.TeamOutlined,
       breadcrumbs: false,
+    },    
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'property_custodian/requisitions',
+      icon: icons.FileTextOutlined
+    },
+  ],
+  "Front Office Manager": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'desk/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'desk/requisitions',
+      icon: icons.FileTextOutlined
+    },
+  ],
+  "Desk Management": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'housekeeping/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'housekeeping/requisitions',
+      icon: icons.FileTextOutlined
+    },
+  ],
+  "Maintenance Management": [
+    {
+      id: 'dashboard',
+      title: 'Dashboard',
+      type: 'item',
+      url: 'maintenance/dashboard',
+      icon: icons.DashboardOutlined,
+      breadcrumbs: false,
+    },
+    {
+      id: 'requisitions',
+      title: 'Requisitions',
+      type: 'item',
+      url: 'maintenance/requisitions',
+      icon: icons.FileTextOutlined
     },
   ],
 };
+
+
+
 
 // Get user's role  
 const userRole = localStorage.getItem('role') || 'Unknown'; // Default to 'Unknown' if role is not set

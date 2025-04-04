@@ -1,11 +1,10 @@
 import base64
 import io
 import logging
-import mimetypes
-
-from supabase import Client, create_client
+import mimetypes 
+from django.http import JsonResponse
+from supabase import Client, create_client 
 from supabase_client import supabase 
-
 
 def create_purchase_order(items: list):
     try:
@@ -309,55 +308,3 @@ def get_receiving_memo_image(file_name: str):
     except Exception as e:
         print(f"An error occurred: {e}")
         return {"success": False, "message": str(e)}
-    
-# def get_delivery_receipt_image(file_name: str):
-#     try:
-#         print("Checking bucket...")
-#         response = supabase.rpc("service_role").execute()
-
-#         if response.data:
-#             print("Connecting to Supabase...")
-#             url = "https://hdlyxlxptyiblqssufxu.supabase.co"  # Supabase URL
-#             key = response.data["service_role_key"]  # Supabase API key
-#             supabase_client = create_client(url, key)
-
-#             print("Retrieving image...")
-#             response_data = supabase_client.storage.from_("purchasing").download(f"dr/{file_name}")
-
-#             if isinstance(response_data, bytes):
-#                 print("File retrieved successfully.")
-#                 return {"success": True, "file": io.BytesIO(response_data)}
-#             else:
-#                 return {"success": False, "message": "Unexpected response type or file not found."}
-#         else:
-#             return {"success": False, "message": "Failed to retrieve service role key."}
-#     except Exception as e:
-#         print(f"An error occurred: {e}")
-#         return {"success": False, "message": str(e)}
-
-# Service for fetching receiving memo image
-# def get_receiving_memo_image(file_name: str):
-#     try:
-#         print("Checking bucket...")
-#         response = supabase.rpc("service_role").execute()
-
-#         if response.data:
-#             print("Connecting to Supabase...")
-#             url = "https://hdlyxlxptyiblqssufxu.supabase.co"
-#             key = response.data["service_role_key"]
-#             supabase_client = create_client(url, key)
-
-#             print("Retrieving image...")
-#             response_data = supabase_client.storage.from_("purchasing").download(f"rm/{file_name}")
-
-#             if isinstance(response_data, bytes):
-#                 print("File retrieved successfully.")
-#                 return {"success": True, "file": io.BytesIO(response_data)}
-#             else:
-#                 return {"success": False, "message": "Unexpected response type or file not found."}
-#         else:
-#             return {"success": False, "message": "Failed to retrieve service role key."}
-#     except Exception as e:
-#         print(f"An error occurred: {e}")
-#         return {"success": False, "message": str(e)}
-    

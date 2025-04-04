@@ -1,11 +1,48 @@
-import React, { useState } from 'react';
-import { Table, TableHead, TableRow, TableCell, TableBody, TableContainer, Paper, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, Avatar } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  TableContainer,
+  Paper,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+  Box,
+  Typography,
+  Avatar,
+} from '@mui/material';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
-const StockList = ({ stockList, handleAddNewItem }) => {
+const StockList = ({ handleAddNewItem }) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [quantity, setQuantity] = useState('');
+  const [stockList, setStockList] = useState([]);
+
+  // Fetch stock data from the backend on initial load
+  useEffect(() => {
+    fetchStockList();
+  }, []);
+
+  const fetchStockList = () => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/stocks`)
+      .then((response) => {
+        console.log('Stock list fetched:', response.data);
+        setStockList(response.data.stocks || []); // Assuming response contains a 'stocks' key
+      })
+      .catch((error) => {
+        console.error('Error fetching stocks:', error);
+      });
+  };
 
   const handleViewMoreClick = (item) => {
     setSelectedItem(item);
@@ -20,35 +57,108 @@ const StockList = ({ stockList, handleAddNewItem }) => {
 
   const handleRestock = () => {
     if (quantity && selectedItem) {
-      console.log(`Restocking ${selectedItem.name} with ${quantity} pieces`);
+      const parsedQuantity = parseInt(quantity, 10);
+      if (parsedQuantity > 0) {
+        const updatedStock = {
+          item_id: selectedItem.id,
+          new_stock: parsedQuantity,
+        };
+
+        // Send updated stock data to the backend
+        axios
+          .post(`${import.meta.env.VITE_API_URL}/update-stock/`, updatedStock, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then((response) => {
+            if (response.data.success) {
+              console.log('Stock updated successfully:', response.data);
+
+              // Update the stock list locally
+              setStockList((prevStockList) =>
+                prevStockList.map((item) =>
+                  item.id === selectedItem.id
+                    ? { ...item, in_stock: item.in_stock + parsedQuantity }
+                    : item
+                )
+              );
+
+              // Close modal and reset state
+              handleCloseModal();
+
+              // SweetAlert2 Success Notification
+              Swal.fire({
+                icon: 'success',
+                title: 'Stock Updated Successfully!',
+                text: `The stock for ${selectedItem.item_name} has been updated successfully.`,
+                confirmButtonText: 'OK',
+                background: '#f0f8ff',
+              });
+            } else {
+              // SweetAlert2 Error Notification
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was an error updating the stock. Please try again.',
+                confirmButtonText: 'OK',
+                background: '#f8d7da',
+              });
+            }
+          })
+          .catch((error) => {
+            console.error('Error updating stock:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'An Error Occurred',
+              text: 'An error occurred while updating the stock. Please try again.',
+              confirmButtonText: 'OK',
+              background: '#f8d7da',
+            });
+          });
+      } else {
+        alert('Please enter a valid positive quantity.');
+      }
+    } else {
+      alert('Please enter a quantity to restock.');
     }
-    handleCloseModal();
+  };
+
+  const handleQuantityChange = (e) => {
+    setQuantity(e.target.value);
   };
 
   return (
     <div>
-      {/* Wrapper to ensure both containers have the same width */}
       <Box sx={{ maxWidth: '1200px', margin: '0 auto' }}>
-        {/* Update Stock List Section */}
-        <Box sx={{ p: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'white', borderRadius: '8px', padding: 2, mb: 3, border: '1px solid #D1D1D6' }}>
+        <Box
+          sx={{
+            p: 2,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            mb: 3,
+            border: '1px solid #D1D1D6',
+          }}
+        >
           <Typography variant="h6">Update Stock List</Typography>
-          <Button 
-              variant="contained" 
-              onClick={handleAddNewItem} 
-              sx={{
+          <Button
+            variant="contained"
+            onClick={handleAddNewItem}
+            sx={{
+              background: 'linear-gradient(to right, #14ADD6, #384295)',
+              color: 'white',
+              '&:hover': {
                 background: 'linear-gradient(to right, #14ADD6, #384295)',
-                color: 'white', // Text color
-                '&:hover': {
-                  background: 'linear-gradient(to right, #14ADD6, #384295)', // Ensure the gradient is preserved on hover
-                }
-              }}
-            >
-              Add New Item
-        </Button>
-
+              },
+            }}
+          >
+            Add New Item
+          </Button>
         </Box>
 
-        {/* Stock Table */}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
@@ -69,42 +179,62 @@ const StockList = ({ stockList, handleAddNewItem }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {stockList.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell> {/* Serial Number */}
-                  <TableCell>
-                    <Avatar alt={item.name} src={item.image} />
-                  </TableCell> {/* Product Image */}
-                  <TableCell>{item.name}</TableCell> {/* Product Name */}
-                  <TableCell>{item.sku}</TableCell> {/* SKU */}
-                  <TableCell>{item.category}</TableCell> {/* Category */}
-                  <TableCell>{item.brand}</TableCell> {/* Brand */}
-                  <TableCell>{item.addedBy}</TableCell> {/* Added By */}
-                  <TableCell>{item.dateAdded}</TableCell> {/* Date Added */}
-                  <TableCell>{item.netVolQty}</TableCell> {/* Net Vol Qty */}
-                  <TableCell>{item.inStock}</TableCell> {/* In Stock */}
-                  <TableCell>{item.supplier}</TableCell> {/* Supplier */}
-                  <TableCell>
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        color: item.inStock === 0 ? '#ED3237' : item.inStock <= 5 ? '#F29425' : '#10A142',
-                      }}
-                    >
-                      {item.inStock === 0
-                        ? 'Out of Stock'
-                        : item.inStock <= 5
-                        ? 'Low in Stock'
-                        : 'In Stock'}
-                    </Typography>
-                  </TableCell> {/* Status */}
-                  <TableCell>
-                    <Button variant="outlined" onClick={() => handleViewMoreClick(item)}>
-                      View More
-                    </Button>
-                  </TableCell> {/* Action Button */}
+              {stockList.length > 0 ? (
+                stockList.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>
+                      <Avatar
+                        alt={item.item_name}
+                        src={item.image || 'https://via.placeholder.com/100'}
+                      />
+                    </TableCell>
+                    <TableCell>{item.item_name}</TableCell>
+                    <TableCell>{item.sku}</TableCell>
+                    <TableCell>{item.category}</TableCell>
+                    <TableCell>{item.brand}</TableCell>
+                    <TableCell>{item.added_by || 'N/A'}</TableCell>
+                    <TableCell>{item.added_at || 'N/A'}</TableCell>
+                    <TableCell>{item.net_vol_qty || 'N/A'}</TableCell>
+                    <TableCell>{item.in_stock}</TableCell>
+                    <TableCell>{item.supplier || 'N/A'}</TableCell>
+                    <TableCell>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color:
+                            item.status === 'Out of Stock'
+                              ? '#ED3237'
+                              : item.status === 'Low in Stock'
+                              ? '#F29425'
+                              : '#10A142',
+                        }}
+                      >
+                        {item.status === 'Out of Stock'
+                          ? 'Out of Stock'
+                          : item.status === 'Low in Stock'
+                          ? 'Low in Stock'
+                          : 'In Stock'}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleViewMoreClick(item)}
+                      >
+                        View More
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={13} align="center">
+                    No stock data available
+                  </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -121,7 +251,7 @@ const StockList = ({ stockList, handleAddNewItem }) => {
             type="number"
             fullWidth
             value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
+            onChange={handleQuantityChange}
           />
         </DialogContent>
         <DialogActions>
@@ -138,21 +268,7 @@ const StockList = ({ stockList, handleAddNewItem }) => {
 };
 
 StockList.propTypes = {
-  stockList: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      sku: PropTypes.string.isRequired,
-      category: PropTypes.string.isRequired,
-      brand: PropTypes.string.isRequired,
-      addedBy: PropTypes.string.isRequired,
-      dateAdded: PropTypes.string.isRequired,
-      netVolQty: PropTypes.string.isRequired,
-      inStock: PropTypes.number.isRequired,
-      supplier: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired, // Image URL
-    })
-  ).isRequired,
-  handleAddNewItem: PropTypes.func.isRequired, // Prop function for handling Add New Item button click
+  handleAddNewItem: PropTypes.func.isRequired,
 };
 
 export default StockList;

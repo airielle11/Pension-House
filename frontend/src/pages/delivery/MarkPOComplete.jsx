@@ -52,7 +52,7 @@ const MarkPOAsCompletedForm = () => {
 
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/mark_po_as_complete/`,
+        '${import.meta.env.VITE_API_URL}/mark_po_as_complete/',
         formData,
         {
           headers: {
@@ -62,7 +62,7 @@ const MarkPOAsCompletedForm = () => {
       );
       if (response.data.success) {
         Swal.fire({
-          title: "Success!",
+          title: "Success",
           text:
             response.data.message || "Purchase Order Completed Successfully!",
           icon: "success",
@@ -72,15 +72,27 @@ const MarkPOAsCompletedForm = () => {
           confirmButtonText: "OK",
         }).then((result) => {
           if (result.isConfirmed) {
-            handleCloseModal();
+            handleClose();
           }
-        });
+        }) 
+
         setSuccessModal(true);
         setErrorMessage("");
       } else {
-        setErrorMessage(
-          response.data.message || "Purchase Order ID not found."
-        );
+        Swal.fire({
+          title: "Error",
+          text:
+            response.data.message || "Purchase Order ID not found.",
+          icon: "error",
+          customClass: {
+            container: style.swalContainer,
+          },
+          confirmButtonText: "OK",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleClose();
+          }
+        }) 
       }
     } catch (error) {
       Swal.fire({

@@ -45,7 +45,7 @@ function EmployeesTable({ filteredRows, page, rowsPerPage, handleChangePage, han
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.get(`${import.meta.env.VITE_API_URL}/delete_employee/`, {
+          const response = await axios.get('${import.meta.env.VITE_API_URL}/delete_employee/', {
             params: { p_emp_id: empId },
           }); 
 
@@ -113,7 +113,7 @@ function EmployeesTable({ filteredRows, page, rowsPerPage, handleChangePage, han
                         <TableCell key={column.id}>
                           {column.id === "image_name" ? (
                             <>
-                              {console.log(`${import.meta.env.VITE_IMAGE_BASE_URL}/${row[column.id]}`)}
+                              {console.log('${import.meta.env.VITE_IMAGE_BASE_URL}/${row[column.id]}')}
                               <img
                                 src={`${import.meta.env.VITE_IMAGE_BASE_URL}/${row[column.id]}`}
                                 alt="Employee Avatar"

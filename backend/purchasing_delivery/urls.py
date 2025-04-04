@@ -11,5 +11,4 @@ urlpatterns = [
     path("quotations_image/", views.get_po_quotations_image_view, name="quotations_image"),
     path("delivery_receipt_image/", views.delivery_receipt_image_view, name="delivery_receipt_image"),
     path("receiving_memo_image/", views.receiving_memo_image_view, name="receiving_memo_image"),
-
 ]
