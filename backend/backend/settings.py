@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 from dotenv import load_dotenv
 import os
+import dj_database_url
 # import environ
 
 # Load the environment variable file for database credentials, etc.
@@ -35,7 +36,7 @@ SECRET_KEY = 'django-insecure-y$hr0@t3f-j*d54hl^_s1(zbu8ea&+-w&7bg((9h3#j#0z(@$m
 DEBUG = True
 
 # Allow any different host to host the Django application
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -74,12 +75,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -106,16 +109,10 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': SUPABASE_URL.split("/")[-1],
-#         'USER': 'postgres',  # Supabase default username
-#         'PASSWORD': SUPABASE_API,  # API key as password
-#         'HOST': SUPABASE_URL.split("//")[-1].split("/")[0],  # Extract the host
-#         'PORT': '5432',  # Default PostgreSQL port
-#     }
-# }
+DATABASES = {
+    'default': dj_database_url.config(default=SUPABASE_URL.replace("https", "postgres"))
+}
+
 
 
 # Password validation
@@ -153,6 +150,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# ADDED: Defines where static files will be collected
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # ADDED
+
+# ADDED: Enables Whitenoise for serving static files in production
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # ADDED
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
